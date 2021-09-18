@@ -10,7 +10,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 interface MoviesRepository {
-	suspend fun searchMovies(query: String, page: Int = 1): List<MovieEntity>
+	suspend fun searchMovies(query: String, page: Int): List<MovieEntity>
 }
 
 /**
@@ -26,6 +26,7 @@ class MoviesRepositoryImpl @Inject constructor(
 	 */
 	@FlowPreview
 	override suspend fun searchMovies(query: String, page: Int): List<MovieEntity> {
+		// TODO Dudkins 19.09.21: Refactor to cache first
 		return flowOf(moviesApi.searchMovie(query, page))
 			.flowOn(Dispatchers.IO)
 			.onEach { Timber.d(it.movies.toString()) }

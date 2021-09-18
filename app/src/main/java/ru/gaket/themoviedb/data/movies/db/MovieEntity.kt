@@ -1,7 +1,7 @@
 package ru.gaket.themoviedb.data.movies.db
 
 /**
- * Business class of Movies
+ * DB class of Movies stored in room
  */
 data class MovieEntity(
 	val id: Int,

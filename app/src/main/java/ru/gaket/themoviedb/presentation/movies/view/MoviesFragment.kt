@@ -47,9 +47,7 @@ class MoviesFragment : Fragment() {
 				else -> 2
 			}
 			layoutManager = GridLayoutManager(activity, spanCount)
-			moviesAdapter = MoviesAdapter {
-				viewModel.onMovieAction(it)
-			}
+			moviesAdapter = MoviesAdapter { viewModel.onMovieAction(it) }
 			adapter = moviesAdapter
 			addItemDecoration(
 				GridSpacingItemDecoration(

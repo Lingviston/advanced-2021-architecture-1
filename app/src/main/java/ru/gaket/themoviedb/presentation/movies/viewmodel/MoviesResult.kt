@@ -1,12 +1,12 @@
 package ru.gaket.themoviedb.presentation.movies.viewmodel
 
-import ru.gaket.themoviedb.data.movies.db.MovieEntity
+import ru.gaket.themoviedb.domain.movies.Movie
 
 /**
- * Class containing the result of the [MovieEntity] request
+ * Class containing the result of the [Movie] request
  */
 sealed class MoviesResult
-class ValidResult(val result: List<MovieEntity>) : MoviesResult()
+class ValidResult(val result: List<Movie>) : MoviesResult()
 object EmptyResult : MoviesResult()
 object EmptyQuery : MoviesResult()
 class ErrorResult(val e: Throwable) : MoviesResult()

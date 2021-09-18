@@ -7,15 +7,15 @@ import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import ru.gaket.themoviedb.core.navigation.WebNavigator
-import ru.gaket.themoviedb.data.movies.MoviesRepository
-import ru.gaket.themoviedb.data.movies.db.MovieEntity
+import ru.gaket.themoviedb.domain.movies.Movie
+import ru.gaket.themoviedb.domain.movies.MoviesInteractor
 import timber.log.Timber
 import java.util.concurrent.CancellationException
 import javax.inject.Inject
 
 @HiltViewModel
 class MoviesViewModel @Inject constructor(
-	private val moviesRepository: MoviesRepository,
+	private val moviesInteractor: MoviesInteractor,
 	private val webNavigator: WebNavigator,
 	private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -37,12 +37,12 @@ class MoviesViewModel @Inject constructor(
 		.onEach {
 			_searchState.value = Loading
 		}
-		.mapLatest {
-			if (it.isEmpty()) {
+		.mapLatest { query ->
+			if (query.isEmpty()) {
 				EmptyQuery
 			} else {
 				try {
-					val result = moviesRepository.searchMovies(it)
+					val result = moviesInteractor.searchMovies(query)
 					if (result.isEmpty()) {
 						EmptyResult
 					} else {
@@ -72,7 +72,7 @@ class MoviesViewModel @Inject constructor(
 		_argsTestValue.value = savedStateHandle.get<Int>("ARG_TEST_VALUE") ?: -1
 	}
 	
-	fun onMovieAction(it: MovieEntity) {
-		webNavigator.navigateTo(it.id)
+	fun onMovieAction(movie: Movie) {
+		webNavigator.navigateTo(movie.id)
 	}
 }
