@@ -8,6 +8,7 @@ import dagger.hilt.components.SingletonComponent
 import ru.gaket.themoviedb.BuildConfig
 import ru.gaket.themoviedb.data.core.network.MoviesDbClient
 import ru.gaket.themoviedb.data.core.network.MoviesDbClientImpl
+import ru.gaket.themoviedb.data.genres.remote.GenresApi
 import ru.gaket.themoviedb.data.movies.remote.MoviesApi
 import javax.inject.Qualifier
 
@@ -27,6 +28,9 @@ class ApiWrapperModule {
 
 	@Provides
 	fun provideMoviesApi(client: MoviesDbClient): MoviesApi = client.moviesApi()
+	
+	@Provides
+	fun provideGenresApi(client: MoviesDbClient): GenresApi = client.genresApi()
 }
 
 @Module

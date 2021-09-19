@@ -13,5 +13,5 @@ data class MovieDto(
 	val title: String,
 	
 	@SerializedName("poster_path")
-val posterPath: String?,
+	val posterPath: String?,
 )
