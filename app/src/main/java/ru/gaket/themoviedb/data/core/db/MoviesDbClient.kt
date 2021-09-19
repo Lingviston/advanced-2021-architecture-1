@@ -17,7 +17,8 @@ class MoviesDbClientImpl(
 		context,
 		MoviesDb::class.java,
 		"movies_database"
-	).build()
+	).fallbackToDestructiveMigration()
+		.build()
 	
 	override fun genresDao(): GenresDao = database.genresDao()
 }
