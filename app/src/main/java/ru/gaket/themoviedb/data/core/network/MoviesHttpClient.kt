@@ -9,14 +9,14 @@ import ru.gaket.themoviedb.di.BaseUrlQualifier
 import ru.gaket.themoviedb.data.movies.remote.MoviesApi
 import javax.inject.Inject
 
-interface MoviesDbClient {
+interface MoviesHttpClient {
 	fun moviesApi(): MoviesApi
 	fun genresApi(): GenresApi
 }
 
-class MoviesDbClientImpl @Inject constructor(
+class MoviesHttpClientImpl @Inject constructor(
 	@BaseUrlQualifier private val baseUrl: String
-) : MoviesDbClient {
+) : MoviesHttpClient {
 	
 	// If you decide to play with this app more than a few times,
 	// please, create your own api key, so this one does not get banned:

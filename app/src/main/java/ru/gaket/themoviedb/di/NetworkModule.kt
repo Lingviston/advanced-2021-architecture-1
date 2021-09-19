@@ -6,20 +6,22 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ru.gaket.themoviedb.BuildConfig
-import ru.gaket.themoviedb.data.core.network.MoviesDbClient
-import ru.gaket.themoviedb.data.core.network.MoviesDbClientImpl
+import ru.gaket.themoviedb.data.core.network.MoviesHttpClient
+import ru.gaket.themoviedb.data.core.network.MoviesHttpClientImpl
 import ru.gaket.themoviedb.data.genres.remote.GenresApi
 import ru.gaket.themoviedb.data.movies.remote.MoviesApi
 import javax.inject.Qualifier
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class NetworkModule {
 	
 	@Binds
+	@Singleton
 	abstract fun bindMovieDbClient(
-		impl: MoviesDbClientImpl
-	): MoviesDbClient
+		impl: MoviesHttpClientImpl
+	): MoviesHttpClient
 }
 
 @Module
@@ -27,10 +29,10 @@ abstract class NetworkModule {
 class ApiWrapperModule {
 
 	@Provides
-	fun provideMoviesApi(client: MoviesDbClient): MoviesApi = client.moviesApi()
+	fun provideMoviesApi(client: MoviesHttpClient): MoviesApi = client.moviesApi()
 	
 	@Provides
-	fun provideGenresApi(client: MoviesDbClient): GenresApi = client.genresApi()
+	fun provideGenresApi(client: MoviesHttpClient): GenresApi = client.genresApi()
 }
 
 @Module
@@ -38,10 +40,12 @@ class ApiWrapperModule {
 class BaseUrlWrapperModule {
 
 	@Provides
+	@Singleton
 	@BaseUrlQualifier
 	fun provideBaseUrl() = BuildConfig.BASE_URL
 	
 	@Provides
+	@Singleton
 	@BaseImageUrlQualifier
 	fun provideBaseImageUrl() = "https://image.tmdb.org/t/p/w300"
 	
