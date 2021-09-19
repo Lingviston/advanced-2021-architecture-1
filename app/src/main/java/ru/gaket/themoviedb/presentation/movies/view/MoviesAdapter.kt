@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import ru.gaket.themoviedb.databinding.ItemMovieBinding
-import ru.gaket.themoviedb.domain.movies.Movie
+import ru.gaket.themoviedb.domain.movies.search.SearchMovie
 
 class MoviesAdapter(
-	private val onMovieClick: (Movie) -> Unit,
-) : ListAdapter<Movie, MovieViewHolder>(DIFF_CALLBACK) {
+	private val onMovieClick: (SearchMovie) -> Unit,
+) : ListAdapter<SearchMovie, MovieViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -23,11 +23,11 @@ class MoviesAdapter(
 
     companion object {
 
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Movie>() {
-            override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean =
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<SearchMovie>() {
+            override fun areItemsTheSame(oldItem: SearchMovie, newItem: SearchMovie): Boolean =
                 oldItem.id == newItem.id
 
-            override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean =
+            override fun areContentsTheSame(oldItem: SearchMovie, newItem: SearchMovie): Boolean =
                 oldItem == newItem
         }
     }

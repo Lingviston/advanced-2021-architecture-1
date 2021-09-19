@@ -1,9 +1,9 @@
 package ru.gaket.themoviedb.data.movies
 
-import ru.gaket.themoviedb.data.movies.local.MovieEntity
-import ru.gaket.themoviedb.data.movies.remote.MovieDto
+import ru.gaket.themoviedb.data.movies.local.SearchMovieEntity
+import ru.gaket.themoviedb.data.movies.remote.SearchMovieDto
 
-fun MovieDto.toEntity(baseImageUrl: String) = MovieEntity(
+fun SearchMovieDto.toEntity(baseImageUrl: String) = SearchMovieEntity(
     id = id,
     name = title,
     thumbnail = getPosterUrl(baseImageUrl, posterPath)

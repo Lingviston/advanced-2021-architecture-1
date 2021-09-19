@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import ru.gaket.themoviedb.core.navigation.WebNavigator
-import ru.gaket.themoviedb.domain.movies.Movie
+import ru.gaket.themoviedb.domain.movies.search.SearchMovie
 import ru.gaket.themoviedb.domain.movies.MoviesInteractor
 import timber.log.Timber
 import java.util.concurrent.CancellationException
@@ -81,7 +81,7 @@ class MoviesViewModel @Inject constructor(
         _argsTestValue.value = savedStateHandle.get<Int>("ARG_TEST_VALUE") ?: -1
     }
 
-    fun onMovieAction(movie: Movie) {
-        webNavigator.navigateTo(movie.id)
+    fun onMovieAction(searchMovie: SearchMovie) {
+        webNavigator.navigateTo(searchMovie.id)
     }
 }

@@ -1,8 +1,9 @@
 package ru.gaket.themoviedb.domain.movies
 
-import ru.gaket.themoviedb.data.movies.local.MovieEntity
+import ru.gaket.themoviedb.data.movies.local.SearchMovieEntity
+import ru.gaket.themoviedb.domain.movies.search.SearchMovie
 
-fun MovieEntity.toModel() = Movie(
+fun SearchMovieEntity.toModel() = SearchMovie(
     id = id,
     name = name,
     thumbnail = thumbnail

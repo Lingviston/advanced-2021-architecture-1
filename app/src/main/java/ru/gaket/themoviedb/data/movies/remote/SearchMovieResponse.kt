@@ -7,5 +7,5 @@ data class SearchMovieResponse(
 	val page: Int,
 
 	@SerializedName("results")
-	val movies: List<MovieDto>,
+	val searchMovies: List<SearchMovieDto>,
 )

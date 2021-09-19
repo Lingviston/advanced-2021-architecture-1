@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Class of Movie coming from the api
  */
-data class MovieDto(
+data class SearchMovieDto(
     @SerializedName("id")
     val id: Int,
 

@@ -1,9 +1,9 @@
-package ru.gaket.themoviedb.domain.movies
+package ru.gaket.themoviedb.domain.movies.search
 
 /**
  * Business class of Movies
  */
-data class Movie(
+data class SearchMovie(
 	val id: Int,
 	val name: String,
 	val thumbnail: String?,
