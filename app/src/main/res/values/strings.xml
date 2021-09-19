@@ -21,5 +21,7 @@
     <!--Review-->
     <string name="review_what_did_you_like">What did you like?</string>
     <string name="review_what_did_not_like">What you did not like?</string>
+    <string name="review_rating_message">Rate movie:</string>
     <string name="review_button_next">Next</string>
+    <string name="review_button_submit">Submit</string>
 </resources>
