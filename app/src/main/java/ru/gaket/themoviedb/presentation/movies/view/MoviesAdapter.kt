@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import ru.gaket.themoviedb.databinding.ItemMovieBinding
-import ru.gaket.themoviedb.domain.movies.search.SearchMovie
+import ru.gaket.themoviedb.domain.movies.models.SearchMovie
 
 class MoviesAdapter(
 	private val onMovieClick: (SearchMovie) -> Unit,

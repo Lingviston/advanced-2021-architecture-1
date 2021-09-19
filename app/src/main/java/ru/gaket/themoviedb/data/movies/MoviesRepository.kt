@@ -1,43 +1,52 @@
 package ru.gaket.themoviedb.data.movies
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.toList
+import ru.gaket.themoviedb.data.movies.local.MovieEntity
+import ru.gaket.themoviedb.data.movies.local.MoviesLocalDataSource
 import ru.gaket.themoviedb.data.movies.local.SearchMovieEntity
-import ru.gaket.themoviedb.data.movies.remote.MoviesApi
+import ru.gaket.themoviedb.data.movies.remote.MoviesRemoteDataSource
 import ru.gaket.themoviedb.di.BaseImageUrlQualifier
-import timber.log.Timber
 import javax.inject.Inject
 
 interface MoviesRepository {
 
-    suspend fun searchMovies(query: String, page: Int): List<SearchMovieEntity>
+    suspend fun searchMovies(query: String, page: Int): List<SearchMovieEntity>?
+    suspend fun getMovieDetails(id: Int): MovieEntity?
 }
 
 /**
- * Repository providing data about [SearchMovieEntity]
+ * Repository providing data about [MovieEntity], [SearchMovieEntity]
  */
 class MoviesRepositoryImpl @Inject constructor(
-    private val moviesApi: MoviesApi,
+    private val remoteDataSource: MoviesRemoteDataSource,
+    private val localDataSource: MoviesLocalDataSource,
     @BaseImageUrlQualifier private val baseImageUrl: String,
 ) : MoviesRepository {
 
     /**
      * Search [SearchMovieEntity]s for the given [query] string
      */
-    @FlowPreview
-    override suspend fun searchMovies(query: String, page: Int): List<SearchMovieEntity> {
-        return flowOf(moviesApi.searchMovie(query, page))
-            .flowOn(Dispatchers.IO)
-            .onEach { Timber.d(it.searchMovies.toString()) }
-            .flatMapMerge { searchResponse -> searchResponse.searchMovies.asFlow() }
-            .map { movieDto -> movieDto.toEntity(baseImageUrl) }
-            .toList()
+    override suspend fun searchMovies(query: String, page: Int): List<SearchMovieEntity>? {
+        return remoteDataSource.searchMovies(query, page)
+            ?.map { it.toEntity(baseImageUrl) }
+            ?.apply { localDataSource.insertAll(this) }
+    }
+
+    /**
+     * Get [MovieEntity] by movieId
+     */
+    override suspend fun getMovieDetails(id: Int): MovieEntity? {
+        val cachedMovie = localDataSource.getById(id)
+        return if (cachedMovie?.isUpdatedFromServer == true) {
+            cachedMovie
+        } else {
+            remoteDataSource.getMovieDetails(id)
+                ?.toEntity(
+                    baseImageUrl,
+                    hasReview = cachedMovie?.hasReview == true,
+                    reviewId = cachedMovie?.reviewId ?: 0
+                )
+                ?.apply { localDataSource.update(this) }
+                ?.run { localDataSource.getById(id) }
+        }
     }
 }

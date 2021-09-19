@@ -6,7 +6,7 @@ import com.squareup.picasso.Transformation
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.databinding.ItemMovieBinding
-import ru.gaket.themoviedb.domain.movies.search.SearchMovie
+import ru.gaket.themoviedb.domain.movies.models.SearchMovie
 
 class MovieViewHolder(
 	private val binding: ItemMovieBinding,
@@ -34,7 +34,7 @@ class MovieViewHolder(
     }
 
     private fun setName(searchMovie: SearchMovie) {
-        binding.movieName.text = searchMovie.name
+        binding.movieName.text = searchMovie.title
     }
 
     private fun setThumbnail(searchMovie: SearchMovie) {

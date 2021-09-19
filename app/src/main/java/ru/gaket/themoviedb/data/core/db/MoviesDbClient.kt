@@ -4,14 +4,17 @@ import android.content.Context
 import androidx.room.Room
 import dagger.hilt.android.qualifiers.ApplicationContext
 import ru.gaket.themoviedb.data.genres.local.GenresDao
+import ru.gaket.themoviedb.data.movies.local.MoviesDao
+import javax.inject.Inject
 
 interface MoviesDbClient {
 
     fun genresDao(): GenresDao
+    fun moviesDao(): MoviesDao
 }
 
-class MoviesDbClientImpl(
-	@ApplicationContext private val context: Context,
+class MoviesDbClientImpl @Inject constructor(
+    @ApplicationContext private val context: Context,
 ) : MoviesDbClient {
 
     private val database = Room.databaseBuilder(
@@ -22,4 +25,5 @@ class MoviesDbClientImpl(
         .build()
 
     override fun genresDao(): GenresDao = database.genresDao()
+    override fun moviesDao(): MoviesDao = database.moviesDao()
 }

@@ -18,7 +18,7 @@ interface GenresDao {
     suspend fun getAllByIds(ids: List<Int>): List<GenreEntity>
 
     @Query("SELECT * FROM genres WHERE id=:id LIMIT 1")
-    suspend fun getById(id: Int): GenreEntity
+    suspend fun getById(id: Int): GenreEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun replaceAll(genres: List<GenreEntity>)

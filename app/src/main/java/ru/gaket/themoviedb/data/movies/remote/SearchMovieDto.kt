@@ -3,7 +3,7 @@ package ru.gaket.themoviedb.data.movies.remote
 import com.google.gson.annotations.SerializedName
 
 /**
- * Class of Movie coming from the api
+ * Class of Search movie result coming from the api
  */
 data class SearchMovieDto(
     @SerializedName("id")

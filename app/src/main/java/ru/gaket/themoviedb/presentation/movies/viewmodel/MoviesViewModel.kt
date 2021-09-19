@@ -16,9 +16,10 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import ru.gaket.themoviedb.core.navigation.WebNavigator
-import ru.gaket.themoviedb.domain.movies.search.SearchMovie
+import ru.gaket.themoviedb.domain.movies.models.SearchMovie
 import ru.gaket.themoviedb.domain.movies.MoviesInteractor
 import timber.log.Timber
+import java.lang.IllegalArgumentException
 import java.util.concurrent.CancellationException
 import javax.inject.Inject
 
@@ -52,10 +53,10 @@ class MoviesViewModel @Inject constructor(
             } else {
                 try {
                     val result = moviesInteractor.searchMovies(query)
-                    if (result.isEmpty()) {
-                        EmptyResult
-                    } else {
-                        ValidResult(result)
+                    when {
+                        result == null -> ErrorResult(IllegalArgumentException("Search movies from server error"))
+                        result.isEmpty() -> EmptyResult
+                        else -> ValidResult(result)
                     }
                 } catch (e: Throwable) {
                     if (e is CancellationException) {

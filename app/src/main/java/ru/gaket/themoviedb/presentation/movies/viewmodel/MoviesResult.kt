@@ -1,6 +1,6 @@
 package ru.gaket.themoviedb.presentation.movies.viewmodel
 
-import ru.gaket.themoviedb.domain.movies.search.SearchMovie
+import ru.gaket.themoviedb.domain.movies.models.SearchMovie
 
 /**
  * Class containing the result of the [SearchMovie] request
