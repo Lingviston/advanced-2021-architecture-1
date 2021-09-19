@@ -1,5 +1,4 @@
 <resources>
-
     <string name="app_name">The Movie Db</string>
     <string name="movies_placeholder">Start typing in a search bar to find a movie</string>
     <string name="error_unknown_on_download">Unexpected error while trying to fetch movies!</string>
@@ -8,5 +7,4 @@
     <string name="content_cinema_poster">Cinema poster</string>
     <string name="hint_search_query">Enter search query…</string>
     <string name="search_icon">Search icon</string>
-
 </resources>

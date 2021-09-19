@@ -16,11 +16,11 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class NetworkModule {
-	
-	@Binds
-	@Singleton
-	abstract fun bindMovieDbClient(
-		impl: MoviesHttpClientImpl
+
+    @Binds
+    @Singleton
+    abstract fun bindMovieDbClient(
+		impl: MoviesHttpClientImpl,
 	): MoviesHttpClient
 }
 
@@ -28,30 +28,30 @@ abstract class NetworkModule {
 @InstallIn(SingletonComponent::class)
 class ApiWrapperModule {
 
-	@Provides
-	fun provideMoviesApi(client: MoviesHttpClient): MoviesApi = client.moviesApi()
-	
-	@Provides
-	fun provideGenresApi(client: MoviesHttpClient): GenresApi = client.genresApi()
+    @Provides
+    fun provideMoviesApi(client: MoviesHttpClient): MoviesApi = client.moviesApi()
+
+    @Provides
+    fun provideGenresApi(client: MoviesHttpClient): GenresApi = client.genresApi()
 }
 
 @Module
 @InstallIn(SingletonComponent::class)
 class BaseUrlWrapperModule {
 
-	@Provides
-	@Singleton
-	@BaseUrlQualifier
-	fun provideBaseUrl() = BuildConfig.BASE_URL
-	
-	@Provides
-	@Singleton
-	@BaseImageUrlQualifier
-	fun provideBaseImageUrl() = "https://image.tmdb.org/t/p/w300"
-	
-	@Provides
-	@BrowseMovieBaseUrlQualifier
-	fun provideBrowseMovieBaseUrl() = "https://www.themoviedb.org/movie/"
+    @Provides
+    @Singleton
+    @BaseUrlQualifier
+    fun provideBaseUrl() = BuildConfig.BASE_URL
+
+    @Provides
+    @Singleton
+    @BaseImageUrlQualifier
+    fun provideBaseImageUrl() = "https://image.tmdb.org/t/p/w300"
+
+    @Provides
+    @BrowseMovieBaseUrlQualifier
+    fun provideBrowseMovieBaseUrl() = "https://www.themoviedb.org/movie/"
 }
 
 @Qualifier

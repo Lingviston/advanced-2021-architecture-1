@@ -8,5 +8,5 @@ import ru.gaket.themoviedb.data.genres.local.GenresDao
 @Database(entities = [GenreEntity::class], version = 1)
 abstract class MoviesDb : RoomDatabase() {
 
-	abstract fun genresDao(): GenresDao
+    abstract fun genresDao(): GenresDao
 }

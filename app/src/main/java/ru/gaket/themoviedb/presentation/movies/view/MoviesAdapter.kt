@@ -8,26 +8,27 @@ import ru.gaket.themoviedb.databinding.ItemMovieBinding
 import ru.gaket.themoviedb.domain.movies.Movie
 
 class MoviesAdapter(
-	private val onMovieClick: (Movie) -> Unit
+	private val onMovieClick: (Movie) -> Unit,
 ) : ListAdapter<Movie, MovieViewHolder>(DIFF_CALLBACK) {
-	
-	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
-		val layoutInflater = LayoutInflater.from(parent.context)
-		val binding = ItemMovieBinding.inflate(layoutInflater, parent, false)
-		return MovieViewHolder(binding)
-	}
-	
-	override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-		holder.bind(getItem(position), onMovieClick)
-	}
-	
-	companion object {
-		private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Movie>() {
-			override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean =
-				oldItem.id == newItem.id
-			
-			override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean =
-				oldItem == newItem
-		}
-	}
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val binding = ItemMovieBinding.inflate(layoutInflater, parent, false)
+        return MovieViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
+        holder.bind(getItem(position), onMovieClick)
+    }
+
+    companion object {
+
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Movie>() {
+            override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean =
+                oldItem.id == newItem.id
+
+            override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean =
+                oldItem == newItem
+        }
+    }
 }

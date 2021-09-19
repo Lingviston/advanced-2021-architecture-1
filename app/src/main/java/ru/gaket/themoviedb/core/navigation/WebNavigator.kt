@@ -9,7 +9,8 @@ import ru.gaket.themoviedb.di.BrowseMovieBaseUrlQualifier
 import javax.inject.Inject
 
 interface WebNavigator {
-	fun navigateTo(movieId: Int): Boolean
+
+    fun navigateTo(movieId: Int): Boolean
 }
 
 /**
@@ -17,25 +18,25 @@ interface WebNavigator {
  */
 class WebNavigatorImpl @Inject constructor(
 	@ApplicationContext private val context: Context,
-	@BrowseMovieBaseUrlQualifier private val browseMovieUrl: String
+	@BrowseMovieBaseUrlQualifier private val browseMovieUrl: String,
 ) : WebNavigator {
 
-	/**
-	 * Open a browser for a given url
-	 *
-	 * @return [true] if navigation succeded, [false] otherwise
-	 */
-	override fun navigateTo(movieId: Int): Boolean {
-		val browserIntent = Intent(
-			Intent.ACTION_VIEW,
-			Uri.parse("${browseMovieUrl}${movieId}")
-		)
-		browserIntent.flags = browserIntent.flags or Intent.FLAG_ACTIVITY_NEW_TASK
-		return try {
-			context.startActivity(browserIntent)
-			true
-		} catch (e: ActivityNotFoundException) {
-			false
-		}
-	}
+    /**
+     * Open a browser for a given url
+     *
+     * @return [true] if navigation succeded, [false] otherwise
+     */
+    override fun navigateTo(movieId: Int): Boolean {
+        val browserIntent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse("${browseMovieUrl}${movieId}")
+        )
+        browserIntent.flags = browserIntent.flags or Intent.FLAG_ACTIVITY_NEW_TASK
+        return try {
+            context.startActivity(browserIntent)
+            true
+        } catch (e: ActivityNotFoundException) {
+            false
+        }
+    }
 }

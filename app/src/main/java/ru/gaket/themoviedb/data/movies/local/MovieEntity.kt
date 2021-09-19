@@ -6,5 +6,5 @@ package ru.gaket.themoviedb.data.movies.local
 data class MovieEntity(
 	val id: Int,
 	val name: String,
-	val thumbnail: String?
+	val thumbnail: String?,
 )
