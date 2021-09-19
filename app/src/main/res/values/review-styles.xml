@@ -5,4 +5,6 @@
 
     <style name="ReviewEditText" />
 
+    <style name="ReviewSubmitButton" />
+
 </resources>
