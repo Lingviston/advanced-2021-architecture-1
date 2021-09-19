@@ -33,40 +33,37 @@ class MoviesViewModel @Inject constructor(
     val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
 
     @FlowPreview
-    private val _searchResult = queryChannel
-        .asFlow()
+    private val _searchResult = queryChannel.asFlow()
         .debounce(500)
-        .onEach {
-            _searchState.value = Loading
-        }
-        .mapLatest { query ->
-            if (query.isEmpty()) {
-                EmptyQuery
-            } else {
-                try {
-                    val result = moviesInteractor.searchMovies(query)
-                    when {
-                        result == null -> ErrorResult(IllegalArgumentException("Search movies from server error"))
-                        result.isEmpty() -> EmptyResult
-                        else -> ValidResult(result)
-                    }
-                } catch (e: Throwable) {
-                    if (e is CancellationException) {
-                        throw e
-                    } else {
-                        Timber.w(e)
-                        ErrorResult(e)
-                    }
-                }
-            }
-        }
-        .onEach {
-            _searchState.value = Ready
-        }
+        .onEach { _searchState.value = Loading }
+        .mapLatest { onNewQuery(it) }
+        .onEach { _searchState.value = Ready }
         .catch { emit(TerminalError) }
         .asLiveData(viewModelScope.coroutineContext)
 
     @FlowPreview
     val searchResult: LiveData<MoviesResult>
         get() = _searchResult
+
+    private suspend fun onNewQuery(query: String): MoviesResult {
+        return if (query.isEmpty()) {
+            EmptyQuery
+        } else {
+            try {
+                val result = moviesInteractor.searchMovies(query)
+                when {
+                    result == null -> ErrorResult(IllegalArgumentException("Search movies from server error"))
+                    result.isEmpty() -> EmptyResult
+                    else -> ValidResult(result)
+                }
+            } catch (e: Throwable) {
+                if (e is CancellationException) {
+                    throw e
+                } else {
+                    Timber.w(e)
+                    ErrorResult(e)
+                }
+            }
+        }
+    }
 }

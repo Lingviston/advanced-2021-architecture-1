@@ -7,6 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import ru.gaket.themoviedb.data.genres.remote.GenresApi
 import ru.gaket.themoviedb.data.movies.remote.MoviesApi
 import ru.gaket.themoviedb.di.BaseUrlQualifier
+import ru.gaket.themoviedb.di.TheMovieDbApiKey
 import javax.inject.Inject
 
 interface MoviesHttpClient {
@@ -16,16 +17,12 @@ interface MoviesHttpClient {
 }
 
 class MoviesHttpClientImpl @Inject constructor(
-	@BaseUrlQualifier private val baseUrl: String,
+    @TheMovieDbApiKey private val apiKey: String,
+    @BaseUrlQualifier private val baseUrl: String,
 ) : MoviesHttpClient {
 
-    // If you decide to play with this app more than a few times,
-    // please, create your own api key, so this one does not get banned:
-    // https://www.themoviedb.org/documentation/api
-    private val apiKey = "c058d9a291e7f1dd69f97f1afac69b61"
-
     private val client = OkHttpClient.Builder()
-        .addInterceptor(QueryInterceptorI(hashMapOf("api_key" to apiKey)))
+        .addInterceptor(QueryInterceptor(hashMapOf("api_key" to apiKey)))
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
         .build()
 

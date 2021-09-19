@@ -29,5 +29,4 @@ fun MovieEntity.toModel() = Movie(
     thumbnail = thumbnail,
     hasReview = hasReview,
     reviewId = reviewId,
-    isUpdatedFromServer = isUpdatedFromServer,
 )

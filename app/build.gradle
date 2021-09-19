@@ -11,6 +11,9 @@ kapt {
 android {
     compileSdk 30
 
+    def apikeyPropertiesFile = rootProject.file("apikey.properties")
+    def apikeyProperties = new Properties()
+    apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
     defaultConfig {
         applicationId "ru.gaket.themoviedb"
         minSdk 21
@@ -19,6 +22,8 @@ android {
         versionName "1.1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "THE_MOVIE_DB_API_KEY", apikeyProperties['THE_MOVIE_DB_API_KEY'])
     }
 
     buildTypes {
@@ -34,15 +39,19 @@ android {
             dimension "serverType"
             buildConfigField "String", "BASE_URL", "\"https://api.themoviedb.org/3/\""
         }
+        predprod {
+            dimension "serverType"
+            // Sample case. Const with the same name can have different value in another BuildVariant
+            buildConfigField "String", "BASE_URL", "\"https://api.themoviedb.org/3/\""
+        }
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = "1.8"
+    variantFilter { variant ->
+        def buildType = variant.buildType.name
+        def flavor = variant.flavors*.name
+        if (buildType == "release" && flavor.contains("predprod")) {
+            setIgnore(true)
+        }
     }
 
     buildFeatures {

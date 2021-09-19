@@ -21,40 +21,40 @@ import ru.gaket.themoviedb.domain.movies.MoviesInteractorImpl
 
 @Module
 @InstallIn(ViewModelComponent::class)
-abstract class ViewModule {
+interface ViewModule {
 
     @Binds
-    abstract fun bindMoviesRemoteDataSource(
+    fun bindMoviesRemoteDataSource(
         impl: MoviesRemoteDataSourceImpl,
     ): MoviesRemoteDataSource
 
     @Binds
-    abstract fun bindMoviesLocalDataSource(
+    fun bindMoviesLocalDataSource(
         impl: MoviesLocalDataSourceImpl,
     ): MoviesLocalDataSource
 
     @Binds
-    abstract fun bindMoviesRepository(
+    fun bindMoviesRepository(
         impl: MoviesRepositoryImpl,
     ): MoviesRepository
 
     @Binds
-    abstract fun bindMoviesInteractor(
+    fun bindMoviesInteractor(
         impl: MoviesInteractorImpl,
     ): MoviesInteractor
 
     @Binds
-    abstract fun bindGenresRemoteDataSource(
+    fun bindGenresRemoteDataSource(
         impl: GenresRemoteDataSourceImpl,
     ): GenresRemoteDataSource
 
     @Binds
-    abstract fun bindGenresLocalDataSource(
+    fun bindGenresLocalDataSource(
         impl: GenresLocalDataSourceImpl,
     ): GenresLocalDataSource
 
     @Binds
-    abstract fun bindGenresRepository(
+    fun bindGenresRepository(
         impl: GenresRepositoryImpl,
     ): GenresRepository
 }

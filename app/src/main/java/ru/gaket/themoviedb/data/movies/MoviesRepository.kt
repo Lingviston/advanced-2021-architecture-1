@@ -9,7 +9,20 @@ import javax.inject.Inject
 
 interface MoviesRepository {
 
+    /**
+     * Search [SearchMovieEntity]s for the given [query] string
+     *
+     * @return List of [SearchMovieEntity], null as error, or empty list.
+     * No Throwable.
+     */
     suspend fun searchMovies(query: String, page: Int): List<SearchMovieEntity>?
+
+    /**
+     * Get [MovieEntity] by movieId
+     *
+     * @return List of [SearchMovieEntity], null as error, or empty list.
+     * No Throwable.
+     */
     suspend fun getMovieDetails(id: Int): MovieEntity?
 }
 
@@ -22,18 +35,12 @@ class MoviesRepositoryImpl @Inject constructor(
     @BaseImageUrlQualifier private val baseImageUrl: String,
 ) : MoviesRepository {
 
-    /**
-     * Search [SearchMovieEntity]s for the given [query] string
-     */
     override suspend fun searchMovies(query: String, page: Int): List<SearchMovieEntity>? {
         return remoteDataSource.searchMovies(query, page)
             ?.map { it.toEntity(baseImageUrl) }
             ?.apply { localDataSource.insertAll(this) }
     }
 
-    /**
-     * Get [MovieEntity] by movieId
-     */
     override suspend fun getMovieDetails(id: Int): MovieEntity? {
         val cachedMovie = localDataSource.getById(id)
         return if (cachedMovie?.isUpdatedFromServer == true) {

@@ -11,7 +11,7 @@ data class Movie(
     val allowedAge: String = "",
     val rating: Int = 0,
     val reviewsCounter: Int = 0,
-    val popularity: Float = 0.00f,
+    val popularity: Float = 0.0f,
     val releaseDate: String = "",
     val duration: Int = 0,
     val budget: Int = 0,
@@ -22,5 +22,4 @@ data class Movie(
     val thumbnail: String = "",
     val hasReview: Boolean = false,
     val reviewId: Int = 0,
-    val isUpdatedFromServer: Boolean,
 )

@@ -13,18 +13,18 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class DatabaseModule {
+interface DatabaseModule {
 
     @Binds
     @Singleton
-    abstract fun bindMoviesDbClient(
-		impl: MoviesDbClientImpl,
-	): MoviesDbClient
+    fun bindMoviesDbClient(
+        impl: MoviesDbClientImpl,
+    ): MoviesDbClient
 }
 
 @Module
 @InstallIn(SingletonComponent::class)
-class DaoWrapperModule {
+object DaoWrapperModule {
 
     @Provides
     @Singleton

@@ -9,6 +9,8 @@ import javax.inject.Inject
 
 /**
  * Class responsible for the application navigation
+ *
+ * Can't inject this router into ViewModel: [https://github.com/google/dagger/issues/2698]
  */
 interface Navigator {
 

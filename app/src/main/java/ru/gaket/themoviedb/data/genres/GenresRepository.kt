@@ -8,19 +8,21 @@ import javax.inject.Inject
 interface GenresRepository {
 
     /**
-     * @return List<GenreEntity>, null as error or empty list
+     * @return List of [GenreEntity], null as error, or empty list.
+     * No Throwable.
      */
     suspend fun getGenres(forceRefresh: Boolean): List<GenreEntity>?
 
     /**
-     * @return List<GenreEntity>, null as error or empty list
+     * @return List of [GenreEntity], null as error, or empty list.
+     * No Throwable.
      */
     suspend fun getGenresByIds(forceRefresh: Boolean, ids: List<Int>): List<GenreEntity>?
 }
 
 class GenresRepositoryImpl @Inject constructor(
-	private val remoteDataSource: GenresRemoteDataSource,
-	private val localDataSource: GenresLocalDataSource,
+    private val remoteDataSource: GenresRemoteDataSource,
+    private val localDataSource: GenresLocalDataSource,
 ) : GenresRepository {
 
     override suspend fun getGenres(forceRefresh: Boolean): List<GenreEntity>? {

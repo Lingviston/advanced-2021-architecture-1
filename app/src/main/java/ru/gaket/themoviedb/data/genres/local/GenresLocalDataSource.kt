@@ -17,7 +17,7 @@ class GenresLocalDataSourceImpl @Inject constructor(
     private val genresDao: GenresDao,
 ) : GenresLocalDataSource {
 
-    override suspend fun hasData(): Boolean = genresDao.hasData() > 0
+    override suspend fun hasData(): Boolean = genresDao.genresCount() > 0
 
     override suspend fun getGenres(): List<GenreEntity> = genresDao.getAll()
 

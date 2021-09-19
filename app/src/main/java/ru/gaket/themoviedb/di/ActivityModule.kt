@@ -9,10 +9,10 @@ import ru.gaket.themoviedb.core.navigation.NavigatorImpl
 
 @Module
 @InstallIn(ActivityComponent::class)
-abstract class ActivityModule {
+interface ActivityModule {
 
     @Binds
-    abstract fun provideNavigator(
+    fun provideNavigator(
         impl: NavigatorImpl,
     ): Navigator
 }

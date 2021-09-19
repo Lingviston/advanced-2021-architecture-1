@@ -5,7 +5,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import ru.gaket.themoviedb.BuildConfig
+import ru.gaket.themoviedb.core.BuildConfigProvider
 import ru.gaket.themoviedb.data.core.network.MoviesHttpClient
 import ru.gaket.themoviedb.data.core.network.MoviesHttpClientImpl
 import ru.gaket.themoviedb.data.genres.remote.GenresApi
@@ -15,18 +15,18 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class NetworkModule {
+interface NetworkModule {
 
     @Binds
     @Singleton
-    abstract fun bindMovieDbClient(
-		impl: MoviesHttpClientImpl,
-	): MoviesHttpClient
+    fun bindMovieDbClient(
+        impl: MoviesHttpClientImpl,
+    ): MoviesHttpClient
 }
 
 @Module
 @InstallIn(SingletonComponent::class)
-class ApiWrapperModule {
+object ApiWrapperModule {
 
     @Provides
     @Singleton
@@ -39,12 +39,17 @@ class ApiWrapperModule {
 
 @Module
 @InstallIn(SingletonComponent::class)
-class BaseUrlWrapperModule {
+object BaseUrlWrapperModule {
+
+    @Provides
+    @Singleton
+    @TheMovieDbApiKey
+    fun provideApiKey(buildConfig: BuildConfigProvider) = buildConfig.apiKey
 
     @Provides
     @Singleton
     @BaseUrlQualifier
-    fun provideBaseUrl() = BuildConfig.BASE_URL
+    fun provideBaseUrl(buildConfig: BuildConfigProvider) = buildConfig.baseUrl
 
     @Provides
     @Singleton
@@ -55,6 +60,10 @@ class BaseUrlWrapperModule {
     @BrowseMovieBaseUrlQualifier
     fun provideBrowseMovieBaseUrl() = "https://www.themoviedb.org/movie/"
 }
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class TheMovieDbApiKey
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)

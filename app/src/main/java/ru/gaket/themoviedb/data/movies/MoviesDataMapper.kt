@@ -52,7 +52,7 @@ private fun normalizedRating(rating: Float): Int {
 }
 
 private fun normalizedPopularity(popularity: Float): Float {
-    return (popularity * 100).toInt().toFloat() / 100
+    return "%.2f".format(popularity).toFloat()
 }
 
 private fun genresAsString(genres: List<GenreDto>) =

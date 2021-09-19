@@ -13,7 +13,7 @@ import javax.inject.Inject
  */
 interface WebNavigator {
 
-    fun navigateTo(movieId: Int): Boolean
+    fun navigateTo(movieId: Int)
 }
 
 class WebNavigatorImpl @Inject constructor(
@@ -23,10 +23,8 @@ class WebNavigatorImpl @Inject constructor(
 
     /**
      * Open a browser for a given url
-     *
-     * @return [true] if navigation succeded, [false] otherwise
      */
-    override fun navigateTo(movieId: Int): Boolean {
+    override fun navigateTo(movieId: Int) {
         val browserIntent = Intent(
             Intent.ACTION_VIEW,
             Uri.parse("${browseMovieUrl}${movieId}")
@@ -34,9 +32,7 @@ class WebNavigatorImpl @Inject constructor(
         browserIntent.flags = browserIntent.flags or Intent.FLAG_ACTIVITY_NEW_TASK
         return try {
             context.startActivity(browserIntent)
-            true
         } catch (e: ActivityNotFoundException) {
-            false
         }
     }
 }

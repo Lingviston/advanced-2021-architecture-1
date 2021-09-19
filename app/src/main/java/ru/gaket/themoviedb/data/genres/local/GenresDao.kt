@@ -9,7 +9,7 @@ import androidx.room.Query
 interface GenresDao {
 
     @Query("SELECT COUNT(id) FROM genres")
-    suspend fun hasData(): Int
+    suspend fun genresCount(): Int
 
     @Query("SELECT * FROM genres")
     suspend fun getAll(): List<GenreEntity>

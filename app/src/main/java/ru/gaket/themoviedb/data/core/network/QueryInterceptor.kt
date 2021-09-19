@@ -3,7 +3,7 @@ package ru.gaket.themoviedb.data.core.network
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class QueryInterceptorI(private val args: HashMap<String, String>) : Interceptor {
+class QueryInterceptor(private val args: HashMap<String, String>) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
