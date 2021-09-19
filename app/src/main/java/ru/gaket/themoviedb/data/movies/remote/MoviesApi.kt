@@ -1,4 +1,4 @@
-package ru.gaket.themoviedb.data.movies.network
+package ru.gaket.themoviedb.data.movies.remote
 
 import retrofit2.http.GET
 import retrofit2.http.Query

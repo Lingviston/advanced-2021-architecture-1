@@ -8,7 +8,7 @@ import dagger.hilt.components.SingletonComponent
 import ru.gaket.themoviedb.BuildConfig
 import ru.gaket.themoviedb.data.core.network.MoviesDbClient
 import ru.gaket.themoviedb.data.core.network.MoviesDbClientImpl
-import ru.gaket.themoviedb.data.movies.network.MoviesApi
+import ru.gaket.themoviedb.data.movies.remote.MoviesApi
 import javax.inject.Qualifier
 
 @Module

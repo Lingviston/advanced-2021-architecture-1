@@ -5,7 +5,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.gaket.themoviedb.di.BaseUrlQualifier
-import ru.gaket.themoviedb.data.movies.network.MoviesApi
+import ru.gaket.themoviedb.data.movies.remote.MoviesApi
 import javax.inject.Inject
 
 interface MoviesDbClient {

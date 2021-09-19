@@ -1,6 +1,6 @@
 package ru.gaket.themoviedb.domain.movies
 
-import ru.gaket.themoviedb.data.movies.db.MovieEntity
+import ru.gaket.themoviedb.data.movies.local.MovieEntity
 
 fun MovieEntity.toModel() = Movie(
 	id = id,

@@ -4,8 +4,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import ru.gaket.themoviedb.di.BaseImageUrlQualifier
-import ru.gaket.themoviedb.data.movies.db.MovieEntity
-import ru.gaket.themoviedb.data.movies.network.MoviesApi
+import ru.gaket.themoviedb.data.movies.local.MovieEntity
+import ru.gaket.themoviedb.data.movies.remote.MoviesApi
 import timber.log.Timber
 import javax.inject.Inject
 

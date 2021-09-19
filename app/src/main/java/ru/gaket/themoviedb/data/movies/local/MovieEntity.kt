@@ -1,4 +1,4 @@
-package ru.gaket.themoviedb.data.movies.db
+package ru.gaket.themoviedb.data.movies.local
 
 /**
  * DB class of Movies stored in room

@@ -1,4 +1,4 @@
-package ru.gaket.themoviedb.data.movies.network
+package ru.gaket.themoviedb.data.movies.remote
 
 import com.google.gson.annotations.SerializedName
 
