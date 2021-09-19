@@ -8,17 +8,17 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import ru.gaket.themoviedb.di.BrowseMovieBaseUrlQualifier
 import javax.inject.Inject
 
+/**
+ * Class responsible for the browser navigation
+ */
 interface WebNavigator {
 
     fun navigateTo(movieId: Int): Boolean
 }
 
-/**
- * Class responsible for the navigation
- */
 class WebNavigatorImpl @Inject constructor(
-	@ApplicationContext private val context: Context,
-	@BrowseMovieBaseUrlQualifier private val browseMovieUrl: String,
+    @ApplicationContext private val context: Context,
+    @BrowseMovieBaseUrlQualifier private val browseMovieUrl: String,
 ) : WebNavigator {
 
     /**

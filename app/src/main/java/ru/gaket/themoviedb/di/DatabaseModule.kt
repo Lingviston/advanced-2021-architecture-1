@@ -17,7 +17,7 @@ abstract class DatabaseModule {
 
     @Binds
     @Singleton
-    abstract fun bindMoviesDb(
+    abstract fun bindMoviesDbClient(
 		impl: MoviesDbClientImpl,
 	): MoviesDbClient
 }
@@ -27,8 +27,10 @@ abstract class DatabaseModule {
 class DaoWrapperModule {
 
     @Provides
+    @Singleton
     fun provideGenresDao(client: MoviesDbClient): GenresDao = client.genresDao()
 
     @Provides
+    @Singleton
     fun provideMoviesDao(client: MoviesDbClient): MoviesDao = client.moviesDao()
 }

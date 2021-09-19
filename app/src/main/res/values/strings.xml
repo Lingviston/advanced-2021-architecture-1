@@ -7,4 +7,7 @@
     <string name="content_cinema_poster">Cinema poster</string>
     <string name="hint_search_query">Enter search query…</string>
     <string name="search_icon">Search icon</string>
+
+    <string name="movie_details_title">Movie: %1$d, %2$s</string>
+    <string name="movie_details_back_btn">back</string>
 </resources>

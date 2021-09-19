@@ -29,9 +29,11 @@ abstract class NetworkModule {
 class ApiWrapperModule {
 
     @Provides
+    @Singleton
     fun provideMoviesApi(client: MoviesHttpClient): MoviesApi = client.moviesApi()
 
     @Provides
+    @Singleton
     fun provideGenresApi(client: MoviesHttpClient): GenresApi = client.genresApi()
 }
 

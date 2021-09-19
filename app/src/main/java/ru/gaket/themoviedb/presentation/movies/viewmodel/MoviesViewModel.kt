@@ -15,24 +15,16 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
-import ru.gaket.themoviedb.core.navigation.WebNavigator
-import ru.gaket.themoviedb.domain.movies.models.SearchMovie
 import ru.gaket.themoviedb.domain.movies.MoviesInteractor
 import timber.log.Timber
-import java.lang.IllegalArgumentException
 import java.util.concurrent.CancellationException
 import javax.inject.Inject
 
 @HiltViewModel
 class MoviesViewModel @Inject constructor(
-	private val moviesInteractor: MoviesInteractor,
-	private val webNavigator: WebNavigator,
-	private val savedStateHandle: SavedStateHandle,
+    private val moviesInteractor: MoviesInteractor,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-
-    private var _argsTestValue = MutableLiveData<Int>()
-    val argsTestValue: LiveData<Int>
-        get() = _argsTestValue
 
     private val _searchState = MutableLiveData<SearchState>()
     val searchState: LiveData<SearchState>
@@ -77,12 +69,4 @@ class MoviesViewModel @Inject constructor(
     @FlowPreview
     val searchResult: LiveData<MoviesResult>
         get() = _searchResult
-
-    init {
-        _argsTestValue.value = savedStateHandle.get<Int>("ARG_TEST_VALUE") ?: -1
-    }
-
-    fun onMovieAction(searchMovie: SearchMovie) {
-        webNavigator.navigateTo(searchMovie.id)
-    }
 }

@@ -15,7 +15,9 @@ import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_DRAGGING
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.R
+import ru.gaket.themoviedb.core.navigation.MovieDetailsScreen
 import ru.gaket.themoviedb.databinding.MoviesFragmentBinding
+import ru.gaket.themoviedb.presentation.core.BaseFragment
 import ru.gaket.themoviedb.presentation.movies.viewmodel.EmptyQuery
 import ru.gaket.themoviedb.presentation.movies.viewmodel.EmptyResult
 import ru.gaket.themoviedb.presentation.movies.viewmodel.ErrorResult
@@ -31,7 +33,7 @@ import ru.gaket.themoviedb.util.hideKeyboard
 import timber.log.Timber
 
 @AndroidEntryPoint
-class MoviesFragment : Fragment() {
+class MoviesFragment : BaseFragment() {
 
     private val viewModel: MoviesViewModel by viewModels()
 
@@ -40,9 +42,9 @@ class MoviesFragment : Fragment() {
     private lateinit var moviesAdapter: MoviesAdapter
 
     override fun onCreateView(
-		inflater: LayoutInflater, container: ViewGroup?,
-		savedInstanceState: Bundle?,
-	): View {
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
         binding = MoviesFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -56,7 +58,7 @@ class MoviesFragment : Fragment() {
                 else -> 2
             }
             layoutManager = GridLayoutManager(activity, spanCount)
-            moviesAdapter = MoviesAdapter { viewModel.onMovieAction(it) }
+            moviesAdapter = MoviesAdapter { navigateTo(MovieDetailsScreen(it.id, it.title)) }
             adapter = moviesAdapter
             addItemDecoration(
                 GridSpacingItemDecoration(
@@ -88,10 +90,6 @@ class MoviesFragment : Fragment() {
 
         viewModel.searchResult.observe(viewLifecycleOwner, { handleMoviesList(it) })
         viewModel.searchState.observe(viewLifecycleOwner, { handleLoadingState(it) })
-        viewModel.argsTestValue.observe(
-            viewLifecycleOwner,
-            { Toast.makeText(context, "Example save args:$it", Toast.LENGTH_SHORT).show() }
-        )
     }
 
     private fun handleLoadingState(it: SearchState) {
@@ -147,8 +145,6 @@ class MoviesFragment : Fragment() {
 
     companion object {
 
-        fun newInstance(value: Int) = MoviesFragment().apply {
-            arguments = Bundle().apply { putInt("ARG_TEST_VALUE", value) }
-        }
+        fun create() = MoviesFragment()
     }
 }

@@ -4,19 +4,22 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 import ru.gaket.themoviedb.R
-import ru.gaket.themoviedb.presentation.movies.view.MoviesFragment
+import ru.gaket.themoviedb.core.navigation.MoviesScreen
+import ru.gaket.themoviedb.core.navigation.Navigator
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var navigator: Navigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container, MoviesFragment.newInstance(123))
-                .commitNow()
+            navigator.navigateTo(MoviesScreen())
         }
     }
 }
