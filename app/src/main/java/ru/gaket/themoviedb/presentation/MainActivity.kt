@@ -9,14 +9,13 @@ import ru.gaket.themoviedb.core.navigation.Navigator
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(R.layout.main_activity) {
 
     @Inject
     lateinit var navigator: Navigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.main_activity)
 
         if (savedInstanceState == null) {
             navigator.navigateTo(MoviesScreen())

@@ -22,6 +22,6 @@ class MoviesRemoteDataSourceImpl @Inject constructor(
     override suspend fun getMovieDetails(id: Int) = runCatching {
         moviesApi.getMovieDetails(id)
     }.onFailure {
-        Timber.e("Search movies from server error", it)
+        Timber.e("Search movie from server error", it)
     }.getOrNull()
 }

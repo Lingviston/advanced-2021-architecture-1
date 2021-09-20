@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ru.gaket.themoviedb.core.navigation.WebNavigator
 import ru.gaket.themoviedb.domain.movies.MoviesInteractor
+import ru.gaket.themoviedb.presentation.moviedetails.view.MovieDetailsFragment
+import ru.gaket.themoviedb.presentation.moviedetails.view.MovieDetailsFragment.Companion.ARG_MOVIE_ID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,16 +18,14 @@ class MovieDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    var movieId: Int = -1
-    var title: String = "Empty"
+    private val movieId = savedStateHandle.get<Long>(ARG_MOVIE_ID) ?: -1
+    private val title = savedStateHandle.get<String>(MovieDetailsFragment.ARG_MOVIE_TITLE).orEmpty()
 
     private var _argsState = MutableLiveData<MovieDetailsState>()
     val argsState: LiveData<MovieDetailsState>
         get() = _argsState
 
     init {
-        movieId = savedStateHandle.get<Int>("ARG_MOVIE_ID") ?: -1
-        title = savedStateHandle.get<String>("ARG_MOVIE_TITLE") ?: "Empty"
         _argsState.value = MovieDetailsState(movieId, title)
     }
 

@@ -12,7 +12,7 @@ data class MovieEntity(
 
     @PrimaryKey
     @ColumnInfo(name = "id")
-    val id: Int = 0,
+    val id: Long = 0,
 
     @ColumnInfo(name = "imdb_id")
     val imdbId: String = "",

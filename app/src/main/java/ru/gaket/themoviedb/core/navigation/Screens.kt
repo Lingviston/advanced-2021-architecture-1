@@ -11,13 +11,13 @@ interface Screen {
 
 class MoviesScreen : Screen {
 
-    override fun destination() = MoviesFragment.create()
+    override fun destination() = MoviesFragment.newInstance()
 }
 
 class MovieDetailsScreen(
-    private val movieId: Int,
+    private val movieId: Long,
     private val title: String,
 ) : Screen {
 
-    override fun destination() = MovieDetailsFragment.create(movieId, title)
+    override fun destination() = MovieDetailsFragment.newInstance(movieId, title)
 }

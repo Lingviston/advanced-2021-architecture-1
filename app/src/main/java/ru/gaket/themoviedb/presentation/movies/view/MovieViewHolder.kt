@@ -12,7 +12,7 @@ class MovieViewHolder(
 	private val binding: ItemMovieBinding,
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    val transformation: Transformation
+    private val transformation: Transformation
 
     init {
         val dimension = itemView.resources.getDimension(R.dimen.cornerRad)
@@ -26,6 +26,7 @@ class MovieViewHolder(
         setClickListener(onMovieClick, searchMovie)
     }
 
+    // todo: [Sergey] do we need to set click listener
     private fun setClickListener(
 		onMovieClick: (SearchMovie) -> Unit,
 		searchMovie: SearchMovie,

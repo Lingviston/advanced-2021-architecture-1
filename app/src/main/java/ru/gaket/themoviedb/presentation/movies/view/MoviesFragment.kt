@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_DRAGGING
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import ru.gaket.themoviedb.BuildConfig
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.core.navigation.MovieDetailsScreen
 import ru.gaket.themoviedb.databinding.MoviesFragmentBinding
@@ -78,6 +77,7 @@ class MoviesFragment : BaseFragment() {
         }
 
         if (savedInstanceState == null) {
+            // todo: [Sergey] check if we need this scoping
             lifecycleScope.launch {
                 viewModel.queryChannel.send("")
             }
@@ -88,12 +88,12 @@ class MoviesFragment : BaseFragment() {
             }
         }
 
-        viewModel.searchResult.observe(viewLifecycleOwner, { handleMoviesList(it) })
-        viewModel.searchState.observe(viewLifecycleOwner, { handleLoadingState(it) })
+        viewModel.searchResult.observe(viewLifecycleOwner, ::handleMoviesList)
+        viewModel.searchState.observe(viewLifecycleOwner, ::handleLoadingState)
     }
 
-    private fun handleLoadingState(it: SearchState) {
-        when (it) {
+    private fun handleLoadingState(state: SearchState) {
+        when (state) {
             Loading -> {
                 binding.searchIcon.visibility = View.GONE
                 binding.searchProgress.visibility = View.VISIBLE
@@ -105,19 +105,19 @@ class MoviesFragment : BaseFragment() {
         }
     }
 
-    private fun handleMoviesList(it: MoviesResult) {
-        when (it) {
+    private fun handleMoviesList(state: MoviesResult) {
+        when (state) {
             is ValidResult -> {
                 binding.moviesPlaceholder.visibility = View.GONE
                 binding.moviesList.visibility = View.VISIBLE
-                moviesAdapter.submitList(it.result)
+                moviesAdapter.submitList(state.result)
             }
             is ErrorResult -> {
                 moviesAdapter.submitList(emptyList())
                 binding.moviesPlaceholder.visibility = View.VISIBLE
                 binding.moviesList.visibility = View.GONE
                 binding.moviesPlaceholder.setText(R.string.search_error)
-                Timber.e("Something went wrong.", it.e)
+                Timber.e("Something went wrong.", state.e)
             }
             is EmptyResult -> {
                 moviesAdapter.submitList(emptyList())
@@ -145,6 +145,6 @@ class MoviesFragment : BaseFragment() {
 
     companion object {
 
-        fun create() = MoviesFragment()
+        fun newInstance() = MoviesFragment()
     }
 }

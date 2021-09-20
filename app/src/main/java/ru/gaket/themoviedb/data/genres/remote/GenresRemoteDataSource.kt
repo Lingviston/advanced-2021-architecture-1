@@ -12,6 +12,7 @@ class GenresRemoteDataSourceImpl @Inject constructor(
 	private val genresApi: GenresApi,
 ) : GenresRemoteDataSource {
 
+    // todo: [Sergey] fix onFailure approach
     override suspend fun getGenres() = runCatching {
         genresApi.getGenres()
     }.onFailure {

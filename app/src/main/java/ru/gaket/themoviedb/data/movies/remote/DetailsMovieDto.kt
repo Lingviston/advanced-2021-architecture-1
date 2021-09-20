@@ -8,7 +8,7 @@ import ru.gaket.themoviedb.data.genres.remote.GenreDto
  */
 data class DetailsMovieDto(
     @SerializedName("id")
-    val id: Int = 0,
+    val id: Long = 0,
 
     @SerializedName("imdb_id")
     val imdbId: String = "",

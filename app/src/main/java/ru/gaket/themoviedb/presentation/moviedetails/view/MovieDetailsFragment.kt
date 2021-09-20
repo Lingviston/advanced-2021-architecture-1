@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import ru.gaket.themoviedb.R
@@ -17,6 +18,7 @@ class MovieDetailsFragment : BaseFragment() {
 
     private val viewModel: MovieDetailsViewModel by viewModels()
 
+    // todo: [Sergey] clean up binding in onDestroyView
     lateinit var binding: MovieDetailsFragmentBinding
 
     override fun onCreateView(
@@ -24,6 +26,7 @@ class MovieDetailsFragment : BaseFragment() {
         savedInstanceState: Bundle?,
     ): View {
         binding = MovieDetailsFragmentBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 
@@ -47,11 +50,15 @@ class MovieDetailsFragment : BaseFragment() {
 
     companion object {
 
-        fun create(movieId: Int, title: String) = MovieDetailsFragment().apply {
-            arguments = Bundle().apply {
-                putInt("ARG_MOVIE_ID", movieId)
-                putString("ARG_MOVIE_TITLE", title)
+        const val ARG_MOVIE_ID = "ARG_MOVIE_ID"
+        const val ARG_MOVIE_TITLE = "ARG_MOVIE_TITLE"
+
+        fun newInstance(movieId: Long, title: String) = MovieDetailsFragment()
+            .apply {
+                arguments = bundleOf(
+                    ARG_MOVIE_ID to movieId,
+                    ARG_MOVIE_TITLE to title,
+                )
             }
-        }
     }
 }

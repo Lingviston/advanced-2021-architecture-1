@@ -6,6 +6,7 @@ import ru.gaket.themoviedb.core.navigation.Navigator
 import ru.gaket.themoviedb.core.navigation.Screen
 import javax.inject.Inject
 
+// todo: [Sergey] remove inheritance
 @AndroidEntryPoint
 open class BaseFragment : Fragment() {
 

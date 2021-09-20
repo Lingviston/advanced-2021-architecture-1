@@ -56,7 +56,7 @@ private fun normalizedPopularity(popularity: Float): Float {
 }
 
 private fun genresAsString(genres: List<GenreDto>) =
-    genres.joinToString { it.name }
+    genres.joinToString(transform = GenreDto::name)
 
 private const val AGE_ADULT = "18+"
 private const val AGE_CHILD = "13+"

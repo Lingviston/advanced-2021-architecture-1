@@ -10,7 +10,7 @@ data class SearchMovieEntity(
 
     @PrimaryKey
     @ColumnInfo(name = "id")
-    val id: Int = 0,
+    val id: Long = 0,
 
     @ColumnInfo(name = "title")
     val title: String = "",

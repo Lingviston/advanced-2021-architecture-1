@@ -36,7 +36,7 @@ class MoviesViewModel @Inject constructor(
     private val _searchResult = queryChannel.asFlow()
         .debounce(500)
         .onEach { _searchState.value = Loading }
-        .mapLatest { onNewQuery(it) }
+        .mapLatest(::onNewQuery)
         .onEach { _searchState.value = Ready }
         .catch { emit(TerminalError) }
         .asLiveData(viewModelScope.coroutineContext)

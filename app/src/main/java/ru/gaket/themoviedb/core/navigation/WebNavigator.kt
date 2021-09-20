@@ -13,7 +13,7 @@ import javax.inject.Inject
  */
 interface WebNavigator {
 
-    fun navigateTo(movieId: Int)
+    fun navigateTo(movieId: Long)
 }
 
 class WebNavigatorImpl @Inject constructor(
@@ -24,7 +24,7 @@ class WebNavigatorImpl @Inject constructor(
     /**
      * Open a browser for a given url
      */
-    override fun navigateTo(movieId: Int) {
+    override fun navigateTo(movieId: Long) {
         val browserIntent = Intent(
             Intent.ACTION_VIEW,
             Uri.parse("${browseMovieUrl}${movieId}")

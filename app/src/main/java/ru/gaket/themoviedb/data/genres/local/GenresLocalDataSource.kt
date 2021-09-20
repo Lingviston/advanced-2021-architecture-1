@@ -2,6 +2,7 @@ package ru.gaket.themoviedb.data.genres.local
 
 import javax.inject.Inject
 
+// todo: [pash] discuss this need
 interface GenresLocalDataSource {
 
     suspend fun hasData(): Boolean

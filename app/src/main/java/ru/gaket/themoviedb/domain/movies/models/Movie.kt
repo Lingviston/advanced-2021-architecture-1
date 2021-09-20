@@ -4,7 +4,7 @@ package ru.gaket.themoviedb.domain.movies.models
  * Business class of detailed Movies
  */
 data class Movie(
-    val id: Int = 0,
+    val id: Long = 0,
     val imdbId: String = "",
     val title: String = "",
     val overview: String = "",

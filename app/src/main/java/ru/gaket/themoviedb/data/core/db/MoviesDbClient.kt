@@ -17,6 +17,8 @@ class MoviesDbClientImpl @Inject constructor(
     @ApplicationContext private val context: Context,
 ) : MoviesDbClient {
 
+
+    // todo: [Sergey] move to constants
     private val database = Room.databaseBuilder(
         context,
         MoviesDb::class.java,

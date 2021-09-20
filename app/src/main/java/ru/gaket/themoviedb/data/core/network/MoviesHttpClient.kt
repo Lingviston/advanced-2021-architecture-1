@@ -12,13 +12,14 @@ import javax.inject.Inject
 
 interface MoviesHttpClient {
 
+    // todo: [Sergey] migrate to property
     fun moviesApi(): MoviesApi
     fun genresApi(): GenresApi
 }
 
 class MoviesHttpClientImpl @Inject constructor(
-    @TheMovieDbApiKey private val apiKey: String,
-    @BaseUrlQualifier private val baseUrl: String,
+    @TheMovieDbApiKey apiKey: String,
+    @BaseUrlQualifier baseUrl: String,
 ) : MoviesHttpClient {
 
     private val client = OkHttpClient.Builder()
