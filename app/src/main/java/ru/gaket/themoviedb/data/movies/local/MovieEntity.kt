@@ -3,6 +3,7 @@ package ru.gaket.themoviedb.data.movies.local
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import ru.gaket.themoviedb.domain.movies.models.MovieId
 
 /**
  * DB class of detailed Movie stored in room
@@ -12,10 +13,10 @@ data class MovieEntity(
 
     @PrimaryKey
     @ColumnInfo(name = "id")
-    val id: Long = 0,
+    val id: MovieId = 0,
 
     @ColumnInfo(name = "imdb_id")
-    val imdbId: String = "",
+    val imdbId: String? = "",
 
     @ColumnInfo(name = "title")
     val title: String = "",

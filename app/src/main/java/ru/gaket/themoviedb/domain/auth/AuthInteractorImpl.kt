@@ -18,10 +18,10 @@ class AuthInteractorImpl @Inject constructor(
         password: User.Password
     ): VoidOperationResult<LogInError> =
         authRepository.auth(email, password)
-            .doOnSuccess { syncLocalStorageUseCase.fill() }
+            .doOnSuccess { syncLocalStorageUseCase.sync() }
 
     override suspend fun logOut() {
         authRepository.logOut()
-        syncLocalStorageUseCase.clear()
+        syncLocalStorageUseCase.unSync()
     }
 }

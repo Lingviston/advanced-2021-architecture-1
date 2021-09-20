@@ -1,4 +1,4 @@
-package ru.gaket.themoviedb.data.movies.local
+package ru.gaket.themoviedb.data.review.local
 
 import androidx.room.TypeConverter
 import ru.gaket.themoviedb.domain.review.Rating

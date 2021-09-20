@@ -5,27 +5,25 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import androidx.room.Update
+import ru.gaket.themoviedb.domain.movies.models.MovieId
 
 @Dao
 interface MoviesDao {
 
     @Query("SELECT * FROM movies WHERE id=:id LIMIT 1")
-    suspend fun getById(id: Int): MovieEntity?
+    suspend fun getById(id: MovieId): MovieEntity?
 
+    @Transaction
     @Insert(entity = MovieEntity::class, onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(searchedMovies: List<SearchMovieEntity>)
 
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun update(movie: MovieEntity)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(movie: MovieEntity)
 
+    @Transaction
     @Query("DELETE FROM movies")
     suspend fun deleteAll()
 
     @Query("DELETE FROM movies WHERE id=:id")
     suspend fun deleteById(id: Int)
-
-    @Transaction
-    @Query("SELECT * FROM movies")
-    suspend fun getMoviesWithMyReviews(): List<MovieWithMyReview>
 }

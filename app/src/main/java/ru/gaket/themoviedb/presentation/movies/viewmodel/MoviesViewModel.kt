@@ -2,7 +2,6 @@ package ru.gaket.themoviedb.presentation.movies.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -23,7 +22,6 @@ import javax.inject.Inject
 @HiltViewModel
 class MoviesViewModel @Inject constructor(
     private val moviesInteractor: MoviesInteractor,
-    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val _searchState = MutableLiveData<SearchState>()

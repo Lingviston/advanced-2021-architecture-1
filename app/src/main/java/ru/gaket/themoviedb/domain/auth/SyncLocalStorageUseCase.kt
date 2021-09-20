@@ -2,7 +2,7 @@ package ru.gaket.themoviedb.domain.auth
 
 interface SyncLocalStorageUseCase {
 
-    suspend fun fill()
+    suspend fun sync()
 
-    suspend fun clear()
+    suspend fun unSync()
 }

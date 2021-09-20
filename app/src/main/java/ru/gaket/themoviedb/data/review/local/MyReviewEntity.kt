@@ -1,9 +1,9 @@
-package ru.gaket.themoviedb.data.movies.local
+package ru.gaket.themoviedb.data.review.local
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import ru.gaket.themoviedb.domain.review.MovieId
+import ru.gaket.themoviedb.domain.movies.models.MovieId
 import ru.gaket.themoviedb.domain.review.MyReview
 import ru.gaket.themoviedb.domain.review.Rating
 import ru.gaket.themoviedb.domain.review.Review
@@ -38,7 +38,7 @@ data class MyReviewEntity(
     }
 }
 
-internal fun MyReviewEntity.toMyReview(): MyReview =
+internal fun MyReviewEntity.toModel(): MyReview =
     MyReview(
         movieId = this.reviewMovieId,
         review = Review(
@@ -49,7 +49,7 @@ internal fun MyReviewEntity.toMyReview(): MyReview =
         )
     )
 
-internal fun MyReview.toMyReviewEntity(): MyReviewEntity =
+internal fun MyReview.toEntity(): MyReviewEntity =
     MyReviewEntity(
         reviewMovieId = this.movieId,
         reviewId = this.review.id.value,

@@ -2,10 +2,10 @@ package ru.gaket.themoviedb.data.review.remote
 
 import com.google.firebase.firestore.FirebaseFirestore
 import ru.gaket.themoviedb.domain.auth.User
+import ru.gaket.themoviedb.domain.movies.models.MovieId
 import ru.gaket.themoviedb.domain.review.AddReviewRequest
-import ru.gaket.themoviedb.domain.review.MovieId
 import ru.gaket.themoviedb.domain.review.MyReview
-import ru.gaket.themoviedb.domain.review.SomeoneElseReview
+import ru.gaket.themoviedb.domain.review.SomeoneReview
 import ru.gaket.themoviedb.util.OperationResult
 import ru.gaket.themoviedb.util.awaitTask
 import ru.gaket.themoviedb.util.mapSuccess
@@ -15,7 +15,7 @@ class ReviewsRemoteDataSourceImpl @Inject constructor() : ReviewsRemoteDataSourc
 
     private val firebaseFirestore: FirebaseFirestore get() = FirebaseFirestore.getInstance()
 
-    override suspend fun getAllMyReviews(userId: User.Id): OperationResult<List<MyReview>, Throwable> =
+    override suspend fun getMyReviews(userId: User.Id): OperationResult<List<MyReview>, Throwable> =
         firebaseFirestore.collectionGroup(REVIEWS_COLLECTION)
             .whereEqualTo(AUTHOR_ID, userId.value)
             .get()
@@ -25,7 +25,7 @@ class ReviewsRemoteDataSourceImpl @Inject constructor() : ReviewsRemoteDataSourc
                     .mapNotNull { reviewDoc -> reviewDoc.toMyReview() }
             }
 
-    override suspend fun getAllReviewsFor(movieId: MovieId): OperationResult<List<SomeoneElseReview>, Throwable> =
+    override suspend fun getMovieReviews(movieId: MovieId): OperationResult<List<SomeoneReview>, Throwable> =
         firebaseFirestore.collection(MOVIES_COLLECTION)
             .document(movieId.toString())
             .collection(REVIEWS_COLLECTION)
@@ -33,7 +33,7 @@ class ReviewsRemoteDataSourceImpl @Inject constructor() : ReviewsRemoteDataSourc
             .awaitTask()
             .mapSuccess { querySnapshot ->
                 querySnapshot.documents
-                    .mapNotNull { reviewDoc -> reviewDoc.toSomeoneElseReview() }
+                    .mapNotNull { reviewDoc -> reviewDoc.toSomeoneReview() }
             }
 
     override suspend fun addReview(

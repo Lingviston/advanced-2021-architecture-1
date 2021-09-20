@@ -33,13 +33,13 @@ class AuthFragment : Fragment(R.layout.auth_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding?.emailInput?.clearErrorOnAnyInput()
-        binding?.passwordInput?.clearErrorOnAnyInput()
+        binding.emailInput.clearErrorOnAnyInput()
+        binding.passwordInput.clearErrorOnAnyInput()
 
-        binding?.authBtn?.setOnClickListener {
+        binding.authBtn?.setOnClickListener {
             viewModel.auth(
-                email = binding?.emailInput.getTrimmedText(),
-                password = binding?.passwordInput.getTrimmedText()
+                email = binding.emailInput.getTrimmedText(),
+                password = binding.passwordInput.getTrimmedText()
             )
         }
 
@@ -49,8 +49,8 @@ class AuthFragment : Fragment(R.layout.auth_fragment) {
     private fun handleState(state: AuthState) {
         val isAuthorizing = (state is AuthState.Authorizing)
 
-        binding?.authBtn?.isEnabled = !isAuthorizing
-        binding?.authLoader?.isVisible = isAuthorizing
+        binding.authBtn.isEnabled = !isAuthorizing
+        binding.authLoader.isVisible = isAuthorizing
 
         when (state) {
             AuthState.Empty,
@@ -65,12 +65,13 @@ class AuthFragment : Fragment(R.layout.auth_fragment) {
 
     private fun handleInputError(error: AuthState.InputError) =
         when (error) {
-            AuthState.InputError.Email    -> binding?.emailInput.showErrorResId(R.string.email_input_error)
-            AuthState.InputError.Password -> binding?.passwordInput.showErrorResId(R.string.password_input_error)
+            AuthState.InputError.Email -> binding.emailInput.showErrorResId(R.string.email_input_error)
+            AuthState.InputError.Password -> binding.passwordInput.showErrorResId(R.string.password_input_error)
         }
 
     companion object {
-        fun create(): AuthFragment = AuthFragment()
+
+        fun newInstance(): AuthFragment = AuthFragment()
     }
 }
 
@@ -78,5 +79,5 @@ class AuthFragment : Fragment(R.layout.auth_fragment) {
 private val LogInError.messageResId: Int
     get() = when (this) {
         LogInError.InvalidUserCredentials -> R.string.invalid_user_credentials
-        LogInError.Unknown                -> R.string.unknown_error
+        LogInError.Unknown -> R.string.unknown_error
     }

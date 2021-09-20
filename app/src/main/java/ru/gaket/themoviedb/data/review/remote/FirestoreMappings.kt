@@ -7,7 +7,7 @@ import ru.gaket.themoviedb.domain.review.AddReviewRequest
 import ru.gaket.themoviedb.domain.review.MyReview
 import ru.gaket.themoviedb.domain.review.Rating
 import ru.gaket.themoviedb.domain.review.Review
-import ru.gaket.themoviedb.domain.review.SomeoneElseReview
+import ru.gaket.themoviedb.domain.review.SomeoneReview
 
 internal const val MOVIES_COLLECTION = "movies"
 internal const val REVIEWS_COLLECTION = "reviews"
@@ -21,14 +21,14 @@ internal const val RATING = "rating"
 internal fun DocumentSnapshot.toMyReview(): MyReview? =
     this.toReview()?.let { review ->
         MyReview(
-            movieId = this.reference.parent.parent!!.id.toInt(),
+            movieId = this.reference.parent.parent!!.id.toLong(),
             review = review
         )
     }
 
-internal fun DocumentSnapshot.toSomeoneElseReview(): SomeoneElseReview? =
+internal fun DocumentSnapshot.toSomeoneReview(): SomeoneReview? =
     this.toReview()?.let { review ->
-        SomeoneElseReview(
+        SomeoneReview(
             author = User.Email.createIfValid(value = this.getString(AUTHOR_EMAIL))!!,
             review = review
         )

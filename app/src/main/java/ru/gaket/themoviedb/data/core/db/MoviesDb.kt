@@ -7,8 +7,9 @@ import ru.gaket.themoviedb.data.genres.local.GenreEntity
 import ru.gaket.themoviedb.data.genres.local.GenresDao
 import ru.gaket.themoviedb.data.movies.local.MovieEntity
 import ru.gaket.themoviedb.data.movies.local.MoviesDao
-import ru.gaket.themoviedb.data.movies.local.MyReviewEntity
-import ru.gaket.themoviedb.data.movies.local.RatingDbConverter
+import ru.gaket.themoviedb.data.review.local.MyReviewEntity
+import ru.gaket.themoviedb.data.review.local.MyReviewsDao
+import ru.gaket.themoviedb.data.review.local.RatingDbConverter
 
 @Database(
     entities = [
@@ -26,4 +27,5 @@ abstract class MoviesDb : RoomDatabase() {
 
     abstract fun genresDao(): GenresDao
     abstract fun moviesDao(): MoviesDao
+    abstract fun myReviewsDao(): MyReviewsDao
 }

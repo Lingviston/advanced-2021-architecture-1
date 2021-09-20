@@ -1,26 +1,25 @@
 package ru.gaket.themoviedb.domain.review
 
 import ru.gaket.themoviedb.domain.auth.User
+import ru.gaket.themoviedb.domain.movies.models.MovieId
 
 data class Review(
     val id: Review.Id,
     val liked: String,
     val disliked: String,
-    val rating: Rating
+    val rating: Rating,
 ) {
+
     @JvmInline
     value class Id(val value: String)
 }
 
-//todo
-typealias MovieId = Int
-
 data class MyReview(
     val movieId: MovieId,
-    val review: Review
+    val review: Review,
 )
 
-data class SomeoneElseReview(
+data class SomeoneReview(
     val author: User.Email,
-    val review: Review
+    val review: Review,
 )
