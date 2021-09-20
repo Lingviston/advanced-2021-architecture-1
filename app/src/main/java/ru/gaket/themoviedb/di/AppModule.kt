@@ -8,6 +8,9 @@ import ru.gaket.themoviedb.core.BuildConfigProvider
 import ru.gaket.themoviedb.core.BuildConfigProviderImpl
 import ru.gaket.themoviedb.core.navigation.WebNavigator
 import ru.gaket.themoviedb.core.navigation.WebNavigatorImpl
+import ru.gaket.themoviedb.data.auth.AuthRepository
+import ru.gaket.themoviedb.data.auth.AuthRepositoryImpl
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -22,4 +25,10 @@ interface AppModule {
     fun bindWebNavigator(
         impl: WebNavigatorImpl,
     ): WebNavigator
+
+    @Binds
+    @Singleton
+    fun bindAuthRepository(
+        impl: AuthRepositoryImpl,
+    ): AuthRepository
 }

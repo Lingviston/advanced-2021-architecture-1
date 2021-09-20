@@ -1,10 +1,14 @@
 package ru.gaket.themoviedb.data.movies
 
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import ru.gaket.themoviedb.data.movies.local.MovieEntity
 import ru.gaket.themoviedb.data.movies.local.MoviesLocalDataSource
 import ru.gaket.themoviedb.data.movies.local.SearchMovieEntity
 import ru.gaket.themoviedb.data.movies.remote.MoviesRemoteDataSource
 import ru.gaket.themoviedb.di.BaseImageUrlQualifier
+import ru.gaket.themoviedb.domain.review.MovieId
 import javax.inject.Inject
 
 interface MoviesRepository {
@@ -24,6 +28,15 @@ interface MoviesRepository {
      * No Throwable.
      */
     suspend fun getMovieDetails(id: Int): MovieEntity?
+}
+
+suspend fun MoviesRepository.getMovieDetailsList(ids: Set<MovieId>): List<MovieEntity> = coroutineScope {
+    val asyncCalls = ids.map { singleId ->
+        async { getMovieDetails(singleId) }
+    }
+
+    asyncCalls.awaitAll()
+        .filterNotNull()
 }
 
 /**

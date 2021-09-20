@@ -10,4 +10,12 @@
 
     <string name="movie_details_title">Movie: %1$d, %2$s</string>
     <string name="movie_details_back_btn">back</string>
+
+    <string name="email">E-mail</string>
+    <string name="auth">Auth</string>
+    <string name="password">Password</string>
+    <string name="email_input_error">Invalid email</string>
+    <string name="password_input_error">Invalid password</string>
+    <string name="invalid_user_credentials">Invalid user credentials</string>
+    <string name="unknown_error">Unknown error</string>
 </resources>

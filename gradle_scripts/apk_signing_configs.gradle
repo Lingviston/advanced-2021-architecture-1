@@ -1,0 +1,14 @@
+android {
+    def singingPropertiesFile = rootProject.file("singing.properties")
+    def singingProperties = new Properties()
+    singingProperties.load(new FileInputStream(singingPropertiesFile))
+
+    signingConfigs {
+        dev {
+            storeFile = file("${project.rootDir}/keystore/dev.jks")
+            storePassword =  singingProperties["DEV_STORE_PASSWORD"]
+            keyAlias = singingProperties["DEV_KEY_ALIAS"]
+            keyPassword = singingProperties["DEV_KEY_PASSWORD"]
+        }
+    }
+}
