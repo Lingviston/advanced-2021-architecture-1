@@ -11,6 +11,7 @@ import ru.gaket.themoviedb.core.navigation.Navigator
 import ru.gaket.themoviedb.core.navigation.ReviewFlow
 import ru.gaket.themoviedb.databinding.FragmentReviewTextBinding
 import ru.gaket.themoviedb.domain.movies.models.MovieId
+import ru.gaket.themoviedb.presentation.review.process
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -31,7 +32,11 @@ class WhatLikeFragment : Fragment(R.layout.fragment_review_text) {
             tvReviewMessage.setText(R.string.review_what_did_you_like)
             btnNext.setOnClickListener {
                 viewModel.submitInfo(etReviewField.text.toString())
-                //TODO [Vlad] Add validation and move navigation to concrete event
+            }
+        }
+
+        viewModel.events.observe(viewLifecycleOwner) {
+            it.process(requireView()) {
                 navigator.navigateTo(ReviewFlow.NotLikedScreen)
             }
         }

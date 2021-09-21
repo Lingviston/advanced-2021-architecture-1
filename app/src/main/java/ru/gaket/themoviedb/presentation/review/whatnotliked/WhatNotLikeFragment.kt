@@ -9,9 +9,9 @@ import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.core.navigation.Navigator
 import ru.gaket.themoviedb.core.navigation.ReviewFlow
 import ru.gaket.themoviedb.databinding.FragmentReviewTextBinding
+import ru.gaket.themoviedb.presentation.review.process
 import javax.inject.Inject
 
-//TODO [Vlad] Add Second layout or reuse first
 @AndroidEntryPoint
 class WhatNotLikeFragment : Fragment(R.layout.fragment_review_text) {
 
@@ -30,7 +30,11 @@ class WhatNotLikeFragment : Fragment(R.layout.fragment_review_text) {
             tvReviewMessage.setText(R.string.review_what_did_not_like)
             btnNext.setOnClickListener {
                 viewModel.submitInfo(etReviewField.text.toString())
-                //TODO [Vlad] Add validation and move navigation to concrete event
+            }
+        }
+
+        viewModel.events.observe(viewLifecycleOwner) {
+            it.process(requireView()) {
                 navigator.navigateTo(ReviewFlow.RatingScreen)
             }
         }

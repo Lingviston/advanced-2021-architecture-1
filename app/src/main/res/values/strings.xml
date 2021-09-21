@@ -19,6 +19,7 @@
     <string name="invalid_user_credentials">Invalid user credentials</string>
     <string name="unknown_error">Unknown error</string>
     <!--Review-->
+
     <string name="review_button_rate_movie">Leave you review</string>
     <string name="review_what_did_you_like">What did you like?</string>
     <string name="review_what_did_not_like">What you did not like?</string>
@@ -28,5 +29,6 @@
 
     <string name="review_error_unknown">Something gone wrong</string>
     <string name="review_error_zero_rating">You should select rating</string>
+    <string name="review_error_should_not_be_empty">Field should not be empty</string>
 
 </resources>
