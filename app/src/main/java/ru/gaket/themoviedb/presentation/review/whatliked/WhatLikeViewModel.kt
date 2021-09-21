@@ -16,7 +16,7 @@ class WhatLikeViewModel @Inject constructor(
     init {
         val movieId: MovieId = savedState.get<MovieId>(ARG_MOVIE_ID)
             ?: error("You need to provide $ARG_MOVIE_ID")
-        reviewWizard.start(movieId)
+        reviewWizard.init(movieId)
     }
 
     fun submitInfo(whatLike: String) {

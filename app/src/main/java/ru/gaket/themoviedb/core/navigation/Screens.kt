@@ -12,6 +12,9 @@ import ru.gaket.themoviedb.presentation.review.whatnotliked.WhatNotLikeFragment
 interface Screen {
 
     fun destination(): Fragment
+
+    val tag: String? get() = null
+
 }
 
 class MoviesScreen : Screen {
@@ -25,6 +28,12 @@ class MovieDetailsScreen(
 ) : Screen {
 
     override fun destination(): Fragment = MovieDetailsFragment.newInstance(movieId, title)
+
+    override val tag: String get() = TAG
+
+    companion object {
+        const val TAG = "MovieDetailsScreen"
+    }
 }
 
 class AuthScreen : Screen {
@@ -32,18 +41,19 @@ class AuthScreen : Screen {
     override fun destination(): Fragment = AuthFragment.newInstance()
 }
 
-sealed class ReviewScreen : Screen {
+sealed class ReviewFlow : Screen {
+
     data class LikedScreen(
         private val movieId: MovieId
-    ) : ReviewScreen() {
+    ) : ReviewFlow() {
         override fun destination(): Fragment = WhatLikeFragment.newInstance(movieId)
     }
 
-    object NotLikedScreen : ReviewScreen() {
+    object NotLikedScreen : ReviewFlow() {
         override fun destination(): Fragment = WhatNotLikeFragment()
     }
 
-    object RatingScreen : ReviewScreen() {
+    object RatingScreen : ReviewFlow() {
         override fun destination(): Fragment = RatingFragment()
     }
 }

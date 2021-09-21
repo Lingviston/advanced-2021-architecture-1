@@ -16,18 +16,30 @@ import javax.inject.Inject
  */
 interface Navigator {
 
-    fun navigateTo(screen: Screen)
+    fun navigateTo(
+        screen: Screen,
+        addToBackStack: Boolean = true
+    )
+
+    fun backTo(tag: String)
 }
 
 class NavigatorImpl @Inject constructor(
     @ActivityContext private val context: Context,
 ) : Navigator {
 
-    override fun navigateTo(screen: Screen) {
+    override fun navigateTo(screen: Screen, addToBackStack: Boolean) {
         Timber.d("Navigate to ${screen::class.simpleName}")
-        getFragmentManager().beginTransaction()
-            .replace(R.id.container, screen.destination())
-            .commit()
+        with(getFragmentManager().beginTransaction()) {
+            replace(R.id.container, screen.destination(), screen.tag)
+            if (addToBackStack) addToBackStack(screen.tag)
+            commit()
+        }
+    }
+
+    override fun backTo(tag: String) {
+        Timber.d("Navigate Back to $tag")
+        getFragmentManager().popBackStack(tag, 0)
     }
 
     private fun getFragmentManager() = (context as AppCompatActivity).supportFragmentManager

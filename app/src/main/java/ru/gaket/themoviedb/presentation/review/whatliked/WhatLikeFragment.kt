@@ -8,7 +8,7 @@ import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.core.navigation.Navigator
-import ru.gaket.themoviedb.core.navigation.ReviewScreen
+import ru.gaket.themoviedb.core.navigation.ReviewFlow
 import ru.gaket.themoviedb.databinding.FragmentReviewWhatDidLikeBinding
 import ru.gaket.themoviedb.domain.movies.models.MovieId
 import javax.inject.Inject
@@ -31,7 +31,7 @@ class WhatLikeFragment : Fragment(R.layout.fragment_review_what_did_like) {
             btnNext.setOnClickListener {
                 viewModel.submitInfo(etWhatDidYouLike.text.toString())
                 //TODO [Vlad] Add validation and move navigation to concrete event
-                navigator.navigateTo(ReviewScreen.NotLikedScreen)
+                navigator.navigateTo(ReviewFlow.NotLikedScreen)
             }
         }
     }
