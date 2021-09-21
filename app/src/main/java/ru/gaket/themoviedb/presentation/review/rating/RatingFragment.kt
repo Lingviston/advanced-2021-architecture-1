@@ -7,6 +7,7 @@ import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.databinding.FragmentReviewRatingBinding
+import ru.gaket.themoviedb.domain.review.Rating
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
@@ -20,12 +21,12 @@ class RatingFragment : Fragment(R.layout.fragment_review_rating) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //TODO [Vlad] Add async work, validation, error handling, navigation
         with(binding) {
-            rbRateMovie.setOnRatingBarChangeListener { _, rating, _ ->
-                viewModel.changeRating(rating.roundToInt())
-            }
             btnSubmit.setOnClickListener {
-                viewModel.submit()
+                viewModel.submit(
+                    Rating.mapToRating(rbRateMovie.rating.roundToInt())
+                )
             }
         }
     }
