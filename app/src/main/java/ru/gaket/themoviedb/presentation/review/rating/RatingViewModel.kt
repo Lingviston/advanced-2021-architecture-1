@@ -1,11 +1,10 @@
 package ru.gaket.themoviedb.presentation.review.rating
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.data.auth.AuthRepository
 import ru.gaket.themoviedb.data.movies.MoviesRepository
@@ -21,17 +20,22 @@ class RatingViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    //TODO Clarify what better way to send events to View in this project (or use LiveData???)
-    val navigateBackEvent: Flow<Unit>
-        get() = _navigateBackEvent.asSharedFlow()
-    private val _navigateBackEvent = MutableSharedFlow<Unit>()
+    val reviewState: LiveData<ReviewState>
+        get() = _reviewState
+    private val _reviewState = MutableLiveData<ReviewState>()
 
-    //TODO [Vlad] Add validation and loading
-    fun submit(rating: Rating) {
-        reviewWizard.setRating(rating)
+    fun submit(ratingNumber: Int) {
+        val rating = Rating.mapToRating(ratingNumber)
+        if (rating == null) {
+            _reviewState.value = ReviewState.ZeroRating
+            return
+        } else {
+            reviewWizard.setRating(rating)
+        }
 
         viewModelScope.launch {
             try {
+                _reviewState.value = ReviewState.Loading
                 val (userId, userEmail) = authRepository.currentUser
                     ?: error("User is not signed in")
                 moviesRepository.addReview(
@@ -40,13 +44,21 @@ class RatingViewModel @Inject constructor(
                     userEmail
                 )
                 reviewWizard.clearState()
-                _navigateBackEvent.emit(Unit)
+                _reviewState.value = ReviewState.Success
             } catch (e: Exception) {
-                //TODO [Vlad] Show error message
                 Timber.e(e)
+                _reviewState.value = ReviewState.Error
             }
         }
 
+    }
+
+    //TODO Decompose into events an state
+    sealed class ReviewState {
+        object Loading : ReviewState()
+        object ZeroRating : ReviewState()
+        object Success : ReviewState()
+        object Error : ReviewState()
     }
 
 }

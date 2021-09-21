@@ -4,14 +4,13 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.core.navigation.MovieDetailsScreen
 import ru.gaket.themoviedb.core.navigation.Navigator
 import ru.gaket.themoviedb.databinding.FragmentReviewRatingBinding
-import ru.gaket.themoviedb.domain.review.Rating
+import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewState
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -29,21 +28,39 @@ class RatingFragment : Fragment(R.layout.fragment_review_rating) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //TODO [Vlad] Add async work, validation, error handling, navigation
-        with(binding) {
-            btnSubmit.setOnClickListener {
-                viewModel.submit(
-                    Rating.mapToRating(rbRateMovie.rating.roundToInt())
-                )
-            }
+        binding.btnSubmit.setOnClickListener {
+            viewModel.submit(binding.rbRateMovie.rating.roundToInt())
         }
 
-        lifecycleScope.launchWhenCreated {
-            viewModel.navigateBackEvent.collect {
+        viewModel.reviewState.observe(viewLifecycleOwner, ::processReviewState)
+    }
+
+    private fun processReviewState(reviewState: ReviewState) {
+        when (reviewState) {
+            is ReviewState.Loading -> {
+                binding.rbRateMovie.isEnabled = false
+                binding.btnSubmit.isEnabled = false
+            }
+            is ReviewState.Error -> {
+                binding.rbRateMovie.isEnabled = true
+                binding.btnSubmit.isEnabled = true
+                Snackbar.make(
+                    requireView(),
+                    R.string.review_error_unknown,
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
+            is ReviewState.Success -> {
                 navigator.backTo(MovieDetailsScreen.TAG)
             }
+            is ReviewState.ZeroRating -> {
+                Snackbar.make(
+                    requireView(),
+                    R.string.review_error_zero_rating,
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
         }
-
     }
 
 }

@@ -8,8 +8,7 @@ enum class Rating(val starsCount: Int) {
     BEST(starsCount = 5);
 
     companion object {
-        fun mapToRating(rating: Int): Rating = values()
+        fun mapToRating(rating: Int): Rating? = values()
             .find { it.starsCount == rating }
-            ?: error("You can't map $rating to Rating")
     }
 }

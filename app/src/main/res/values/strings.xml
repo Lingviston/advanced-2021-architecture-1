@@ -25,4 +25,8 @@
     <string name="review_rating_message">Rate movie:</string>
     <string name="review_button_next">Next</string>
     <string name="review_button_submit">Submit</string>
+
+    <string name="review_error_unknown">Something gone wrong</string>
+    <string name="review_error_zero_rating">You should select rating</string>
+
 </resources>
