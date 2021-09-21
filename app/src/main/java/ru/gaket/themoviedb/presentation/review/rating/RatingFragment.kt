@@ -10,6 +10,7 @@ import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.core.navigation.MovieDetailsScreen
 import ru.gaket.themoviedb.core.navigation.Navigator
 import ru.gaket.themoviedb.databinding.FragmentReviewRatingBinding
+import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewEvent
 import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewState
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -32,16 +33,13 @@ class RatingFragment : Fragment(R.layout.fragment_review_rating) {
             viewModel.submit(binding.rbRateMovie.rating.roundToInt())
         }
 
+        viewModel.reviewEvent.observe(viewLifecycleOwner, ::processReviewEvent)
         viewModel.reviewState.observe(viewLifecycleOwner, ::processReviewState)
     }
 
-    private fun processReviewState(reviewState: ReviewState) {
-        when (reviewState) {
-            is ReviewState.Loading -> {
-                binding.rbRateMovie.isEnabled = false
-                binding.btnSubmit.isEnabled = false
-            }
-            is ReviewState.Error -> {
+    private fun processReviewEvent(reviewEvent: ReviewEvent) {
+        when (reviewEvent) {
+            ReviewEvent.UnknownError -> {
                 binding.rbRateMovie.isEnabled = true
                 binding.btnSubmit.isEnabled = true
                 Snackbar.make(
@@ -50,16 +48,25 @@ class RatingFragment : Fragment(R.layout.fragment_review_rating) {
                     Snackbar.LENGTH_SHORT
                 ).show()
             }
-            is ReviewState.Success -> {
-                navigator.backTo(MovieDetailsScreen.TAG)
-            }
-            is ReviewState.ZeroRating -> {
+            ReviewEvent.ZeroRatingError -> {
                 Snackbar.make(
                     requireView(),
                     R.string.review_error_zero_rating,
                     Snackbar.LENGTH_SHORT
                 ).show()
             }
+            ReviewEvent.Success -> navigator.backTo(MovieDetailsScreen.TAG)
+        }
+    }
+
+    private fun processReviewState(reviewState: ReviewState) {
+        fun setViewState(isEnabled: Boolean) {
+            binding.rbRateMovie.isEnabled = isEnabled
+            binding.btnSubmit.isEnabled = isEnabled
+        }
+        when (reviewState) {
+            is ReviewState.Loading -> setViewState(false)
+            is ReviewState.Idle -> setViewState(true)
         }
     }
 

@@ -1,10 +1,8 @@
 package ru.gaket.themoviedb.presentation.review.rating
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.data.auth.AuthRepository
 import ru.gaket.themoviedb.data.movies.MoviesRepository
@@ -20,6 +18,10 @@ class RatingViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
+    val reviewEvent: LiveData<ReviewEvent>
+        get() = _reviewEvent.asLiveData(viewModelScope.coroutineContext)
+    private val _reviewEvent = MutableSharedFlow<ReviewEvent>()
+
     val reviewState: LiveData<ReviewState>
         get() = _reviewState
     private val _reviewState = MutableLiveData<ReviewState>()
@@ -27,7 +29,7 @@ class RatingViewModel @Inject constructor(
     fun submit(ratingNumber: Int) {
         val rating = Rating.mapToRating(ratingNumber)
         if (rating == null) {
-            _reviewState.value = ReviewState.ZeroRating
+            viewModelScope.launch { _reviewEvent.emit(ReviewEvent.ZeroRatingError) }
             return
         } else {
             reviewWizard.setRating(rating)
@@ -44,21 +46,26 @@ class RatingViewModel @Inject constructor(
                     userEmail
                 )
                 reviewWizard.clearState()
-                _reviewState.value = ReviewState.Success
+                _reviewEvent.emit(ReviewEvent.Success)
             } catch (e: Exception) {
                 Timber.e(e)
-                _reviewState.value = ReviewState.Error
+                _reviewEvent.emit(ReviewEvent.UnknownError)
+            } finally {
+                _reviewState.value = ReviewState.Idle
             }
         }
 
     }
 
-    //TODO Decompose into events an state
     sealed class ReviewState {
+        object Idle : ReviewState()
         object Loading : ReviewState()
-        object ZeroRating : ReviewState()
-        object Success : ReviewState()
-        object Error : ReviewState()
+    }
+
+    sealed class ReviewEvent {
+        object ZeroRatingError : ReviewEvent()
+        object UnknownError : ReviewEvent()
+        object Success : ReviewEvent()
     }
 
 }
