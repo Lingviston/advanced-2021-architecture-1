@@ -8,18 +8,18 @@ import dagger.hilt.android.AndroidEntryPoint
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.core.navigation.Navigator
 import ru.gaket.themoviedb.core.navigation.ReviewFlow
-import ru.gaket.themoviedb.databinding.FragmentReviewWhatDidLikeBinding
+import ru.gaket.themoviedb.databinding.FragmentReviewTextBinding
 import javax.inject.Inject
 
 //TODO [Vlad] Add Second layout or reuse first
 @AndroidEntryPoint
-class WhatNotLikeFragment : Fragment(R.layout.fragment_review_what_did_like) {
+class WhatNotLikeFragment : Fragment(R.layout.fragment_review_text) {
 
     @Inject
     lateinit var navigator: Navigator
 
-    private val binding: FragmentReviewWhatDidLikeBinding
-        get() = FragmentReviewWhatDidLikeBinding.bind(requireView())
+    private val binding: FragmentReviewTextBinding
+        get() = FragmentReviewTextBinding.bind(requireView())
 
     private val viewModel: WhatNotLikeViewModel by viewModels()
 
@@ -27,8 +27,9 @@ class WhatNotLikeFragment : Fragment(R.layout.fragment_review_what_did_like) {
         super.onViewCreated(view, savedInstanceState)
 
         with(binding) {
+            tvReviewMessage.setText(R.string.review_what_did_not_like)
             btnNext.setOnClickListener {
-                viewModel.submitInfo(etWhatDidYouLike.text.toString())
+                viewModel.submitInfo(etReviewField.text.toString())
                 //TODO [Vlad] Add validation and move navigation to concrete event
                 navigator.navigateTo(ReviewFlow.RatingScreen)
             }
