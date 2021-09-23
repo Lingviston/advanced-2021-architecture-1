@@ -1,5 +1,6 @@
 package ru.gaket.themoviedb.domain.auth
 
+import kotlinx.coroutines.flow.Flow
 import ru.gaket.themoviedb.data.auth.AuthRepository
 import ru.gaket.themoviedb.util.VoidOperationResult
 import ru.gaket.themoviedb.util.doOnSuccess
@@ -12,6 +13,9 @@ class AuthInteractorImpl @Inject constructor(
 
     override fun getCurrentUser(): User? =
         authRepository.currentUser
+
+    override fun observeCurrentUser(): Flow<User?> =
+        authRepository.observeCurrentUser()
 
     override suspend fun auth(
         email: User.Email,

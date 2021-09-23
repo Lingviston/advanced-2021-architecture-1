@@ -21,7 +21,7 @@ internal const val RATING = "rating"
 internal fun DocumentSnapshot.toMyReview(): MyReview? =
     this.toReview()?.let { review ->
         MyReview(
-            movieId = this.reference.parent.parent!!.id.toLong(),
+            movieId = requireNotNull(this.reference.parent.parent).id.toLong(),
             review = review
         )
     }
@@ -29,7 +29,7 @@ internal fun DocumentSnapshot.toMyReview(): MyReview? =
 internal fun DocumentSnapshot.toSomeoneReview(): SomeoneReview? =
     this.toReview()?.let { review ->
         SomeoneReview(
-            author = User.Email.createIfValid(value = this.getString(AUTHOR_EMAIL))!!,
+            author = requireNotNull(User.Email.createIfValid(value = this.getString(AUTHOR_EMAIL))),
             review = review
         )
     }
@@ -41,8 +41,8 @@ internal fun DocumentSnapshot.toReview(): Review? =
         ?.let { rating ->
             Review(
                 id = Review.Id(value = this.id),
-                liked = this.getString(LIKED)!!,
-                disliked = this.getString(DISLIKED)!!,
+                liked = requireNotNull(this.getString(LIKED)),
+                disliked = requireNotNull(this.getString(DISLIKED)),
                 rating = rating
             )
         }

@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import ru.gaket.themoviedb.domain.movies.MoviesInteractor
+import ru.gaket.themoviedb.util.OperationResult
 import timber.log.Timber
 import java.util.concurrent.CancellationException
 import javax.inject.Inject
@@ -48,11 +49,9 @@ class MoviesViewModel @Inject constructor(
             EmptyQuery
         } else {
             try {
-                val result = moviesInteractor.searchMovies(query)
-                when {
-                    result == null -> ErrorResult(IllegalArgumentException("Search movies from server error"))
-                    result.isEmpty() -> EmptyResult
-                    else -> ValidResult(result)
+                when (val value = moviesInteractor.searchMovies(query)) {
+                    is OperationResult.Error -> ErrorResult(IllegalArgumentException("Search movies from server error"))
+                    is OperationResult.Success -> if (value.result.isEmpty()) EmptyResult else ValidResult(value.result)
                 }
             } catch (e: Throwable) {
                 if (e is CancellationException) {

@@ -13,7 +13,7 @@ suspend fun <T> Task<T>.awaitTask(): OperationResult<T, Throwable> {
             if (this.isCanceled) {
                 throw CancellationException("Task $this was cancelled normally.")
             } else {
-                OperationResult.Success(this.result!!)
+                OperationResult.Success(requireNotNull(this.result))
             }
         } else {
             OperationResult.Error(e)
@@ -27,7 +27,7 @@ suspend fun <T> Task<T>.awaitTask(): OperationResult<T, Throwable> {
                 if (this.isCanceled) {
                     cont.cancel()
                 } else {
-                    cont.resume(OperationResult.Success(this.result!!))
+                    cont.resume(OperationResult.Success(requireNotNull(this.result)))
                 }
             } else {
                 cont.resume(OperationResult.Error(e))

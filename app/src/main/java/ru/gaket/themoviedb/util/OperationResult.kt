@@ -55,3 +55,38 @@ inline fun <S, R> S.runOperationCatching(block: S.() -> R): OperationResult<R, T
     } catch (e: Throwable) {
         OperationResult.Error(e)
     }
+
+inline fun <reified S, reified E> List<OperationResult<S, E>>.toSuccessOrErrorList(): OperationResult<List<S>, List<E>> {
+    var successResults: MutableList<S>? = null
+    var errorResults: MutableList<E>? = null
+
+    var hasErrors = false
+
+    for (item: OperationResult<S, E> in this) {
+        when {
+            ((item is OperationResult.Success) && !hasErrors) -> {
+                if (successResults == null) {
+                    successResults = mutableListOf()
+                }
+
+                successResults.add(item.result)
+            }
+            (item is OperationResult.Error) -> {
+                hasErrors = true
+
+                if (errorResults == null) {
+                    errorResults = mutableListOf()
+                }
+
+                errorResults.add(item.result)
+            }
+        }
+    }
+
+    return if (errorResults != null) {
+        OperationResult.Error(result = errorResults)
+    } else {
+        OperationResult.Success(result = successResults.orEmpty())
+    }
+}
+
