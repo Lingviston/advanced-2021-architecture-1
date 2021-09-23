@@ -49,7 +49,7 @@ internal fun DocumentSnapshot.toReview(): Review? =
 
 internal fun AddReviewRequest.toDatastoreMap(
     authorId: User.Id,
-    authorEmail: User.Email
+    authorEmail: User.Email,
 ): Map<Any, Any> =
     mapOf(
         AUTHOR_ID to authorId.value,

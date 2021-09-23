@@ -4,6 +4,7 @@ import ru.gaket.themoviedb.domain.movies.models.MovieId
 import javax.inject.Inject
 
 interface MoviesLocalDataSource {
+
     suspend fun getById(id: MovieId): MovieEntity?
     suspend fun insertAll(searchedMovies: List<SearchMovieEntity>)
     suspend fun insert(movie: MovieEntity)
@@ -12,7 +13,7 @@ interface MoviesLocalDataSource {
 }
 
 class MoviesLocalDataSourceImpl @Inject constructor(
-	private val moviesDao: MoviesDao,
+    private val moviesDao: MoviesDao,
 ) : MoviesLocalDataSource {
 
     override suspend fun getById(id: MovieId): MovieEntity? = moviesDao.getById(id)

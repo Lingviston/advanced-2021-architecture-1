@@ -10,7 +10,7 @@ interface AuthRepository {
 
     suspend fun auth(
         email: User.Email,
-        password: User.Password
+        password: User.Password,
     ): VoidOperationResult<LogInError>
 
     suspend fun logOut()

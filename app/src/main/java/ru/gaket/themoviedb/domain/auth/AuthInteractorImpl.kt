@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class AuthInteractorImpl @Inject constructor(
     private val authRepository: AuthRepository,
-    private val syncLocalStorageUseCase: SyncLocalStorageUseCase
+    private val syncLocalStorageUseCase: SyncLocalStorageUseCase,
 ) : AuthInteractor {
 
     override fun getCurrentUser(): User? =
@@ -15,7 +15,7 @@ class AuthInteractorImpl @Inject constructor(
 
     override suspend fun auth(
         email: User.Email,
-        password: User.Password
+        password: User.Password,
     ): VoidOperationResult<LogInError> =
         authRepository.auth(email, password)
             .doOnSuccess { syncLocalStorageUseCase.sync() }

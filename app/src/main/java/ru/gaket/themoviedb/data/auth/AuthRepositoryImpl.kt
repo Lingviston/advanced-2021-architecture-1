@@ -39,7 +39,7 @@ class AuthRepositoryImpl @Inject constructor() : AuthRepository {
     override suspend fun auth(email: User.Email, password: User.Password): VoidOperationResult<LogInError> =
         when (val registerResult = createNewUser(email, password)) {
             is OperationResult.Success -> registerResult
-            is OperationResult.Error   -> handleRegisterError(registerResult, email, password)
+            is OperationResult.Error -> handleRegisterError(registerResult, email, password)
         }
 
     override suspend fun logOut() {
@@ -49,7 +49,7 @@ class AuthRepositoryImpl @Inject constructor() : AuthRepository {
 
     private suspend fun createNewUser(
         email: User.Email,
-        password: User.Password
+        password: User.Password,
     ): VoidOperationResult<RegisterError> =
         createNewUserAndReturnAuthResult(email, password)
             .mapSuccess { authResult -> saveSuccessAuthResult(authResult, email) }
@@ -57,36 +57,36 @@ class AuthRepositoryImpl @Inject constructor() : AuthRepository {
     private suspend fun handleRegisterError(
         registerResult: OperationResult.Error<RegisterError>,
         email: User.Email,
-        password: User.Password
+        password: User.Password,
     ): VoidOperationResult<LogInError> = when (registerResult.result) {
-        RegisterError.UserWithSuchCredentialsExists -> logIn(email, password)
-        RegisterError.Unknown                       -> OperationResult.Error(LogInError.Unknown)
+        RegisterError.USER_WITH_SUCH_CREDENTIALS_EXISTS -> logIn(email, password)
+        RegisterError.UNKNOWN -> OperationResult.Error(LogInError.Unknown)
     }
 
     private suspend fun logIn(
         email: User.Email,
-        password: User.Password
+        password: User.Password,
     ): VoidOperationResult<LogInError> =
         logInAndReturnAuthResult(email, password)
             .mapSuccess { authResult -> saveSuccessAuthResult(authResult, email) }
 
     private suspend fun createNewUserAndReturnAuthResult(
         email: User.Email,
-        password: User.Password
+        password: User.Password,
     ): OperationResult<AuthResult, RegisterError> =
         firebaseAuth.createUserWithEmailAndPassword(email.value, password.value)
             .awaitTask()
             .mapError { error ->
                 if (error is FirebaseAuthUserCollisionException) {
-                    RegisterError.UserWithSuchCredentialsExists
+                    RegisterError.USER_WITH_SUCH_CREDENTIALS_EXISTS
                 } else {
-                    RegisterError.Unknown
+                    RegisterError.UNKNOWN
                 }
             }
 
     private suspend fun logInAndReturnAuthResult(
         email: User.Email,
-        password: User.Password
+        password: User.Password,
     ): OperationResult<AuthResult, LogInError> =
         firebaseAuth.signInWithEmailAndPassword(email.value, password.value)
             .awaitTask()
@@ -100,7 +100,7 @@ class AuthRepositoryImpl @Inject constructor() : AuthRepository {
 
     private fun saveSuccessAuthResult(
         authResult: AuthResult,
-        email: User.Email
+        email: User.Email,
     ) {
         val userUid = authResult.user!!.uid
         val user = User(id = User.Id(userUid), email = email)
@@ -115,14 +115,12 @@ class AuthRepositoryImpl @Inject constructor() : AuthRepository {
 private fun Throwable.isFirebaseInvalidUserCredentialsError(): Boolean =
     when (this) {
         is FirebaseAuthInvalidCredentialsException,
-        is FirebaseAuthInvalidUserException -> true
-
-        else                                -> false
+        is FirebaseAuthInvalidUserException,
+        -> true
+        else -> false
     }
 
-private sealed class RegisterError {
-
-    object UserWithSuchCredentialsExists : RegisterError()
-
-    object Unknown : RegisterError()
+private enum class RegisterError {
+    USER_WITH_SUCH_CREDENTIALS_EXISTS,
+    UNKNOWN
 }

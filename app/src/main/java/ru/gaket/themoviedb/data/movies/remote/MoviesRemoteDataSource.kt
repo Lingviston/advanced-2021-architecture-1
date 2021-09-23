@@ -11,9 +11,12 @@ interface MoviesRemoteDataSource {
 }
 
 class MoviesRemoteDataSourceImpl @Inject constructor(
-	private val moviesApi: MoviesApi,
+    private val moviesApi: MoviesApi,
 ) : MoviesRemoteDataSource {
 
+    /**
+     * todo: use [ru.gaket.themoviedb.util.runOperationCatching] instead of runCatching everywhere, or vice versa
+     */
     override suspend fun searchMovies(query: String, page: Int) = runCatching {
         moviesApi.searchMovie(query, page).searchMovies
     }.onFailure {

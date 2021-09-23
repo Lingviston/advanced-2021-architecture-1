@@ -1,28 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
     android:paddingStart="@dimen/space_normal"
-    android:paddingEnd="@dimen/space_normal"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    >
+    android:paddingEnd="@dimen/space_normal">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/email_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/email"
-        >
+        android:hint="@string/email">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:maxLines="1"
-            />
+            android:maxLines="1" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -31,15 +28,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/password"
-        app:passwordToggleEnabled="true"
-        >
+        app:passwordToggleEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
-            android:maxLines="1"
-            />
+            android:maxLines="1" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -47,8 +42,7 @@
         android:id="@+id/auth_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/auth"
-        />
+        android:text="@string/auth" />
 
     <ProgressBar
         android:id="@+id/auth_loader"
@@ -57,7 +51,6 @@
         android:layout_marginTop="@dimen/space_normal"
         android:indeterminate="true"
         android:visibility="gone"
-        tools:visibility="visible"
-        />
+        tools:visibility="visible" />
 
 </LinearLayout>

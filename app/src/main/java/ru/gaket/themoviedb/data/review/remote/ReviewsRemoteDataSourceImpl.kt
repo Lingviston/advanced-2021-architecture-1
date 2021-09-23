@@ -39,7 +39,7 @@ class ReviewsRemoteDataSourceImpl @Inject constructor() : ReviewsRemoteDataSourc
     override suspend fun addReview(
         request: AddReviewRequest,
         authorId: User.Id,
-        authorEmail: User.Email
+        authorEmail: User.Email,
     ): OperationResult<MyReview, Throwable> =
         firebaseFirestore.collection(MOVIES_COLLECTION)
             .document(request.movieId.toString())

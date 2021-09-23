@@ -54,12 +54,13 @@ class AuthFragment : Fragment(R.layout.auth_fragment) {
 
         when (state) {
             AuthState.Empty,
-            AuthState.Authorizing   -> Unit
-            AuthState.Authorized    -> {
+            AuthState.Authorizing,
+            -> Unit
+            AuthState.Authorized -> {
                 //todo
             }
             is AuthState.InputError -> handleInputError(state)
-            is AuthState.AuthError  -> showSystemMessage(text = getString(state.logInError.messageResId))
+            is AuthState.AuthError -> showSystemMessage(text = getString(state.logInError.messageResId))
         }
     }
 

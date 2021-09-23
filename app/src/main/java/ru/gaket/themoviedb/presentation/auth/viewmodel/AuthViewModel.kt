@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authInteractor: AuthInteractor
+    private val authInteractor: AuthInteractor,
 ) : ViewModel() {
 
     private val _authState = MutableLiveData<AuthState>(
@@ -34,13 +34,13 @@ class AuthViewModel @Inject constructor(
         val validatedPassword = User.Password.createIfValid(password)
 
         when {
-            (validatedEmail == null)    -> {
+            (validatedEmail == null) -> {
                 _authState.value = AuthState.InputError.Email
             }
             (validatedPassword == null) -> {
                 _authState.value = AuthState.InputError.Password
             }
-            else                        -> {
+            else -> {
                 executeAuthRequest(validatedEmail, validatedPassword)
             }
         }
@@ -57,7 +57,7 @@ class AuthViewModel @Inject constructor(
     private fun handleAuthResult(result: VoidOperationResult<LogInError>) {
         _authState.value = when (result) {
             is OperationResult.Success -> AuthState.Authorized
-            is OperationResult.Error   -> AuthState.AuthError(result.result)
+            is OperationResult.Error -> AuthState.AuthError(result.result)
         }
     }
 }

@@ -25,9 +25,11 @@ data class MyReviewEntity(
     val disliked: String,
 
     @ColumnInfo(name = RATING)
-    val rating: Rating
+    val rating: Rating,
 ) {
+
     companion object {
+
         const val TABLE_NAME = "my_reviews"
 
         const val REVIEW_ID = "review_id"

@@ -4,11 +4,11 @@ import androidx.annotation.StringRes
 import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.textfield.TextInputLayout
 
-fun TextInputLayout?.getTrimmedText(): String =
-        this?.editText?.text?.toString()?.trim().orEmpty()
+fun TextInputLayout.getTrimmedText(): String =
+    this.editText?.text?.toString()?.trim().orEmpty()
 
 fun TextInputLayout.showErrorResId(@StringRes stringResId: Int) =
-        showErrorWithEnable(errorMessage = this.context.getString(stringResId))
+    showErrorWithEnable(errorMessage = this.context.getString(stringResId))
 
 fun TextInputLayout.showErrorWithEnable(errorMessage: String) {
     this.isErrorEnabled = true
@@ -21,6 +21,6 @@ fun TextInputLayout.clearError() {
 }
 
 fun TextInputLayout.clearErrorOnAnyInput() =
-        this.editText?.doAfterTextChanged {
-            this.clearError()
-        }
+    this.editText?.doAfterTextChanged {
+        this.clearError()
+    }

@@ -4,7 +4,7 @@ import java.util.regex.Pattern
 
 data class User(
     val id: Id,
-    val email: Email
+    val email: Email,
 ) {
 
     @JvmInline
@@ -12,7 +12,9 @@ data class User(
 
     @JvmInline
     value class Email private constructor(val value: String) {
+
         companion object {
+
             fun createIfValid(value: String?): Email? {
                 val pattern = Pattern.compile(
                     "^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]|[\\w-]{2,}))@"
@@ -36,6 +38,7 @@ data class User(
 
     @JvmInline
     value class Password private constructor(val value: String) {
+
         companion object {
 
             private const val MINIMAL_PASSWORD_LENGTH = 6
