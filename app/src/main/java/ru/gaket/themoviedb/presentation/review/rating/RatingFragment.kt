@@ -69,5 +69,4 @@ class RatingFragment : Fragment(R.layout.fragment_review_rating) {
             is ReviewState.Idle -> setViewState(true)
         }
     }
-
 }

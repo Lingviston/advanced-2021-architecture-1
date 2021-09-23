@@ -43,11 +43,11 @@ class WhatLikeFragment : Fragment(R.layout.fragment_review_text) {
     }
 
     companion object {
+
         fun newInstance(movieId: MovieId): WhatLikeFragment {
             return WhatLikeFragment().apply {
                 arguments = bundleOf(WhatLikeViewModel.ARG_MOVIE_ID to movieId)
             }
         }
     }
-
 }

@@ -14,7 +14,6 @@ interface Screen {
     fun destination(): Fragment
 
     val tag: String? get() = null
-
 }
 
 class MoviesScreen : Screen {
@@ -32,6 +31,7 @@ class MovieDetailsScreen(
     override val tag: String get() = TAG
 
     companion object {
+
         const val TAG = "MovieDetailsScreen"
     }
 }
@@ -44,16 +44,19 @@ class AuthScreen : Screen {
 sealed class ReviewFlow : Screen {
 
     data class LikedScreen(
-        private val movieId: MovieId
+        private val movieId: MovieId,
     ) : ReviewFlow() {
+
         override fun destination(): Fragment = WhatLikeFragment.newInstance(movieId)
     }
 
     object NotLikedScreen : ReviewFlow() {
+
         override fun destination(): Fragment = WhatNotLikeFragment()
     }
 
     object RatingScreen : ReviewFlow() {
+
         override fun destination(): Fragment = RatingFragment()
     }
 }

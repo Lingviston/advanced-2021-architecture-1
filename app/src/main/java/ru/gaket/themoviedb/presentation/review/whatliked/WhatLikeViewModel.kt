@@ -1,6 +1,10 @@
 package ru.gaket.themoviedb.presentation.review.whatliked
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
@@ -12,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class WhatLikeViewModel @Inject constructor(
     private val reviewWizard: ReviewWizard,
-    savedState: SavedStateHandle
+    savedState: SavedStateHandle,
 ) : ViewModel() {
 
     val events: LiveData<ReviewFieldEvent>
@@ -38,8 +42,7 @@ class WhatLikeViewModel @Inject constructor(
     }
 
     companion object {
+
         const val ARG_MOVIE_ID = "ARG_MOVIE_ID"
     }
-
-
 }

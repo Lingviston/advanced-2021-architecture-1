@@ -6,6 +6,7 @@ import ru.gaket.themoviedb.domain.review.Rating
 import javax.inject.Inject
 
 interface ReviewWizard {
+
     fun init(movieId: MovieId)
     fun setWhatLike(whatLiked: String)
     fun setWhatDidNotLike(whatDidNotLike: String)
@@ -53,6 +54,4 @@ class ReviewWizardImplementation @Inject constructor() : ReviewWizard {
         whatDidNotLike = null
         rating = null
     }
-
-
 }

@@ -15,5 +15,4 @@ interface ReviewModule {
     @Singleton
     @Binds
     fun bindsReviewWizard(wizard: ReviewWizardImplementation): ReviewWizard
-
 }

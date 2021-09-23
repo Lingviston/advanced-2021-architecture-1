@@ -1,6 +1,10 @@
 package ru.gaket.themoviedb.presentation.review.rating
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
@@ -15,7 +19,7 @@ import javax.inject.Inject
 class RatingViewModel @Inject constructor(
     private val reviewWizard: ReviewWizard,
     private val moviesRepository: MoviesRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
 
     val reviewEvent: LiveData<ReviewEvent>
@@ -54,7 +58,6 @@ class RatingViewModel @Inject constructor(
                 _reviewState.value = ReviewState.Idle
             }
         }
-
     }
 
     sealed class ReviewState {
@@ -67,5 +70,4 @@ class RatingViewModel @Inject constructor(
         object UnknownError : ReviewEvent()
         object Success : ReviewEvent()
     }
-
 }

@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WhatNotLikeViewModel @Inject constructor(
-    private val reviewWizard: ReviewWizard
+    private val reviewWizard: ReviewWizard,
 ) : ViewModel() {
 
     val events: LiveData<ReviewFieldEvent>
@@ -31,5 +31,4 @@ class WhatNotLikeViewModel @Inject constructor(
             _events.emit(fieldEvent)
         }
     }
-
 }

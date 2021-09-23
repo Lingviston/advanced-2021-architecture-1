@@ -39,5 +39,4 @@ class WhatNotLikeFragment : Fragment(R.layout.fragment_review_text) {
             }
         }
     }
-
 }

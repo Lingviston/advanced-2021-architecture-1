@@ -7,7 +7,6 @@ import ru.gaket.themoviedb.R
 import timber.log.Timber
 import javax.inject.Inject
 
-
 // todo: [pash & Sergey] Refactor Navigator
 /**
  * Class responsible for the application navigation
@@ -18,7 +17,7 @@ interface Navigator {
 
     fun navigateTo(
         screen: Screen,
-        addToBackStack: Boolean = true
+        addToBackStack: Boolean = true,
     )
 
     fun backTo(tag: String)
