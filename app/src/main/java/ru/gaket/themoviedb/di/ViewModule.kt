@@ -16,6 +16,14 @@ import ru.gaket.themoviedb.data.movies.local.MoviesLocalDataSource
 import ru.gaket.themoviedb.data.movies.local.MoviesLocalDataSourceImpl
 import ru.gaket.themoviedb.data.movies.remote.MoviesRemoteDataSource
 import ru.gaket.themoviedb.data.movies.remote.MoviesRemoteDataSourceImpl
+import ru.gaket.themoviedb.data.review.local.MyReviewsLocalDataSource
+import ru.gaket.themoviedb.data.review.local.MyReviewsLocalDataSourceImpl
+import ru.gaket.themoviedb.data.review.remote.ReviewsRemoteDataSource
+import ru.gaket.themoviedb.data.review.remote.ReviewsRemoteDataSourceImpl
+import ru.gaket.themoviedb.domain.SyncLocalStorageUseCaseImpl
+import ru.gaket.themoviedb.domain.auth.AuthInteractor
+import ru.gaket.themoviedb.domain.auth.AuthInteractorImpl
+import ru.gaket.themoviedb.domain.auth.SyncLocalStorageUseCase
 import ru.gaket.themoviedb.domain.movies.MoviesInteractor
 import ru.gaket.themoviedb.domain.movies.MoviesInteractorImpl
 
@@ -32,6 +40,11 @@ interface ViewModule {
     fun bindMoviesLocalDataSource(
         impl: MoviesLocalDataSourceImpl,
     ): MoviesLocalDataSource
+
+    @Binds
+    fun bindMyReviewsLocalDataSource(
+        impl: MyReviewsLocalDataSourceImpl,
+    ): MyReviewsLocalDataSource
 
     @Binds
     fun bindMoviesRepository(
@@ -57,4 +70,19 @@ interface ViewModule {
     fun bindGenresRepository(
         impl: GenresRepositoryImpl,
     ): GenresRepository
+
+    @Binds
+    fun bindReviewsRemoteDataSource(
+        impl: ReviewsRemoteDataSourceImpl,
+    ): ReviewsRemoteDataSource
+
+    @Binds
+    fun bindAuthInteractor(
+        impl: AuthInteractorImpl,
+    ): AuthInteractor
+
+    @Binds
+    fun bindSyncLocalStorageUseCase(
+        impl: SyncLocalStorageUseCaseImpl,
+    ): SyncLocalStorageUseCase
 }

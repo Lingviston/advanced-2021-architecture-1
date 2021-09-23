@@ -11,7 +11,7 @@ data class DetailsMovieDto(
     val id: Long = 0,
 
     @SerializedName("imdb_id")
-    val imdbId: String = "",
+    val imdbId: String? = "",
 
     @SerializedName("title")
     val title: String = "",
@@ -53,5 +53,5 @@ data class DetailsMovieDto(
     val homepage: String = "",
 
     @SerializedName("backdrop_path")
-    val posterPath: String = "",
+    val posterPath: String? = "",
 )

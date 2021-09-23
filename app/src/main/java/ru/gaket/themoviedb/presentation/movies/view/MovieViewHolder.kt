@@ -7,6 +7,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.databinding.ItemMovieBinding
 import ru.gaket.themoviedb.domain.movies.models.SearchMovie
+import ru.gaket.themoviedb.domain.movies.models.SearchMovieWithMyReview
 
 class MovieViewHolder(
 	private val binding: ItemMovieBinding,
@@ -20,18 +21,18 @@ class MovieViewHolder(
         transformation = RoundedCornersTransformation(cornerRadius, 0)
     }
 
-    fun bind(searchMovie: SearchMovie, onMovieClick: (SearchMovie) -> Unit) {
-        setName(searchMovie)
-        setThumbnail(searchMovie)
+    fun bind(searchMovie: SearchMovieWithMyReview, onMovieClick: (SearchMovie) -> Unit) {
+        setName(searchMovie.movie)
+        setThumbnail(searchMovie.movie)
         setClickListener(onMovieClick, searchMovie)
     }
 
     // todo: [Sergey] do we need to set click listener
     private fun setClickListener(
 		onMovieClick: (SearchMovie) -> Unit,
-		searchMovie: SearchMovie,
+		searchMovie: SearchMovieWithMyReview,
 	) {
-        itemView.setOnClickListener { onMovieClick(searchMovie) }
+        itemView.setOnClickListener { onMovieClick(searchMovie.movie) }
     }
 
     private fun setName(searchMovie: SearchMovie) {

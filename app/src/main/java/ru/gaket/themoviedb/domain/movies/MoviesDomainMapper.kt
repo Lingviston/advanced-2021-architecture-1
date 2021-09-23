@@ -5,13 +5,13 @@ import ru.gaket.themoviedb.data.movies.local.SearchMovieEntity
 import ru.gaket.themoviedb.domain.movies.models.Movie
 import ru.gaket.themoviedb.domain.movies.models.SearchMovie
 
-fun SearchMovieEntity.toModel() = SearchMovie(
+internal fun SearchMovieEntity.toModel() = SearchMovie(
     id = id,
     title = title,
     thumbnail = thumbnail,
 )
 
-fun MovieEntity.toModel() = Movie(
+internal fun MovieEntity.toModel() = Movie(
     id = id,
     title = title,
     overview = overview,

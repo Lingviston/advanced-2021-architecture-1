@@ -1,27 +1,28 @@
 package ru.gaket.themoviedb.data.movies.remote
 
+import ru.gaket.themoviedb.domain.movies.models.MovieId
+import ru.gaket.themoviedb.util.OperationResult
+import ru.gaket.themoviedb.util.doOnError
+import ru.gaket.themoviedb.util.runOperationCatching
 import timber.log.Timber
 import javax.inject.Inject
 
 interface MoviesRemoteDataSource {
 
-    suspend fun searchMovies(query: String, page: Int): List<SearchMovieDto>?
-    suspend fun getMovieDetails(id: Int): DetailsMovieDto?
+    suspend fun searchMovies(query: String, page: Int): OperationResult<List<SearchMovieDto>, Throwable>
+
+    suspend fun getMovieDetails(id: MovieId): OperationResult<DetailsMovieDto, Throwable>
 }
 
 class MoviesRemoteDataSourceImpl @Inject constructor(
-	private val moviesApi: MoviesApi,
+    private val moviesApi: MoviesApi,
 ) : MoviesRemoteDataSource {
 
-    override suspend fun searchMovies(query: String, page: Int) = runCatching {
-        moviesApi.searchMovie(query, page).searchMovies
-    }.onFailure {
-        Timber.e("Search movies from server error", it)
-    }.getOrNull()
+    override suspend fun searchMovies(query: String, page: Int): OperationResult<List<SearchMovieDto>, Throwable> =
+        runOperationCatching { moviesApi.searchMovie(query, page).searchMovies }
+            .doOnError { error -> Timber.e("Search movies from server error", error) }
 
-    override suspend fun getMovieDetails(id: Int) = runCatching {
-        moviesApi.getMovieDetails(id)
-    }.onFailure {
-        Timber.e("Search movie from server error", it)
-    }.getOrNull()
+    override suspend fun getMovieDetails(id: MovieId): OperationResult<DetailsMovieDto, Throwable> =
+        runOperationCatching { moviesApi.getMovieDetails(id) }
+            .doOnError { error -> Timber.e("getMovieDetails from server error", error) }
 }

@@ -2,7 +2,9 @@ package ru.gaket.themoviedb.domain.movies
 
 import ru.gaket.themoviedb.data.movies.MoviesRepository
 import ru.gaket.themoviedb.domain.movies.models.Movie
-import ru.gaket.themoviedb.domain.movies.models.SearchMovie
+import ru.gaket.themoviedb.domain.movies.models.MovieId
+import ru.gaket.themoviedb.domain.movies.models.SearchMovieWithMyReview
+import ru.gaket.themoviedb.util.OperationResult
 import javax.inject.Inject
 
 interface MoviesInteractor {
@@ -10,23 +12,21 @@ interface MoviesInteractor {
     /**
      * @return List<SearchMovie>, null as error or empty list
      */
-    suspend fun searchMovies(query: String, page: Int = 1): List<SearchMovie>?
+    suspend fun searchMovies(query: String, page: Int = 1): OperationResult<List<SearchMovieWithMyReview>, Throwable>
 
     /**
      * @return List<SearchMovie>, null as error or empty list
      */
-    suspend fun getMovieDetails(id: Int): Movie?
+    suspend fun getMovieDetails(id: MovieId): OperationResult<Movie, Throwable>
 }
 
 class MoviesInteractorImpl @Inject constructor(
     private val moviesRepository: MoviesRepository,
 ) : MoviesInteractor {
 
-    override suspend fun searchMovies(query: String, page: Int): List<SearchMovie>? =
-        moviesRepository.searchMovies(query, page)
-            ?.map { it.toModel() }
+    override suspend fun searchMovies(query: String, page: Int): OperationResult<List<SearchMovieWithMyReview>, Throwable> =
+        moviesRepository.searchMoviesWithReviews(query, page)
 
-    override suspend fun getMovieDetails(id: Int): Movie? =
+    override suspend fun getMovieDetails(id: MovieId): OperationResult<Movie, Throwable> =
         moviesRepository.getMovieDetails(id)
-            ?.toModel()
 }

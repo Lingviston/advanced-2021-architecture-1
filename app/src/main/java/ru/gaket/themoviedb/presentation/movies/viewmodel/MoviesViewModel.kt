@@ -2,7 +2,6 @@ package ru.gaket.themoviedb.presentation.movies.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -16,6 +15,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import ru.gaket.themoviedb.domain.movies.MoviesInteractor
+import ru.gaket.themoviedb.util.OperationResult
 import timber.log.Timber
 import java.util.concurrent.CancellationException
 import javax.inject.Inject
@@ -23,7 +23,6 @@ import javax.inject.Inject
 @HiltViewModel
 class MoviesViewModel @Inject constructor(
     private val moviesInteractor: MoviesInteractor,
-    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val _searchState = MutableLiveData<SearchState>()
@@ -50,11 +49,9 @@ class MoviesViewModel @Inject constructor(
             EmptyQuery
         } else {
             try {
-                val result = moviesInteractor.searchMovies(query)
-                when {
-                    result == null -> ErrorResult(IllegalArgumentException("Search movies from server error"))
-                    result.isEmpty() -> EmptyResult
-                    else -> ValidResult(result)
+                when (val value = moviesInteractor.searchMovies(query)) {
+                    is OperationResult.Error -> ErrorResult(IllegalArgumentException("Search movies from server error"))
+                    is OperationResult.Success -> if (value.result.isEmpty()) EmptyResult else ValidResult(value.result)
                 }
             } catch (e: Throwable) {
                 if (e is CancellationException) {

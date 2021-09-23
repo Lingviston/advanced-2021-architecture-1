@@ -23,3 +23,6 @@ data class Movie(
     val hasReview: Boolean = false,
     val reviewId: Int = 0,
 )
+
+//todo:replace with value class
+typealias MovieId = Long
