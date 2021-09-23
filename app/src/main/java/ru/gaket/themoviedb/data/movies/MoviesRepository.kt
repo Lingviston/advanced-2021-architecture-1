@@ -3,6 +3,7 @@ package ru.gaket.themoviedb.data.movies
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import ru.gaket.themoviedb.core.MovieUrlProvider
 import ru.gaket.themoviedb.data.movies.local.MovieEntity
 import ru.gaket.themoviedb.data.movies.local.MoviesLocalDataSource
 import ru.gaket.themoviedb.data.movies.local.SearchMovieEntity
@@ -11,7 +12,6 @@ import ru.gaket.themoviedb.data.review.local.MyReviewsLocalDataSource
 import ru.gaket.themoviedb.data.review.local.toEntity
 import ru.gaket.themoviedb.data.review.local.toModel
 import ru.gaket.themoviedb.data.review.remote.ReviewsRemoteDataSource
-import ru.gaket.themoviedb.di.BaseImageUrlQualifier
 import ru.gaket.themoviedb.domain.auth.User
 import ru.gaket.themoviedb.domain.auth.User.Email
 import ru.gaket.themoviedb.domain.auth.User.Id
@@ -87,7 +87,7 @@ class MoviesRepositoryImpl @Inject constructor(
     private val moviesLocalDataSource: MoviesLocalDataSource,
     private val reviewsRemoteDataSource: ReviewsRemoteDataSource,
     private val myReviewsLocalDataSource: MyReviewsLocalDataSource,
-    @BaseImageUrlQualifier private val baseImageUrl: String,
+    private val movieUrlProvider: MovieUrlProvider,
 ) : MoviesRepository {
 
     override suspend fun searchMoviesWithReviews(
@@ -116,7 +116,7 @@ class MoviesRepositoryImpl @Inject constructor(
             moviesRemoteDataSource.getMovieDetails(id)
                 .mapSuccess { dto ->
                     dto.toEntity(
-                        baseImageUrl,
+                        movieUrlProvider.baseImageUrl,
                         hasReview = cachedMovie?.hasReview == true,
                         reviewId = cachedMovie?.reviewId ?: 0
                     )
@@ -190,7 +190,7 @@ class MoviesRepositoryImpl @Inject constructor(
 
     private suspend fun searchMovies(query: String, page: Int): OperationResult<List<SearchMovie>, Throwable> =
         moviesRemoteDataSource.searchMovies(query, page)
-            .mapSuccess { dtos -> dtos.map { singleDto -> singleDto.toEntity(baseImageUrl) } }
+            .mapSuccess { dtos -> dtos.map { singleDto -> singleDto.toEntity(movieUrlProvider.baseImageUrl) } }
             .doOnSuccess { movieEntities -> moviesLocalDataSource.insertAll(movieEntities) }
             .mapSuccess { entries -> entries.map { movieEntity -> movieEntity.toModel() } }
 
