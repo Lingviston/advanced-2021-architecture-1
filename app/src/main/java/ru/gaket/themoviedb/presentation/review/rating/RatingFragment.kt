@@ -60,13 +60,12 @@ class RatingFragment : Fragment(R.layout.fragment_review_rating) {
     }
 
     private fun processReviewState(reviewState: ReviewState) {
-        fun setViewState(isEnabled: Boolean) {
-            binding.rbRateMovie.isEnabled = isEnabled
-            binding.btnSubmit.isEnabled = isEnabled
+        val isEnabled = when (reviewState) {
+            is ReviewState.Loading -> false
+            is ReviewState.Idle -> true
         }
-        when (reviewState) {
-            is ReviewState.Loading -> setViewState(false)
-            is ReviewState.Idle -> setViewState(true)
-        }
+
+        binding.rbRateMovie.isEnabled = isEnabled
+        binding.btnSubmit.isEnabled = isEnabled
     }
 }

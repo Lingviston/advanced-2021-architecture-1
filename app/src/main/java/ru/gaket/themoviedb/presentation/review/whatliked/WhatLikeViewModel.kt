@@ -32,10 +32,10 @@ class WhatLikeViewModel @Inject constructor(
     fun submitInfo(whatLike: String) {
         viewModelScope.launch {
             val fieldEvent = if (whatLike.isBlank()) {
-                ReviewFieldEvent.EmptyField
+                ReviewFieldEvent.EMPTY_FIELD
             } else {
                 reviewWizard.setWhatLike(whatLike)
-                ReviewFieldEvent.Success
+                ReviewFieldEvent.SUCCESS
             }
             _events.emit(fieldEvent)
         }

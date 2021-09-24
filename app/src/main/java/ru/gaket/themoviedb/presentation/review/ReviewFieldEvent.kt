@@ -3,19 +3,21 @@ package ru.gaket.themoviedb.presentation.review
 import android.view.View
 import com.google.android.material.snackbar.Snackbar
 import ru.gaket.themoviedb.R
+import ru.gaket.themoviedb.presentation.review.ReviewFieldEvent.EMPTY_FIELD
+import ru.gaket.themoviedb.presentation.review.ReviewFieldEvent.SUCCESS
 
-sealed class ReviewFieldEvent {
-    object EmptyField : ReviewFieldEvent()
-    object Success : ReviewFieldEvent()
+enum class ReviewFieldEvent {
+    EMPTY_FIELD,
+    SUCCESS,
 }
 
 fun ReviewFieldEvent.process(view: View, doOnSuccess: () -> Unit) {
     when (this) {
-        ReviewFieldEvent.EmptyField -> Snackbar.make(
+        EMPTY_FIELD -> Snackbar.make(
             view,
             R.string.review_error_should_not_be_empty,
             Snackbar.LENGTH_SHORT
         ).show()
-        ReviewFieldEvent.Success -> doOnSuccess()
+        SUCCESS -> doOnSuccess()
     }
 }

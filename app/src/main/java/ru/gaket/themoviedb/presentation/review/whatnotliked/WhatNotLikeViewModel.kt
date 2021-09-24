@@ -23,10 +23,10 @@ class WhatNotLikeViewModel @Inject constructor(
     fun submitInfo(whatDidNotLike: String) {
         viewModelScope.launch {
             val fieldEvent = if (whatDidNotLike.isBlank()) {
-                ReviewFieldEvent.EmptyField
+                ReviewFieldEvent.EMPTY_FIELD
             } else {
                 reviewWizard.setWhatDidNotLike(whatDidNotLike)
-                ReviewFieldEvent.Success
+                ReviewFieldEvent.SUCCESS
             }
             _events.emit(fieldEvent)
         }
