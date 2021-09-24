@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import ru.gaket.themoviedb.R
@@ -21,8 +22,7 @@ class RatingFragment : Fragment(R.layout.fragment_review_rating) {
     @Inject
     lateinit var navigator: Navigator
 
-    private val binding: FragmentReviewRatingBinding
-        get() = FragmentReviewRatingBinding.bind(requireView())
+    private val binding: FragmentReviewRatingBinding by viewBinding(FragmentReviewRatingBinding::bind)
 
     private val viewModel: RatingViewModel by viewModels()
 

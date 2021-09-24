@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.core.navigation.Navigator
@@ -18,8 +19,7 @@ class WhatNotLikeFragment : Fragment(R.layout.fragment_review_text) {
     @Inject
     lateinit var navigator: Navigator
 
-    private val binding: FragmentReviewTextBinding
-        get() = FragmentReviewTextBinding.bind(requireView())
+    private val binding: FragmentReviewTextBinding by viewBinding(FragmentReviewTextBinding::bind)
 
     private val viewModel: WhatNotLikeViewModel by viewModels()
 
