@@ -1,34 +1,28 @@
 package ru.gaket.themoviedb.presentation.moviedetails.view
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.core.navigation.MoviesScreen
+import ru.gaket.themoviedb.core.navigation.Navigator
 import ru.gaket.themoviedb.databinding.MovieDetailsFragmentBinding
-import ru.gaket.themoviedb.presentation.core.BaseFragment
 import ru.gaket.themoviedb.presentation.moviedetails.viewmodel.MovieDetailsViewModel
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class MovieDetailsFragment : BaseFragment() {
+class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
 
     private val viewModel: MovieDetailsViewModel by viewModels()
 
-    // todo: [Sergey] clean up binding in onDestroyView
-    lateinit var binding: MovieDetailsFragmentBinding
+    private val binding by viewBinding(MovieDetailsFragmentBinding::bind)
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        binding = MovieDetailsFragmentBinding.inflate(inflater, container, false)
-
-        return binding.root
-    }
+    @Inject
+    lateinit var navigator: Navigator
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -44,7 +38,7 @@ class MovieDetailsFragment : BaseFragment() {
     }
 
     private fun setupListeners() {
-        binding.layMovieDetailsBack.setOnClickListener { navigateTo(MoviesScreen()) }
+        binding.layMovieDetailsBack.setOnClickListener { navigator.navigateTo(MoviesScreen()) }
         binding.ivMovieDetailsBrowse.setOnClickListener { viewModel.onBrowseMovieCLick() }
     }
 
@@ -53,7 +47,7 @@ class MovieDetailsFragment : BaseFragment() {
         const val ARG_MOVIE_ID = "ARG_MOVIE_ID"
         const val ARG_MOVIE_TITLE = "ARG_MOVIE_TITLE"
 
-        fun newInstance(movieId: Long, title: String) = MovieDetailsFragment()
+        fun newInstance(movieId: Long, title: String): MovieDetailsFragment = MovieDetailsFragment()
             .apply {
                 arguments = bundleOf(
                     ARG_MOVIE_ID to movieId,

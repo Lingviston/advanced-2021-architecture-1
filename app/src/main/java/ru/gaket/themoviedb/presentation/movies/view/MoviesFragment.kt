@@ -2,21 +2,21 @@ package ru.gaket.themoviedb.presentation.movies.view
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_DRAGGING
+import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.core.navigation.MovieDetailsScreen
+import ru.gaket.themoviedb.core.navigation.Navigator
 import ru.gaket.themoviedb.databinding.MoviesFragmentBinding
-import ru.gaket.themoviedb.presentation.core.BaseFragment
 import ru.gaket.themoviedb.presentation.movies.viewmodel.EmptyQuery
 import ru.gaket.themoviedb.presentation.movies.viewmodel.EmptyResult
 import ru.gaket.themoviedb.presentation.movies.viewmodel.ErrorResult
@@ -30,23 +30,21 @@ import ru.gaket.themoviedb.presentation.movies.viewmodel.ValidResult
 import ru.gaket.themoviedb.util.afterTextChanged
 import ru.gaket.themoviedb.util.hideKeyboard
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class MoviesFragment : BaseFragment() {
+class MoviesFragment : Fragment(R.layout.movies_fragment) {
 
     private val viewModel: MoviesViewModel by viewModels()
 
-    lateinit var binding: MoviesFragmentBinding
+    private val binding by viewBinding(MoviesFragmentBinding::bind)
 
-    private lateinit var moviesAdapter: MoviesAdapter
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        binding = MoviesFragmentBinding.inflate(inflater, container, false)
-        return binding.root
+    private val moviesAdapter = MoviesAdapter { searchMovie ->
+        navigator.navigateTo(MovieDetailsScreen(searchMovie.id, searchMovie.title))
     }
+
+    @Inject
+    lateinit var navigator: Navigator
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -57,7 +55,6 @@ class MoviesFragment : BaseFragment() {
                 else -> 2
             }
             layoutManager = GridLayoutManager(activity, spanCount)
-            moviesAdapter = MoviesAdapter { navigateTo(MovieDetailsScreen(it.id, it.title)) }
             adapter = moviesAdapter
             addItemDecoration(
                 GridSpacingItemDecoration(
@@ -145,6 +142,6 @@ class MoviesFragment : BaseFragment() {
 
     companion object {
 
-        fun newInstance() = MoviesFragment()
+        fun newInstance(): MoviesFragment = MoviesFragment()
     }
 }
