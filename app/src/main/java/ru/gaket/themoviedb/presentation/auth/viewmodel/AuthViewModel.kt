@@ -11,9 +11,11 @@ import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.domain.auth.LogInError
 import ru.gaket.themoviedb.domain.auth.isAuthorized
 import ru.gaket.themoviedb.util.OperationResult
+import ru.gaket.themoviedb.util.UnitTestable
 import ru.gaket.themoviedb.util.VoidOperationResult
 import javax.inject.Inject
 
+@UnitTestable
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val authInteractor: AuthInteractor,

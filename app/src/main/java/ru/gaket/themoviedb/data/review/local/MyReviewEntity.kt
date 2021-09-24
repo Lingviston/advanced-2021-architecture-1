@@ -7,6 +7,7 @@ import ru.gaket.themoviedb.domain.movies.models.MovieId
 import ru.gaket.themoviedb.domain.review.MyReview
 import ru.gaket.themoviedb.domain.review.Rating
 import ru.gaket.themoviedb.domain.review.Review
+import ru.gaket.themoviedb.util.UnitTestable
 
 @Entity(tableName = MyReviewEntity.TABLE_NAME)
 data class MyReviewEntity(
@@ -40,6 +41,7 @@ data class MyReviewEntity(
     }
 }
 
+@UnitTestable
 internal fun MyReviewEntity.toModel(): MyReview =
     MyReview(
         movieId = this.reviewMovieId,

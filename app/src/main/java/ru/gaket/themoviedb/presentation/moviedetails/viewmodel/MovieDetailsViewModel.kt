@@ -9,8 +9,10 @@ import ru.gaket.themoviedb.core.navigation.WebNavigator
 import ru.gaket.themoviedb.domain.movies.MoviesInteractor
 import ru.gaket.themoviedb.presentation.moviedetails.view.MovieDetailsFragment
 import ru.gaket.themoviedb.presentation.moviedetails.view.MovieDetailsFragment.Companion.ARG_MOVIE_ID
+import ru.gaket.themoviedb.util.UnitTestable
 import javax.inject.Inject
 
+@UnitTestable
 @HiltViewModel
 class MovieDetailsViewModel @Inject constructor(
     private val moviesInteractor: MoviesInteractor,

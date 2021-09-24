@@ -1,5 +1,6 @@
 package ru.gaket.themoviedb.domain.auth
 
+import ru.gaket.themoviedb.util.UnitTestable
 import java.util.regex.Pattern
 
 data class User(
@@ -15,6 +16,7 @@ data class User(
 
         companion object {
 
+            @UnitTestable
             fun createIfValid(value: String?): Email? {
                 val pattern = Pattern.compile(
                     "^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]|[\\w-]{2,}))@"
@@ -43,6 +45,7 @@ data class User(
 
             private const val MINIMAL_PASSWORD_LENGTH = 6
 
+            @UnitTestable
             fun createIfValid(value: String?): Password? =
                 if ((value != null)
                     && value.isNotBlank()

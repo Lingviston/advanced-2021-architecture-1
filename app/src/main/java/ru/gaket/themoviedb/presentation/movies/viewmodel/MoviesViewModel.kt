@@ -16,10 +16,12 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import ru.gaket.themoviedb.domain.movies.MoviesInteractor
 import ru.gaket.themoviedb.util.OperationResult
+import ru.gaket.themoviedb.util.UnitTestable
 import timber.log.Timber
 import java.util.concurrent.CancellationException
 import javax.inject.Inject
 
+@UnitTestable
 @HiltViewModel
 class MoviesViewModel @Inject constructor(
     private val moviesInteractor: MoviesInteractor,

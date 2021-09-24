@@ -9,24 +9,28 @@ sealed class OperationResult<out S, out E> {
 
 typealias VoidOperationResult<E> = OperationResult<Unit, E>
 
+@UnitTestable
 inline fun <S> OperationResult<S, Throwable>.getOrThrow(): S =
     when (this) {
         is OperationResult.Success -> this.result
         is OperationResult.Error -> throw this.result
     }
 
+@UnitTestable
 inline fun <S, E, R> OperationResult<S, E>.mapSuccess(block: (S) -> R): OperationResult<R, E> =
     when (this) {
         is OperationResult.Success -> OperationResult.Success(result = block(this.result))
         is OperationResult.Error -> OperationResult.Error(result = this.result)
     }
 
+@UnitTestable
 inline fun <S, E, R> OperationResult<S, E>.mapError(block: (E) -> R): OperationResult<S, R> =
     when (this) {
         is OperationResult.Success -> OperationResult.Success(result = this.result)
         is OperationResult.Error -> OperationResult.Error(result = block(this.result))
     }
 
+@UnitTestable
 inline fun <S, E, R> OperationResult<S, E>.mapNestedSuccess(
     block: (S) -> OperationResult<R, E>,
 ): OperationResult<R, E> =
@@ -35,6 +39,7 @@ inline fun <S, E, R> OperationResult<S, E>.mapNestedSuccess(
         is OperationResult.Error -> OperationResult.Error(result = this.result)
     }
 
+@UnitTestable
 inline fun <S, E> OperationResult<S, E>.doOnSuccess(block: (S) -> Unit): OperationResult<S, E> {
     if (this is OperationResult.Success) {
         block(this.result)
@@ -42,6 +47,7 @@ inline fun <S, E> OperationResult<S, E>.doOnSuccess(block: (S) -> Unit): Operati
     return this
 }
 
+@UnitTestable
 inline fun <S, E> OperationResult<S, E>.doOnError(block: (E) -> Unit): OperationResult<S, E> {
     if (this is OperationResult.Error) {
         block(this.result)
@@ -49,6 +55,7 @@ inline fun <S, E> OperationResult<S, E>.doOnError(block: (E) -> Unit): Operation
     return this
 }
 
+@UnitTestable
 inline fun <S, R> S.runOperationCatching(block: S.() -> R): OperationResult<R, Throwable> =
     try {
         OperationResult.Success(block())
@@ -56,6 +63,7 @@ inline fun <S, R> S.runOperationCatching(block: S.() -> R): OperationResult<R, T
         OperationResult.Error(e)
     }
 
+@UnitTestable
 inline fun <reified S, reified E> List<OperationResult<S, E>>.toSuccessOrErrorList(): OperationResult<List<S>, List<E>> {
     var successResults: MutableList<S>? = null
     var errorResults: MutableList<E>? = null

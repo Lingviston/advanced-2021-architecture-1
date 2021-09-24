@@ -2,7 +2,9 @@ package ru.gaket.themoviedb.data.review.local
 
 import androidx.room.TypeConverter
 import ru.gaket.themoviedb.domain.review.Rating
+import ru.gaket.themoviedb.util.UnitTestable
 
+@UnitTestable
 internal class RatingDbConverter {
 
     @TypeConverter

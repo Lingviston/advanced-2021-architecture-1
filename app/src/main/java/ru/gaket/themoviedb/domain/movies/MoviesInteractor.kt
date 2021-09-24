@@ -5,6 +5,7 @@ import ru.gaket.themoviedb.domain.movies.models.Movie
 import ru.gaket.themoviedb.domain.movies.models.MovieId
 import ru.gaket.themoviedb.domain.movies.models.SearchMovieWithMyReview
 import ru.gaket.themoviedb.util.OperationResult
+import ru.gaket.themoviedb.util.UnitTestable
 import javax.inject.Inject
 
 interface MoviesInteractor {
@@ -20,6 +21,7 @@ interface MoviesInteractor {
     suspend fun getMovieDetails(id: MovieId): OperationResult<Movie, Throwable>
 }
 
+@UnitTestable
 class MoviesInteractorImpl @Inject constructor(
     private val moviesRepository: MoviesRepository,
 ) : MoviesInteractor {

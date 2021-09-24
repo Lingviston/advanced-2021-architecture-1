@@ -4,13 +4,16 @@ import ru.gaket.themoviedb.data.movies.local.MovieEntity
 import ru.gaket.themoviedb.data.movies.local.SearchMovieEntity
 import ru.gaket.themoviedb.domain.movies.models.Movie
 import ru.gaket.themoviedb.domain.movies.models.SearchMovie
+import ru.gaket.themoviedb.util.UnitTestable
 
+@UnitTestable
 internal fun SearchMovieEntity.toModel() = SearchMovie(
     id = id,
     title = title,
     thumbnail = thumbnail,
 )
 
+@UnitTestable
 internal fun MovieEntity.toModel() = Movie(
     id = id,
     title = title,

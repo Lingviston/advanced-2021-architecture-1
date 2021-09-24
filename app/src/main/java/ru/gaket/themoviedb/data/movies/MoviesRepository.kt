@@ -25,6 +25,7 @@ import ru.gaket.themoviedb.domain.review.AddReviewRequest
 import ru.gaket.themoviedb.domain.review.MyReview
 import ru.gaket.themoviedb.domain.review.SomeoneReview
 import ru.gaket.themoviedb.util.OperationResult
+import ru.gaket.themoviedb.util.UnitTestable
 import ru.gaket.themoviedb.util.VoidOperationResult
 import ru.gaket.themoviedb.util.doOnSuccess
 import ru.gaket.themoviedb.util.mapNestedSuccess
@@ -69,6 +70,7 @@ interface MoviesRepository {
     suspend fun unSync()
 }
 
+@UnitTestable
 private suspend fun MoviesRepository.getMovieDetailsList(ids: Set<MovieId>): OperationResult<List<Movie>, List<Throwable>> =
     coroutineScope {
         val asyncCalls = ids.map { singleId ->
@@ -82,6 +84,7 @@ private suspend fun MoviesRepository.getMovieDetailsList(ids: Set<MovieId>): Ope
 /**
  * Repository providing data about [MovieEntity], [SearchMovieEntity]
  */
+@UnitTestable
 class MoviesRepositoryImpl @Inject constructor(
     private val moviesRemoteDataSource: MoviesRemoteDataSource,
     private val moviesLocalDataSource: MoviesLocalDataSource,

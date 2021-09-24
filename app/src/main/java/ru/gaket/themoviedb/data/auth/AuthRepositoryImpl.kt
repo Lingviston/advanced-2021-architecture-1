@@ -8,10 +8,12 @@ import ru.gaket.themoviedb.data.auth.remote.RegisterError
 import ru.gaket.themoviedb.domain.auth.LogInError
 import ru.gaket.themoviedb.domain.auth.User
 import ru.gaket.themoviedb.util.OperationResult
+import ru.gaket.themoviedb.util.UnitTestable
 import ru.gaket.themoviedb.util.VoidOperationResult
 import ru.gaket.themoviedb.util.mapSuccess
 import javax.inject.Inject
 
+@UnitTestable
 class AuthRepositoryImpl @Inject constructor(
     private val localDataSource: AuthLocalDataSource,
     private val remoteDataSource: AuthRemoteDataSource,

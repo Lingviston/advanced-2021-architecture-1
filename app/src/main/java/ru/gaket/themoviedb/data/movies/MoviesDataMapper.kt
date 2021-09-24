@@ -5,13 +5,16 @@ import ru.gaket.themoviedb.data.movies.local.MovieEntity
 import ru.gaket.themoviedb.data.movies.local.SearchMovieEntity
 import ru.gaket.themoviedb.data.movies.remote.DetailsMovieDto
 import ru.gaket.themoviedb.data.movies.remote.SearchMovieDto
+import ru.gaket.themoviedb.util.UnitTestable
 
+@UnitTestable
 fun SearchMovieDto.toEntity(baseImageUrl: String) = SearchMovieEntity(
     id = id,
     title = title,
     thumbnail = getPosterUrl(baseImageUrl, posterPath),
 )
 
+@UnitTestable
 fun DetailsMovieDto.toEntity(
     baseImageUrl: String,
     hasReview: Boolean = false,
