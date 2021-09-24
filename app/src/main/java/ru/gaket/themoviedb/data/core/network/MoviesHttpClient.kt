@@ -4,10 +4,9 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import ru.gaket.themoviedb.core.MovieUrlProvider
 import ru.gaket.themoviedb.data.genres.remote.GenresApi
 import ru.gaket.themoviedb.data.movies.remote.MoviesApi
-import ru.gaket.themoviedb.di.BaseUrlQualifier
-import ru.gaket.themoviedb.di.TheMovieDbApiKey
 import javax.inject.Inject
 
 interface MoviesHttpClient {
@@ -18,18 +17,17 @@ interface MoviesHttpClient {
 }
 
 class MoviesHttpClientImpl @Inject constructor(
-    @TheMovieDbApiKey apiKey: String,
-    @BaseUrlQualifier baseUrl: String,
+    movieUrlProvider: MovieUrlProvider,
 ) : MoviesHttpClient {
 
     private val client = OkHttpClient.Builder()
-        .addInterceptor(QueryInterceptor(hashMapOf("api_key" to apiKey)))
+        .addInterceptor(QueryInterceptor(hashMapOf("api_key" to movieUrlProvider.apiKey)))
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
         .build()
 
     private val retrofit = Retrofit.Builder()
         .client(client)
-        .baseUrl(baseUrl)
+        .baseUrl(movieUrlProvider.baseUrl)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 

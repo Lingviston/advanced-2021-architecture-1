@@ -60,12 +60,15 @@ data class MovieEntity(
     @ColumnInfo(name = "thumbnail")
     val thumbnail: String = "",
 
+    //todo: is field really used?
     @ColumnInfo(name = "reviewed")
     val hasReview: Boolean = false,
 
+    //todo: is field really used?
     @ColumnInfo(name = "review_id")
     val reviewId: Int = 0,
 
+    //todo: is field really used?
     @ColumnInfo(name = "updated_from_server")
     val isUpdatedFromServer: Boolean = false,
 )
