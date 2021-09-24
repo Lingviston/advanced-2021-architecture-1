@@ -6,7 +6,6 @@ import kotlinx.coroutines.coroutineScope
 import ru.gaket.themoviedb.core.MovieUrlProvider
 import ru.gaket.themoviedb.data.movies.local.MovieEntity
 import ru.gaket.themoviedb.data.movies.local.MoviesLocalDataSource
-import ru.gaket.themoviedb.data.movies.local.SearchMovieEntity
 import ru.gaket.themoviedb.data.movies.remote.MoviesRemoteDataSource
 import ru.gaket.themoviedb.data.review.local.MyReviewsLocalDataSource
 import ru.gaket.themoviedb.data.review.local.toEntity
@@ -21,6 +20,7 @@ import ru.gaket.themoviedb.domain.movies.models.MovieWithReviews
 import ru.gaket.themoviedb.domain.movies.models.SearchMovie
 import ru.gaket.themoviedb.domain.movies.models.SearchMovieWithMyReview
 import ru.gaket.themoviedb.domain.movies.toModel
+import ru.gaket.themoviedb.domain.movies.toSearchMovie
 import ru.gaket.themoviedb.domain.review.AddReviewRequest
 import ru.gaket.themoviedb.domain.review.MyReview
 import ru.gaket.themoviedb.domain.review.SomeoneReview
@@ -95,33 +95,14 @@ class MoviesRepositoryImpl @Inject constructor(
         page: Int,
     ): OperationResult<List<SearchMovieWithMyReview>, Throwable> =
         searchMovies(query, page)
-            .mapSuccess { movies ->
-                val movieIds = movies.map { singleMovie -> singleMovie.id }
-
-                val myReviews = getMyReviewsForMovies(movieIds)
-
-                movies.map { singleMovie ->
-                    SearchMovieWithMyReview(
-                        movie = singleMovie,
-                        myReview = myReviews[singleMovie.id]
-                    )
-                }
-            }
+            .mapSuccess { movies -> fillSearchMoviesWithMyReviews(movies) }
 
     override suspend fun getMovieDetails(id: MovieId): OperationResult<Movie, Throwable> {
         val cachedMovie = moviesLocalDataSource.getById(id)
-        val entityResult = if (cachedMovie?.isUpdatedFromServer == true) {
+        val entityResult = if (cachedMovie != null) {
             OperationResult.Success(cachedMovie)
         } else {
-            moviesRemoteDataSource.getMovieDetails(id)
-                .mapSuccess { dto ->
-                    dto.toEntity(
-                        movieUrlProvider.baseImageUrl,
-                        hasReview = cachedMovie?.hasReview == true,
-                        reviewId = cachedMovie?.reviewId ?: 0
-                    )
-                }
-                .doOnSuccess { entity -> moviesLocalDataSource.insert(entity) }
+            loadMovieDetailsFromRemoteAndStore(id)
         }
 
         return entityResult.mapSuccess { entity -> entity.toModel() }
@@ -166,6 +147,24 @@ class MoviesRepositoryImpl @Inject constructor(
     override suspend fun unSync() =
         myReviewsLocalDataSource.deleteAll()
 
+    private suspend fun loadMovieDetailsFromRemoteAndStore(id: MovieId): OperationResult<MovieEntity, Throwable> =
+        moviesRemoteDataSource.getMovieDetails(id)
+            .mapSuccess { dto -> dto.toEntity(movieUrlProvider.baseImageUrl) }
+            .doOnSuccess { entity -> moviesLocalDataSource.insert(entity) }
+
+    private suspend fun fillSearchMoviesWithMyReviews(movies: List<SearchMovie>): List<SearchMovieWithMyReview> {
+        val movieIds = movies.map { singleMovie -> singleMovie.id }
+
+        val myReviews = getMyReviewsForMovies(movieIds)
+
+        return movies.map { singleMovie ->
+            SearchMovieWithMyReview(
+                movie = singleMovie,
+                myReview = myReviews[singleMovie.id]
+            )
+        }
+    }
+
     private suspend fun getAndStoreMyReviews(userId: Id): OperationResult<List<MyReview>, Throwable> =
         reviewsRemoteDataSource.getMyReviews(userId)
             .doOnSuccess { myReviews ->
@@ -192,7 +191,7 @@ class MoviesRepositoryImpl @Inject constructor(
         moviesRemoteDataSource.searchMovies(query, page)
             .mapSuccess { dtos -> dtos.map { singleDto -> singleDto.toEntity(movieUrlProvider.baseImageUrl) } }
             .doOnSuccess { movieEntities -> moviesLocalDataSource.insertAll(movieEntities) }
-            .mapSuccess { entries -> entries.map { movieEntity -> movieEntity.toModel() } }
+            .mapSuccess { entries -> entries.map { movieEntity -> movieEntity.toSearchMovie() } }
 
     private suspend fun getMyReviewsForMovies(movieIds: List<MovieId>): Map<MovieId, MyReview> =
         myReviewsLocalDataSource.getByMovieIds(movieIds)

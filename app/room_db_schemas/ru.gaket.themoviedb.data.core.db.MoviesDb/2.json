@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "f76ec31b9136dd719d9578f39fc79548",
+    "identityHash": "4ded069dda80bdafbd326adc89d7d1a7",
     "entities": [
       {
         "tableName": "genres",
@@ -32,11 +32,11 @@
       },
       {
         "tableName": "movies",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `imdb_id` TEXT, `title` TEXT NOT NULL, `overview` TEXT NOT NULL, `allowed_age` TEXT NOT NULL, `rating` INTEGER NOT NULL, `reviews_counter` INTEGER NOT NULL, `popularity` REAL NOT NULL, `release_date` TEXT NOT NULL, `duration` INTEGER NOT NULL, `budget` INTEGER NOT NULL, `revenue` INTEGER NOT NULL, `status` TEXT NOT NULL, `genres` TEXT NOT NULL, `homepage` TEXT NOT NULL, `thumbnail` TEXT NOT NULL, `reviewed` INTEGER NOT NULL, `review_id` INTEGER NOT NULL, `updated_from_server` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`movie_id` INTEGER NOT NULL, `imdb_id` TEXT, `title` TEXT NOT NULL, `overview` TEXT NOT NULL, `allowed_age` TEXT NOT NULL, `rating` INTEGER NOT NULL, `reviews_counter` INTEGER NOT NULL, `popularity` REAL NOT NULL, `release_date` TEXT NOT NULL, `duration` INTEGER NOT NULL, `budget` INTEGER NOT NULL, `revenue` INTEGER NOT NULL, `status` TEXT NOT NULL, `genres` TEXT NOT NULL, `homepage` TEXT NOT NULL, `thumbnail` TEXT NOT NULL, PRIMARY KEY(`movie_id`))",
         "fields": [
           {
             "fieldPath": "id",
-            "columnName": "id",
+            "columnName": "movie_id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -129,29 +129,11 @@
             "columnName": "thumbnail",
             "affinity": "TEXT",
             "notNull": true
-          },
-          {
-            "fieldPath": "hasReview",
-            "columnName": "reviewed",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "reviewId",
-            "columnName": "review_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "isUpdatedFromServer",
-            "columnName": "updated_from_server",
-            "affinity": "INTEGER",
-            "notNull": true
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "id"
+            "movie_id"
           ],
           "autoGenerate": false
         },
@@ -206,7 +188,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f76ec31b9136dd719d9578f39fc79548')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4ded069dda80bdafbd326adc89d7d1a7')"
     ]
   }
 }

@@ -7,6 +7,7 @@ import ru.gaket.themoviedb.data.genres.remote.GenresRemoteDataSource
 import javax.inject.Inject
 
 // todo: [Sergey] use domain model instead of data model
+//todo: remove if useless with all related
 interface GenresRepository {
 
     /**
