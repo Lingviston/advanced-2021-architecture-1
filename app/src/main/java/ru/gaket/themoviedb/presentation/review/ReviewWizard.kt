@@ -3,6 +3,10 @@ package ru.gaket.themoviedb.presentation.review
 import ru.gaket.themoviedb.domain.movies.models.MovieId
 import ru.gaket.themoviedb.domain.review.AddReviewRequest
 import ru.gaket.themoviedb.domain.review.Rating
+import ru.gaket.themoviedb.util.OperationResult
+import ru.gaket.themoviedb.util.doOnError
+import ru.gaket.themoviedb.util.runOperationCatching
+import timber.log.Timber
 import javax.inject.Inject
 
 interface ReviewWizard {
@@ -11,7 +15,7 @@ interface ReviewWizard {
     fun setWhatLike(whatLiked: String)
     fun setWhatDidNotLike(whatDidNotLike: String)
     fun setRating(rating: Rating)
-    fun buildReview(): AddReviewRequest
+    fun buildReview(): OperationResult<AddReviewRequest, Throwable>
     fun clearState()
 }
 
@@ -39,13 +43,17 @@ class ReviewWizardImplementation @Inject constructor() : ReviewWizard {
         this.rating = rating
     }
 
-    override fun buildReview(): AddReviewRequest {
-        return AddReviewRequest(
-            movieId = movie ?: error("movieId is not provided"),
-            liked = whatLiked ?: error("whatLiked is not provided"),
-            disliked = whatDidNotLike ?: error("whatDidNotLike is not provided"),
-            rating = rating ?: error("rating is not provided")
-        )
+    override fun buildReview(): OperationResult<AddReviewRequest, Throwable> {
+        return runOperationCatching {
+            AddReviewRequest(
+                movieId = movie ?: error("movieId is not provided"),
+                liked = whatLiked ?: error("whatLiked is not provided"),
+                disliked = whatDidNotLike ?: error("whatDidNotLike is not provided"),
+                rating = rating ?: error("rating is not provided")
+            )
+        }.doOnError {
+            Timber.e(it)
+        }
     }
 
     override fun clearState() {

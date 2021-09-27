@@ -12,7 +12,8 @@ import ru.gaket.themoviedb.data.auth.AuthRepository
 import ru.gaket.themoviedb.data.movies.MoviesRepository
 import ru.gaket.themoviedb.domain.review.Rating
 import ru.gaket.themoviedb.presentation.review.ReviewWizard
-import timber.log.Timber
+import ru.gaket.themoviedb.util.OperationResult.Error
+import ru.gaket.themoviedb.util.OperationResult.Success
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,6 +31,7 @@ class RatingViewModel @Inject constructor(
         get() = _reviewState
     private val _reviewState = MutableLiveData<ReviewState>()
 
+    //TODO [Vlad] Improve code, maybe move to OperationResult
     fun submit(ratingNumber: Int) {
         val rating = Rating.mapToRating(ratingNumber)
         if (rating == null) {
@@ -40,23 +42,25 @@ class RatingViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            try {
-                _reviewState.value = ReviewState.Loading
-                val (userId, userEmail) = authRepository.currentUser
-                    ?: error("User is not signed in")
-                moviesRepository.addReview(
-                    reviewWizard.buildReview(),
-                    userId,
-                    userEmail
-                )
-                reviewWizard.clearState()
-                _reviewEvent.emit(ReviewEvent.Success)
-            } catch (e: Exception) {
-                Timber.e(e)
-                _reviewEvent.emit(ReviewEvent.UnknownError)
-            } finally {
-                _reviewState.value = ReviewState.Idle
+            _reviewState.value = ReviewState.Loading
+
+            val currentUser = authRepository.currentUser
+            val (userId, userEmail) = if (currentUser != null) {
+                currentUser
+            } else {
+                _reviewEvent.emit(ReviewEvent.UserNotSignedInError)
+                return@launch
             }
+
+            when (val review = reviewWizard.buildReview()) {
+                is Success -> {
+                    moviesRepository.addReview(review.result, userId, userEmail)
+                    reviewWizard.clearState()
+                    _reviewEvent.emit(ReviewEvent.Success)
+                }
+                is Error -> _reviewEvent.emit(ReviewEvent.UnknownError)
+            }
+            _reviewState.value = ReviewState.Idle
         }
     }
 
@@ -68,6 +72,7 @@ class RatingViewModel @Inject constructor(
     sealed class ReviewEvent {
         object ZeroRatingError : ReviewEvent()
         object UnknownError : ReviewEvent()
+        object UserNotSignedInError : ReviewEvent()
         object Success : ReviewEvent()
     }
 }

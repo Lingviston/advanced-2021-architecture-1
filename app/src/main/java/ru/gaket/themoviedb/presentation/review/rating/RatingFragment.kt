@@ -8,10 +8,15 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import ru.gaket.themoviedb.R
+import ru.gaket.themoviedb.R.string
 import ru.gaket.themoviedb.core.navigation.MovieDetailsScreen
 import ru.gaket.themoviedb.core.navigation.Navigator
 import ru.gaket.themoviedb.databinding.FragmentReviewRatingBinding
 import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewEvent
+import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewEvent.Success
+import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewEvent.UnknownError
+import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewEvent.UserNotSignedInError
+import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewEvent.ZeroRatingError
 import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewState
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -39,23 +44,25 @@ class RatingFragment : Fragment(R.layout.fragment_review_rating) {
 
     private fun processReviewEvent(reviewEvent: ReviewEvent) {
         when (reviewEvent) {
-            ReviewEvent.UnknownError -> {
+            UnknownError, UserNotSignedInError -> {
                 binding.rbRateMovie.isEnabled = true
                 binding.btnSubmit.isEnabled = true
                 Snackbar.make(
                     requireView(),
-                    R.string.review_error_unknown,
+                    string.review_error_unknown,
                     Snackbar.LENGTH_SHORT
                 ).show()
             }
-            ReviewEvent.ZeroRatingError -> {
+            ZeroRatingError -> {
                 Snackbar.make(
                     requireView(),
-                    R.string.review_error_zero_rating,
+                    string.review_error_zero_rating,
                     Snackbar.LENGTH_SHORT
                 ).show()
             }
-            ReviewEvent.Success -> navigator.backTo(MovieDetailsScreen.TAG)
+            Success -> {
+                navigator.backTo(MovieDetailsScreen.TAG)
+            }
         }
     }
 
