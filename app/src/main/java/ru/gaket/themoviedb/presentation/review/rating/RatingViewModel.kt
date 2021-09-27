@@ -11,14 +11,14 @@ import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.data.auth.AuthRepository
 import ru.gaket.themoviedb.data.movies.MoviesRepository
 import ru.gaket.themoviedb.domain.review.Rating
-import ru.gaket.themoviedb.presentation.review.ReviewWizard
+import ru.gaket.themoviedb.domain.review.ReviewRepository
 import ru.gaket.themoviedb.util.OperationResult.Error
 import ru.gaket.themoviedb.util.OperationResult.Success
 import javax.inject.Inject
 
 @HiltViewModel
 class RatingViewModel @Inject constructor(
-    private val reviewWizard: ReviewWizard,
+    private val reviewRepository: ReviewRepository,
     private val moviesRepository: MoviesRepository,
     private val authRepository: AuthRepository,
 ) : ViewModel() {
@@ -31,14 +31,14 @@ class RatingViewModel @Inject constructor(
         get() = _reviewState
     private val _reviewState = MutableLiveData<ReviewState>()
 
-    //TODO [Vlad] Improve code, maybe move to OperationResult
+    //TODO [Vlad] Improve code, maybe move to OperationResult, remove multiple launches
     fun submit(ratingNumber: Int) {
         val rating = Rating.mapToRating(ratingNumber)
         if (rating == null) {
             viewModelScope.launch { _reviewEvent.emit(ReviewEvent.ZeroRatingError) }
             return
         } else {
-            reviewWizard.setRating(rating)
+            viewModelScope.launch { reviewRepository.setRating(rating) }
         }
 
         viewModelScope.launch {
@@ -52,10 +52,10 @@ class RatingViewModel @Inject constructor(
                 return@launch
             }
 
-            when (val review = reviewWizard.buildReview()) {
+            when (val review = reviewRepository.buildReview()) {
                 is Success -> {
                     moviesRepository.addReview(review.result, userId, userEmail)
-                    reviewWizard.clearState()
+                    reviewRepository.clearState()
                     _reviewEvent.emit(ReviewEvent.Success)
                 }
                 is Error -> _reviewEvent.emit(ReviewEvent.UnknownError)

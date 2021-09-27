@@ -10,12 +10,12 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.domain.movies.models.MovieId
 import ru.gaket.themoviedb.presentation.review.ReviewFieldEvent
-import ru.gaket.themoviedb.presentation.review.ReviewWizard
+import ru.gaket.themoviedb.domain.review.ReviewRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class WhatLikeViewModel @Inject constructor(
-    private val reviewWizard: ReviewWizard,
+    private val reviewRepository: ReviewRepository,
     savedState: SavedStateHandle,
 ) : ViewModel() {
 
@@ -26,7 +26,10 @@ class WhatLikeViewModel @Inject constructor(
     init {
         val movieId: MovieId = savedState.get<MovieId>(ARG_MOVIE_ID)
             ?: error("You need to provide $ARG_MOVIE_ID")
-        reviewWizard.init(movieId)
+        viewModelScope.launch {
+            reviewRepository.clearState()
+            reviewRepository.setMovieId(movieId)
+        }
     }
 
     fun submitInfo(whatLike: String) {
@@ -34,7 +37,7 @@ class WhatLikeViewModel @Inject constructor(
             val fieldEvent = if (whatLike.isBlank()) {
                 ReviewFieldEvent.EMPTY_FIELD
             } else {
-                reviewWizard.setWhatLike(whatLike)
+                reviewRepository.setWhatLike(whatLike)
                 ReviewFieldEvent.SUCCESS
             }
             _events.emit(fieldEvent)

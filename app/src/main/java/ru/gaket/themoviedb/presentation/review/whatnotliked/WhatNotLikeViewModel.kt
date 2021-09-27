@@ -8,12 +8,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.presentation.review.ReviewFieldEvent
-import ru.gaket.themoviedb.presentation.review.ReviewWizard
+import ru.gaket.themoviedb.domain.review.ReviewRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class WhatNotLikeViewModel @Inject constructor(
-    private val reviewWizard: ReviewWizard,
+    private val reviewRepository: ReviewRepository,
 ) : ViewModel() {
 
     val events: LiveData<ReviewFieldEvent>
@@ -25,7 +25,7 @@ class WhatNotLikeViewModel @Inject constructor(
             val fieldEvent = if (whatDidNotLike.isBlank()) {
                 ReviewFieldEvent.EMPTY_FIELD
             } else {
-                reviewWizard.setWhatDidNotLike(whatDidNotLike)
+                reviewRepository.setWhatDidNotLike(whatDidNotLike)
                 ReviewFieldEvent.SUCCESS
             }
             _events.emit(fieldEvent)
