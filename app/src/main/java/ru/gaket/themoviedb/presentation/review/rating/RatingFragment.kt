@@ -18,6 +18,7 @@ import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewEven
 import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewEvent.UserNotSignedInError
 import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewEvent.ZeroRatingError
 import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewState
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -43,6 +44,7 @@ class RatingFragment : Fragment(R.layout.fragment_review_rating) {
     }
 
     private fun processReviewEvent(reviewEvent: ReviewEvent) {
+        Timber.d("Event received: $reviewEvent")
         when (reviewEvent) {
             UnknownError, UserNotSignedInError -> {
                 binding.rbRateMovie.isEnabled = true

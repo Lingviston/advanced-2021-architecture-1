@@ -31,37 +31,36 @@ class RatingViewModel @Inject constructor(
         get() = _reviewState
     private val _reviewState = MutableLiveData<ReviewState>()
 
-    //TODO [Vlad] Improve code, maybe move to OperationResult, remove multiple launches
     fun submit(ratingNumber: Int) {
-        val rating = Rating.mapToRating(ratingNumber)
-        if (rating == null) {
-            viewModelScope.launch { _reviewEvent.emit(ReviewEvent.ZeroRatingError) }
-            return
-        } else {
-            viewModelScope.launch { reviewRepository.setRating(rating) }
-        }
-
         viewModelScope.launch {
-            _reviewState.value = ReviewState.Loading
-
-            val currentUser = authRepository.currentUser
-            val (userId, userEmail) = if (currentUser != null) {
-                currentUser
+            val rating = Rating.mapToRating(ratingNumber)
+            if (rating == null) {
+                _reviewEvent.emit(ReviewEvent.ZeroRatingError)
             } else {
-                _reviewEvent.emit(ReviewEvent.UserNotSignedInError)
-                return@launch
+                reviewRepository.setRating(rating)
+                submitReview()
             }
+        }
+    }
 
+    private suspend fun submitReview() {
+        _reviewState.value = ReviewState.Loading
+
+        val currentUser = authRepository.currentUser
+        if (currentUser == null) {
+            _reviewEvent.emit(ReviewEvent.UserNotSignedInError)
+        } else {
             when (val review = reviewRepository.buildReview()) {
                 is Success -> {
-                    moviesRepository.addReview(review.result, userId, userEmail)
+                    moviesRepository.addReview(review.result, currentUser.id, currentUser.email)
                     reviewRepository.clearState()
                     _reviewEvent.emit(ReviewEvent.Success)
                 }
                 is Error -> _reviewEvent.emit(ReviewEvent.UnknownError)
             }
-            _reviewState.value = ReviewState.Idle
         }
+
+        _reviewState.value = ReviewState.Idle
     }
 
     sealed class ReviewState {
