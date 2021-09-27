@@ -9,7 +9,7 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.core.navigation.Navigator
-import ru.gaket.themoviedb.core.navigation.ReviewFlow
+import ru.gaket.themoviedb.core.navigation.RatingScreen
 import ru.gaket.themoviedb.databinding.FragmentReviewTextBinding
 import ru.gaket.themoviedb.presentation.review.ReviewFieldEvent.EMPTY_FIELD
 import ru.gaket.themoviedb.presentation.review.ReviewFieldEvent.SUCCESS
@@ -42,7 +42,7 @@ class WhatNotLikeFragment : Fragment(R.layout.fragment_review_text) {
                     R.string.review_error_should_not_be_empty,
                     Snackbar.LENGTH_SHORT
                 ).show()
-                SUCCESS -> navigator.navigateTo(ReviewFlow.RatingScreen)
+                SUCCESS -> navigator.navigateTo(RatingScreen())
             }
         }
     }
