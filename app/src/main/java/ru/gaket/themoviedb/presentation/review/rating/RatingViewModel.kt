@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.data.auth.AuthRepository
 import ru.gaket.themoviedb.data.movies.MoviesRepository
 import ru.gaket.themoviedb.domain.review.Rating
-import ru.gaket.themoviedb.domain.review.ReviewRepository
+import ru.gaket.themoviedb.domain.review.repository.ReviewRepository
 import ru.gaket.themoviedb.util.OperationResult.Error
 import ru.gaket.themoviedb.util.OperationResult.Success
 import javax.inject.Inject

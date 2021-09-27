@@ -1,15 +1,17 @@
-package ru.gaket.themoviedb.domain.review
+package ru.gaket.themoviedb.domain.review.repository
 
 import ru.gaket.themoviedb.domain.movies.models.MovieId
-import ru.gaket.themoviedb.domain.store.ItemStore
-import ru.gaket.themoviedb.domain.store.ReviewFormModel
+import ru.gaket.themoviedb.domain.review.AddReviewRequest
+import ru.gaket.themoviedb.domain.review.Rating
+import ru.gaket.themoviedb.domain.review.model.ReviewFormModel
+import ru.gaket.themoviedb.domain.review.store.ItemStore
 import ru.gaket.themoviedb.util.OperationResult
 import ru.gaket.themoviedb.util.doOnError
 import ru.gaket.themoviedb.util.runOperationCatching
 import timber.log.Timber
 import javax.inject.Inject
 
-class ReviewRepositoryImplementation @Inject constructor(
+class ReviewRepositoryImpl @Inject constructor(
     private val reviewFormStore: ItemStore<ReviewFormModel>,
 ) : ReviewRepository {
 

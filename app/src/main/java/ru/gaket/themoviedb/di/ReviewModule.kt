@@ -4,11 +4,11 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import ru.gaket.themoviedb.domain.review.ReviewRepository
-import ru.gaket.themoviedb.domain.review.ReviewRepositoryImplementation
-import ru.gaket.themoviedb.domain.store.ItemStore
-import ru.gaket.themoviedb.domain.store.ReviewFormModel
-import ru.gaket.themoviedb.domain.store.ReviewStore
+import ru.gaket.themoviedb.domain.review.model.ReviewFormModel
+import ru.gaket.themoviedb.domain.review.repository.ReviewRepository
+import ru.gaket.themoviedb.domain.review.repository.ReviewRepositoryImpl
+import ru.gaket.themoviedb.domain.review.store.ItemStore
+import ru.gaket.themoviedb.domain.review.store.ReviewStore
 import javax.inject.Singleton
 
 @Module
@@ -17,7 +17,7 @@ interface ReviewModule {
 
     @Singleton
     @Binds
-    fun bindsReviewRepository(repository: ReviewRepositoryImplementation): ReviewRepository
+    fun bindsReviewRepository(repository: ReviewRepositoryImpl): ReviewRepository
 
     @Singleton
     @Binds

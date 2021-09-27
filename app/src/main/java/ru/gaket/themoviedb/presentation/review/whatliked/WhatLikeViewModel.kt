@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.domain.movies.models.MovieId
 import ru.gaket.themoviedb.presentation.review.ReviewFieldEvent
-import ru.gaket.themoviedb.domain.review.ReviewRepository
+import ru.gaket.themoviedb.domain.review.repository.ReviewRepository
 import javax.inject.Inject
 
 @HiltViewModel

@@ -1,4 +1,4 @@
-package ru.gaket.themoviedb.domain.store
+package ru.gaket.themoviedb.domain.review.store
 
 import kotlinx.coroutines.flow.Flow
 

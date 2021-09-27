@@ -1,6 +1,8 @@
-package ru.gaket.themoviedb.domain.review
+package ru.gaket.themoviedb.domain.review.repository
 
 import ru.gaket.themoviedb.domain.movies.models.MovieId
+import ru.gaket.themoviedb.domain.review.AddReviewRequest
+import ru.gaket.themoviedb.domain.review.Rating
 import ru.gaket.themoviedb.util.OperationResult
 
 interface ReviewRepository {
