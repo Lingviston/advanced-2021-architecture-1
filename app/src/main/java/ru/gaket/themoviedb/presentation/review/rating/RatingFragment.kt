@@ -11,10 +11,10 @@ import ru.gaket.themoviedb.core.navigation.MovieDetailsScreen
 import ru.gaket.themoviedb.core.navigation.Navigator
 import ru.gaket.themoviedb.databinding.FragmentReviewRatingBinding
 import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewEvent
-import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewEvent.Success
-import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewEvent.UnknownError
-import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewEvent.UserNotSignedInError
-import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewEvent.ZeroRatingError
+import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewEvent.ERROR_UNKNOWN
+import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewEvent.ERROR_USER_NOT_SIGNED
+import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewEvent.ERROR_ZERO_RATING
+import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewEvent.SUCCESS
 import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewState
 import ru.gaket.themoviedb.util.showSnackbar
 import timber.log.Timber
@@ -45,15 +45,15 @@ class RatingFragment : Fragment(R.layout.fragment_review_rating) {
     private fun processReviewEvent(reviewEvent: ReviewEvent) {
         Timber.d("Event received: $reviewEvent")
         when (reviewEvent) {
-            UnknownError, UserNotSignedInError -> {
+            ERROR_UNKNOWN, ERROR_USER_NOT_SIGNED -> {
                 binding.rbRateMovie.isEnabled = true
                 binding.btnSubmit.isEnabled = true
                 requireView().showSnackbar(R.string.review_error_unknown)
             }
-            ZeroRatingError -> {
+            ERROR_ZERO_RATING -> {
                 requireView().showSnackbar(R.string.review_error_zero_rating)
             }
-            Success -> {
+            SUCCESS -> {
                 navigator.backTo(MovieDetailsScreen.TAG)
             }
         }
@@ -61,8 +61,8 @@ class RatingFragment : Fragment(R.layout.fragment_review_rating) {
 
     private fun processReviewState(reviewState: ReviewState) {
         val isEnabled = when (reviewState) {
-            is ReviewState.Loading -> false
-            is ReviewState.Idle -> true
+            ReviewState.LOADING -> false
+            ReviewState.IDLE -> true
         }
 
         binding.rbRateMovie.isEnabled = isEnabled

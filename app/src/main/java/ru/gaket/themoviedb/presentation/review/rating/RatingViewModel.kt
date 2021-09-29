@@ -35,7 +35,7 @@ class RatingViewModel @Inject constructor(
         viewModelScope.launch {
             val rating = Rating.mapToRating(ratingNumber)
             if (rating == null) {
-                _reviewEvent.emit(ReviewEvent.ZeroRatingError)
+                _reviewEvent.emit(ReviewEvent.ERROR_ZERO_RATING)
             } else {
                 reviewRepository.setRating(rating)
                 submitReview()
@@ -44,34 +44,34 @@ class RatingViewModel @Inject constructor(
     }
 
     private suspend fun submitReview() {
-        _reviewState.value = ReviewState.Loading
+        _reviewState.value = ReviewState.LOADING
 
         val currentUser = authRepository.currentUser
         if (currentUser == null) {
-            _reviewEvent.emit(ReviewEvent.UserNotSignedInError)
+            _reviewEvent.emit(ReviewEvent.ERROR_USER_NOT_SIGNED)
         } else {
             when (val review = reviewRepository.buildReview()) {
                 is Success -> {
                     moviesRepository.addReview(review.result, currentUser.id, currentUser.email)
                     reviewRepository.clearState()
-                    _reviewEvent.emit(ReviewEvent.Success)
+                    _reviewEvent.emit(ReviewEvent.SUCCESS)
                 }
-                is Error -> _reviewEvent.emit(ReviewEvent.UnknownError)
+                is Error -> _reviewEvent.emit(ReviewEvent.ERROR_UNKNOWN)
             }
         }
 
-        _reviewState.value = ReviewState.Idle
+        _reviewState.value = ReviewState.IDLE
     }
 
-    sealed class ReviewState {
-        object Idle : ReviewState()
-        object Loading : ReviewState()
+    enum class ReviewState {
+        IDLE,
+        LOADING
     }
 
-    sealed class ReviewEvent {
-        object ZeroRatingError : ReviewEvent()
-        object UnknownError : ReviewEvent()
-        object UserNotSignedInError : ReviewEvent()
-        object Success : ReviewEvent()
+    enum class ReviewEvent {
+        ERROR_ZERO_RATING,
+        ERROR_UNKNOWN,
+        ERROR_USER_NOT_SIGNED,
+        SUCCESS
     }
 }
