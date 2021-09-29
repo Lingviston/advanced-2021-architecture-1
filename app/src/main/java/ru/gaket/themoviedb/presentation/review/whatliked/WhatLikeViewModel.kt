@@ -9,8 +9,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.domain.movies.models.MovieId
-import ru.gaket.themoviedb.presentation.review.ReviewFieldEvent
 import ru.gaket.themoviedb.domain.review.repository.ReviewRepository
+import ru.gaket.themoviedb.presentation.review.ReviewFieldEvent
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,9 +19,8 @@ class WhatLikeViewModel @Inject constructor(
     savedState: SavedStateHandle,
 ) : ViewModel() {
 
-    val events: LiveData<ReviewFieldEvent>
-        get() = _events.asLiveData(viewModelScope.coroutineContext)
     private val _events = MutableSharedFlow<ReviewFieldEvent>()
+    val events: LiveData<ReviewFieldEvent> = _events.asLiveData(viewModelScope.coroutineContext)
 
     init {
         val movieId: MovieId = savedState.get<MovieId>(ARG_MOVIE_ID)

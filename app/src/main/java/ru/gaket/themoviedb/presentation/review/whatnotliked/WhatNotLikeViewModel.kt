@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
-import ru.gaket.themoviedb.presentation.review.ReviewFieldEvent
 import ru.gaket.themoviedb.domain.review.repository.ReviewRepository
+import ru.gaket.themoviedb.presentation.review.ReviewFieldEvent
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,9 +16,8 @@ class WhatNotLikeViewModel @Inject constructor(
     private val reviewRepository: ReviewRepository,
 ) : ViewModel() {
 
-    val events: LiveData<ReviewFieldEvent>
-        get() = _events.asLiveData(viewModelScope.coroutineContext)
     private val _events = MutableSharedFlow<ReviewFieldEvent>()
+    val events: LiveData<ReviewFieldEvent> = _events.asLiveData(viewModelScope.coroutineContext)
 
     fun submitInfo(whatDidNotLike: String) {
         viewModelScope.launch {

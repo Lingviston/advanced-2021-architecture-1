@@ -23,13 +23,11 @@ class RatingViewModel @Inject constructor(
     private val authRepository: AuthRepository,
 ) : ViewModel() {
 
-    val reviewEvent: LiveData<ReviewEvent>
-        get() = _reviewEvent.asLiveData(viewModelScope.coroutineContext)
     private val _reviewEvent = MutableSharedFlow<ReviewEvent>()
+    val reviewEvent: LiveData<ReviewEvent> = _reviewEvent.asLiveData(viewModelScope.coroutineContext)
 
-    val reviewState: LiveData<ReviewState>
-        get() = _reviewState
     private val _reviewState = MutableLiveData<ReviewState>()
+    val reviewState: LiveData<ReviewState> = _reviewState
 
     fun submit(ratingNumber: Int) {
         viewModelScope.launch {
