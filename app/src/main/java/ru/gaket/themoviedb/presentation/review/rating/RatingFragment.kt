@@ -5,10 +5,8 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import ru.gaket.themoviedb.R
-import ru.gaket.themoviedb.R.string
 import ru.gaket.themoviedb.core.navigation.MovieDetailsScreen
 import ru.gaket.themoviedb.core.navigation.Navigator
 import ru.gaket.themoviedb.databinding.FragmentReviewRatingBinding
@@ -18,6 +16,7 @@ import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewEven
 import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewEvent.UserNotSignedInError
 import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewEvent.ZeroRatingError
 import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewState
+import ru.gaket.themoviedb.util.showSnackbar
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -49,18 +48,10 @@ class RatingFragment : Fragment(R.layout.fragment_review_rating) {
             UnknownError, UserNotSignedInError -> {
                 binding.rbRateMovie.isEnabled = true
                 binding.btnSubmit.isEnabled = true
-                Snackbar.make(
-                    requireView(),
-                    string.review_error_unknown,
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                requireView().showSnackbar(R.string.review_error_unknown)
             }
             ZeroRatingError -> {
-                Snackbar.make(
-                    requireView(),
-                    string.review_error_zero_rating,
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                requireView().showSnackbar(R.string.review_error_zero_rating)
             }
             Success -> {
                 navigator.backTo(MovieDetailsScreen.TAG)
