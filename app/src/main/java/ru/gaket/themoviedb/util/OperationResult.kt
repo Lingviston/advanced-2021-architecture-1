@@ -48,7 +48,7 @@ inline fun <S, E> OperationResult<S, E>.doOnError(block: (E) -> Unit): Operation
     }
     return this
 }
-
+// todo: [pash] handle Cancelable exception
 inline fun <S, R> S.runOperationCatching(block: S.() -> R): OperationResult<R, Throwable> =
     try {
         OperationResult.Success(block())

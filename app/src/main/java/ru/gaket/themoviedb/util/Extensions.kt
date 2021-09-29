@@ -45,3 +45,11 @@ fun Activity.showSystemMessage(text: String, longDuration: Boolean = false) =
 fun Fragment.showSystemMessage(text: String, longDuration: Boolean = false) {
     activity?.showSystemMessage(text, longDuration)
 }
+
+fun View.toGone() {
+    visibility = View.GONE
+}
+
+fun View.toVisible() {
+    visibility = View.VISIBLE
+}
