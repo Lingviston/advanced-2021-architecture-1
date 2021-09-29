@@ -17,7 +17,7 @@ class WhatNotLikeViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _events = MutableSharedFlow<ReviewFieldEvent>()
-    val events: LiveData<ReviewFieldEvent> = _events.asLiveData(viewModelScope.coroutineContext)
+    val events: LiveData<ReviewFieldEvent> get() = _events.asLiveData(viewModelScope.coroutineContext)
 
     fun submitInfo(whatDidNotLike: String) {
         viewModelScope.launch {

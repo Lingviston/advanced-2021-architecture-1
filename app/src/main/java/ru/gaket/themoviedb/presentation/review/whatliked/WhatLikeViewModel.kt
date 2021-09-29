@@ -20,7 +20,7 @@ class WhatLikeViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _events = MutableSharedFlow<ReviewFieldEvent>()
-    val events: LiveData<ReviewFieldEvent> = _events.asLiveData(viewModelScope.coroutineContext)
+    val events: LiveData<ReviewFieldEvent> get() = _events.asLiveData(viewModelScope.coroutineContext)
 
     init {
         val movieId: MovieId = savedState.get<MovieId>(ARG_MOVIE_ID)
