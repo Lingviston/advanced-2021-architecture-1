@@ -1,9 +1,10 @@
-package ru.gaket.themoviedb.domain.review.store
+package ru.gaket.themoviedb.data.review.store
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import ru.gaket.themoviedb.domain.review.model.ReviewFormModel
+import ru.gaket.themoviedb.domain.review.store.ItemStore
 import javax.inject.Inject
 
 class ReviewStore @Inject constructor() : ItemStore<ReviewFormModel> {

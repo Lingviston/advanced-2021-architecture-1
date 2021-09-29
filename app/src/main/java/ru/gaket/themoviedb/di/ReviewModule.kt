@@ -6,9 +6,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ru.gaket.themoviedb.domain.review.model.ReviewFormModel
 import ru.gaket.themoviedb.domain.review.repository.ReviewRepository
-import ru.gaket.themoviedb.domain.review.repository.ReviewRepositoryImpl
+import ru.gaket.themoviedb.data.review.repository.ReviewRepositoryImpl
 import ru.gaket.themoviedb.domain.review.store.ItemStore
-import ru.gaket.themoviedb.domain.review.store.ReviewStore
+import ru.gaket.themoviedb.data.review.store.ReviewStore
 import javax.inject.Singleton
 
 @Module

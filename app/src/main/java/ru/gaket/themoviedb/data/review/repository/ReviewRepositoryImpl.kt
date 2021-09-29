@@ -1,9 +1,10 @@
-package ru.gaket.themoviedb.domain.review.repository
+package ru.gaket.themoviedb.data.review.repository
 
 import ru.gaket.themoviedb.domain.movies.models.MovieId
 import ru.gaket.themoviedb.domain.review.AddReviewRequest
 import ru.gaket.themoviedb.domain.review.Rating
 import ru.gaket.themoviedb.domain.review.model.ReviewFormModel
+import ru.gaket.themoviedb.domain.review.repository.ReviewRepository
 import ru.gaket.themoviedb.domain.review.store.ItemStore
 import ru.gaket.themoviedb.util.OperationResult
 import ru.gaket.themoviedb.util.doOnError
