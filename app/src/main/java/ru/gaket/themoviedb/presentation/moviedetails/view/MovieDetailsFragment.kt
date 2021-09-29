@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import ru.gaket.themoviedb.R
+import ru.gaket.themoviedb.core.navigation.LikedScreen
 import ru.gaket.themoviedb.core.navigation.MoviesScreen
 import ru.gaket.themoviedb.core.navigation.Navigator
 import ru.gaket.themoviedb.databinding.MovieDetailsFragmentBinding
@@ -29,8 +30,16 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
 
         viewModel.argsState.observe(
             viewLifecycleOwner,
-            {
-                binding.tvMovieDetailsTitle.text = getString(R.string.movie_details_title, it.movieId, it.title)
+            { movieDetailState ->
+                binding.btnReviewMovie.isEnabled = true
+                binding.btnReviewMovie.setOnClickListener {
+                    navigator.navigateTo(LikedScreen(movieDetailState.movieId))
+                }
+                binding.tvMovieDetailsTitle.text = getString(
+                    R.string.movie_details_title,
+                    movieDetailState.movieId,
+                    movieDetailState.title
+                )
             }
         )
 

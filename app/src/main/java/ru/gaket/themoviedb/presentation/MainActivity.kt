@@ -18,7 +18,10 @@ class MainActivity : AppCompatActivity(R.layout.main_activity) {
         super.onCreate(savedInstanceState)
 
         if (savedInstanceState == null) {
-            navigator.navigateTo(MoviesScreen())
+            navigator.navigateTo(
+                screen = MoviesScreen(),
+                addToBackStack = false
+            )
         }
     }
 }

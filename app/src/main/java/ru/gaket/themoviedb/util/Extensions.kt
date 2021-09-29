@@ -9,7 +9,9 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 
 val Int.toDp: Int
     get() = (this / Resources.getSystem().displayMetrics.density).toInt()
@@ -31,6 +33,13 @@ fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
             afterTextChanged.invoke(editable.toString())
         }
     })
+}
+
+fun View.showSnackbar(
+    @StringRes stringRes: Int,
+    duration: Int = Snackbar.LENGTH_SHORT,
+) {
+    Snackbar.make(this, stringRes, duration).show()
 }
 
 fun View.hideKeyboard() {

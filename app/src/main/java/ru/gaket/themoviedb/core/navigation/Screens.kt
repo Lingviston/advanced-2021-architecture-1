@@ -8,6 +8,8 @@ import ru.gaket.themoviedb.presentation.movies.view.MoviesFragment
 interface Screen {
 
     fun destination(): Fragment
+
+    val tag: String? get() = null
 }
 
 class MoviesScreen : Screen {
@@ -21,6 +23,13 @@ class MovieDetailsScreen(
 ) : Screen {
 
     override fun destination(): Fragment = MovieDetailsFragment.newInstance(movieId, title)
+
+    override val tag: String get() = TAG
+
+    companion object {
+
+        const val TAG = "MovieDetailsScreen"
+    }
 }
 
 class AuthScreen : Screen {
