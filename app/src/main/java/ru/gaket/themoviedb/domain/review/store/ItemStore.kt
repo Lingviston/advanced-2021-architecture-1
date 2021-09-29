@@ -8,6 +8,8 @@ interface ItemStore<T> {
     val itemChanges: Flow<T>
 
     suspend fun setItem(item: T)
+
+    //TODO [Vlad] Maybe move this method to extentions
     suspend fun updateItem(updateAction: (T) -> T)
     suspend fun reset()
 }

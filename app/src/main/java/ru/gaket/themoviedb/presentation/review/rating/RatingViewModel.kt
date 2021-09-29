@@ -41,6 +41,7 @@ class RatingViewModel @Inject constructor(
         }
     }
 
+    //TODO [Vlad] Maybe move to useCase
     private suspend fun submitReview() {
         _reviewState.value = ReviewState.LOADING
 
