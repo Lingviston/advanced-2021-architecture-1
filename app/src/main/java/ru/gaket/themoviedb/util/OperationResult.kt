@@ -1,5 +1,7 @@
 package ru.gaket.themoviedb.util
 
+import kotlin.coroutines.cancellation.CancellationException
+
 sealed class OperationResult<out S, out E> {
 
     data class Success<out S>(val result: S) : OperationResult<S, Nothing>()
@@ -48,13 +50,16 @@ inline fun <S, E> OperationResult<S, E>.doOnError(block: (E) -> Unit): Operation
     }
     return this
 }
-// todo: [pash] handle Cancelable exception
-inline fun <S, R> S.runOperationCatching(block: S.() -> R): OperationResult<R, Throwable> =
-    try {
+
+inline fun <S, R> S.runOperationCatching(block: S.() -> R): OperationResult<R, Throwable> {
+    return try {
         OperationResult.Success(block())
+    } catch (e: CancellationException) {
+        throw e
     } catch (e: Throwable) {
         OperationResult.Error(e)
     }
+}
 
 inline fun <reified S, reified E> List<OperationResult<S, E>>.toSuccessOrErrorList(): OperationResult<List<S>, List<E>> {
     var successResults: MutableList<S>? = null

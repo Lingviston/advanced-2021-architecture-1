@@ -13,9 +13,8 @@ import ru.gaket.themoviedb.presentation.movies.viewmodel.MoviesResult.EmptyQuery
 import ru.gaket.themoviedb.presentation.movies.viewmodel.MoviesResult.EmptyResult
 import ru.gaket.themoviedb.presentation.movies.viewmodel.MoviesResult.ErrorResult
 import ru.gaket.themoviedb.presentation.movies.viewmodel.MoviesResult.ValidResult
-import ru.gaket.themoviedb.util.OperationResult
-import timber.log.Timber
-import java.util.concurrent.CancellationException
+import ru.gaket.themoviedb.util.OperationResult.Error
+import ru.gaket.themoviedb.util.OperationResult.Success
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,19 +41,12 @@ class MoviesViewModel @Inject constructor(
         return if (query.isEmpty()) {
             EmptyQuery
         } else {
-            try {
-                when (val value = moviesInteractor.searchMovies(query)) {
-                    is OperationResult.Error -> ErrorResult(IllegalArgumentException("Search movies from server error"))
-                    is OperationResult.Success -> if (value.result.isEmpty()) EmptyResult else ValidResult(value.result)
-                }
-            } catch (e: Throwable) {
-                if (e is CancellationException) {
-                    throw e
-                } else {
-                    Timber.w(e)
-                    ErrorResult(e)
-                }
-            }
+            handleSearchMovie(query)
         }
+    }
+
+    private suspend fun handleSearchMovie(query: String) = when (val value = moviesInteractor.searchMovies(query)) {
+        is Error -> ErrorResult(IllegalArgumentException("Search movies from server error!"))
+        is Success -> if (value.result.isEmpty()) EmptyResult else ValidResult(value.result)
     }
 }
