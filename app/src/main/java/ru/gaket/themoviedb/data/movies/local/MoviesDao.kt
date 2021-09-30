@@ -10,20 +10,22 @@ import ru.gaket.themoviedb.domain.movies.models.MovieId
 @Dao
 interface MoviesDao {
 
-    @Query("SELECT * FROM movies WHERE id=:id LIMIT 1")
+    @Query("""
+        SELECT *
+        FROM ${MovieEntity.TABLE_NAME}
+        WHERE ${MovieEntity.MOVIE_ID}=:id
+        LIMIT 1
+        """)
     suspend fun getById(id: MovieId): MovieEntity?
 
     @Transaction
-    @Insert(entity = MovieEntity::class, onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertAll(searchedMovies: List<SearchMovieEntity>)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAll(searchedMovies: List<MovieEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(movie: MovieEntity)
 
     @Transaction
-    @Query("DELETE FROM movies")
+    @Query("DELETE FROM ${MovieEntity.TABLE_NAME}")
     suspend fun deleteAll()
-
-    @Query("DELETE FROM movies WHERE id=:id")
-    suspend fun deleteById(id: Int)
 }

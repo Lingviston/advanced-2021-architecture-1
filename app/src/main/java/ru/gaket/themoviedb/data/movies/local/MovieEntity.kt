@@ -8,67 +8,78 @@ import ru.gaket.themoviedb.domain.movies.models.MovieId
 /**
  * DB class of detailed Movie stored in room
  */
-@Entity(tableName = "movies")
+@Entity(tableName = MovieEntity.TABLE_NAME)
 data class MovieEntity(
 
     @PrimaryKey
-    @ColumnInfo(name = "id")
-    val id: MovieId = 0,
+    @ColumnInfo(name = MOVIE_ID)
+    val id: MovieId,
 
-    @ColumnInfo(name = "imdb_id")
-    val imdbId: String? = "",
+    @ColumnInfo(name = IMDB_ID)
+    val imdbId: String?,
 
-    @ColumnInfo(name = "title")
-    val title: String = "",
+    @ColumnInfo(name = TITLE)
+    val title: String,
 
-    @ColumnInfo(name = "overview")
-    val overview: String = "",
+    @ColumnInfo(name = OVERVIEW)
+    val overview: String,
 
-    @ColumnInfo(name = "allowed_age")
-    val allowedAge: String = "",
+    @ColumnInfo(name = ALLOWED_AGE)
+    val allowedAge: String,
 
-    @ColumnInfo(name = "rating")
-    val rating: Int = 0,
+    @ColumnInfo(name = RATING)
+    val rating: Int,
 
-    @ColumnInfo(name = "reviews_counter")
-    val reviewsCounter: Int = 0,
+    @ColumnInfo(name = REVIEWS_COUNTER)
+    val reviewsCounter: Int,
 
-    @ColumnInfo(name = "popularity")
-    val popularity: Float = 0.00f,
+    @ColumnInfo(name = POPULARITY)
+    val popularity: Float,
 
-    @ColumnInfo(name = "release_date")
-    val releaseDate: String = "",
+    @ColumnInfo(name = RELEASE_DATE)
+    val releaseDate: String,
 
-    @ColumnInfo(name = "duration")
-    val duration: Int = 0,
+    @ColumnInfo(name = DURATION)
+    val duration: Int,
 
-    @ColumnInfo(name = "budget")
-    val budget: Int = 0,
+    @ColumnInfo(name = BUDGET)
+    val budget: Int,
 
-    @ColumnInfo(name = "revenue")
-    val revenue: Int = 0,
+    @ColumnInfo(name = REVENUE)
+    val revenue: Int,
 
-    @ColumnInfo(name = "status")
-    val status: String = "Released",
+    @ColumnInfo(name = STATUS)
+    val status: String,
 
-    @ColumnInfo(name = "genres")
-    val genres: String = "",
+    @ColumnInfo(name = GENRES)
+    val genres: String,
 
-    @ColumnInfo(name = "homepage")
-    val homepage: String = "",
+    @ColumnInfo(name = HOMEPAGE)
+    val homepage: String,
 
-    @ColumnInfo(name = "thumbnail")
-    val thumbnail: String = "",
+    @ColumnInfo(name = THUMBNAIL)
+    val thumbnail: String,
+) {
 
-    //todo: is field really used?
-    @ColumnInfo(name = "reviewed")
-    val hasReview: Boolean = false,
+    companion object {
 
-    //todo: is field really used?
-    @ColumnInfo(name = "review_id")
-    val reviewId: Int = 0,
+        const val TABLE_NAME = "movies"
 
-    //todo: is field really used?
-    @ColumnInfo(name = "updated_from_server")
-    val isUpdatedFromServer: Boolean = false,
-)
+        const val MOVIE_ID = "movie_id"
+        const val IMDB_ID = "imdb_id"
+        const val TITLE = "title"
+        const val ALLOWED_AGE = "allowed_age"
+        const val OVERVIEW = "overview"
+        const val RATING = "rating"
+        const val REVIEWS_COUNTER = "reviews_counter"
+        const val POPULARITY = "popularity"
+        const val RELEASE_DATE = "release_date"
+        const val DURATION = "duration"
+        const val BUDGET = "budget"
+        const val REVENUE = "revenue"
+        const val STATUS = "status"
+        const val GENRES = "genres"
+        const val HOMEPAGE = "homepage"
+        const val THUMBNAIL = "thumbnail"
+    }
+}

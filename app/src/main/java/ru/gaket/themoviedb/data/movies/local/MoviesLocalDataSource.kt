@@ -6,10 +6,9 @@ import javax.inject.Inject
 interface MoviesLocalDataSource {
 
     suspend fun getById(id: MovieId): MovieEntity?
-    suspend fun insertAll(searchedMovies: List<SearchMovieEntity>)
+    suspend fun insertAll(searchedMovies: List<MovieEntity>)
     suspend fun insert(movie: MovieEntity)
     suspend fun deleteAll()
-    suspend fun deleteById(id: Int)
 }
 
 class MoviesLocalDataSourceImpl @Inject constructor(
@@ -18,7 +17,7 @@ class MoviesLocalDataSourceImpl @Inject constructor(
 
     override suspend fun getById(id: MovieId): MovieEntity? = moviesDao.getById(id)
 
-    override suspend fun insertAll(searchedMovies: List<SearchMovieEntity>) {
+    override suspend fun insertAll(searchedMovies: List<MovieEntity>) {
         moviesDao.insertAll(searchedMovies)
     }
 
@@ -28,9 +27,5 @@ class MoviesLocalDataSourceImpl @Inject constructor(
 
     override suspend fun deleteAll() {
         moviesDao.deleteAll()
-    }
-
-    override suspend fun deleteById(id: Int) {
-        moviesDao.deleteById(id)
     }
 }
