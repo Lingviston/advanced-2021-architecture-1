@@ -24,7 +24,7 @@ class RatingViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _reviewEvent = MutableSharedFlow<ReviewEvent>()
-    val reviewEvent: LiveData<ReviewEvent> = _reviewEvent.asLiveData(viewModelScope.coroutineContext)
+    val reviewEvent: LiveData<ReviewEvent> get() = _reviewEvent.asLiveData(viewModelScope.coroutineContext)
 
     private val _reviewState = MutableLiveData<ReviewState>()
     val reviewState: LiveData<ReviewState> = _reviewState
