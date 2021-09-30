@@ -72,6 +72,11 @@ android {
             arg("room.schemaLocation", "$projectDir/room_db_schemas".toString())
         }
     }
+
+    kotlinOptions {
+        freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.FlowPreview"
+        freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+    }
 }
 
 ext {
