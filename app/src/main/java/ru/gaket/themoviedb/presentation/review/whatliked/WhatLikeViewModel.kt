@@ -5,8 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.domain.review.repository.ReviewRepository
 import ru.gaket.themoviedb.presentation.review.ReviewFieldEvent
@@ -17,10 +16,9 @@ class WhatLikeViewModel @Inject constructor(
     private val reviewRepository: ReviewRepository,
 ) : ViewModel() {
 
-    private val _events = MutableStateFlow<ReviewFieldEvent?>(null)
+    private val _events = MutableSharedFlow<ReviewFieldEvent>()
     val events: LiveData<ReviewFieldEvent>
         get() = _events
-            .filterNotNull()
             .asLiveData(viewModelScope.coroutineContext)
 
     fun submitInfo(whatLike: String) {
@@ -31,7 +29,7 @@ class WhatLikeViewModel @Inject constructor(
                 reviewRepository.setWhatLike(whatLike)
                 ReviewFieldEvent.SUCCESS
             }
-            _events.value = fieldEvent
+            _events.emit(fieldEvent)
         }
     }
 }
