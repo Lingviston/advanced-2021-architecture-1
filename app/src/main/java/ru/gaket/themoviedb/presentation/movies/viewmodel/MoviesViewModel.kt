@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.sample
 import ru.gaket.themoviedb.domain.movies.MoviesInteractor
 import ru.gaket.themoviedb.presentation.movies.viewmodel.MoviesResult.EmptyQuery
 import ru.gaket.themoviedb.presentation.movies.viewmodel.MoviesResult.EmptyResult
@@ -16,6 +18,8 @@ import ru.gaket.themoviedb.presentation.movies.viewmodel.MoviesResult.ValidResul
 import ru.gaket.themoviedb.util.OperationResult.Error
 import ru.gaket.themoviedb.util.OperationResult.Success
 import javax.inject.Inject
+
+private const val TEXT_ENTERED_DEBOUNCE_MILLIS = 500L
 
 @HiltViewModel
 class MoviesViewModel @Inject constructor(
@@ -30,7 +34,10 @@ class MoviesViewModel @Inject constructor(
 
     val searchResult: LiveData<MoviesResult>
         get() = queryFlow
+            .sample(TEXT_ENTERED_DEBOUNCE_MILLIS)
+            .onEach { _searchState.value = Loading }
             .mapLatest(::handleQuery)
+            .onEach { _searchState.value = Ready }
             .asLiveData(viewModelScope.coroutineContext)
 
     fun onNewQuery(query: String) {
