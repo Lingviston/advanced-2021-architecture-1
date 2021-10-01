@@ -11,9 +11,8 @@ import javax.inject.Inject
 
 interface MoviesHttpClient {
 
-    // todo: [Sergey] migrate to property
-    fun moviesApi(): MoviesApi
-    fun genresApi(): GenresApi
+    val moviesApi: MoviesApi
+    val genresApi: GenresApi
 }
 
 class MoviesHttpClientImpl @Inject constructor(
@@ -31,9 +30,6 @@ class MoviesHttpClientImpl @Inject constructor(
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    private val moviesApi = retrofit.create(MoviesApi::class.java)
-    private val genresApi = retrofit.create(GenresApi::class.java)
-
-    override fun moviesApi(): MoviesApi = moviesApi
-    override fun genresApi(): GenresApi = genresApi
+    override val moviesApi: MoviesApi by lazy(LazyThreadSafetyMode.NONE) { retrofit.create(MoviesApi::class.java) }
+    override val genresApi: GenresApi by lazy(LazyThreadSafetyMode.NONE) { retrofit.create(GenresApi::class.java) }
 }

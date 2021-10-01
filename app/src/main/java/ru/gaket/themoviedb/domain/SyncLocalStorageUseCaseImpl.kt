@@ -11,8 +11,8 @@ class SyncLocalStorageUseCaseImpl @Inject constructor(
 ) : SyncLocalStorageUseCase {
 
     override suspend fun sync() =
-        moviesRepository.sync(requireNotNull(authRepository.currentUser).id)
+        moviesRepository.getReviewsForUser(requireNotNull(authRepository.currentUser).id)
 
     override suspend fun unSync() =
-        moviesRepository.unSync()
+        moviesRepository.deleteUserReviews()
 }

@@ -76,6 +76,7 @@ android {
     kotlinOptions {
         freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.FlowPreview"
         freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+        freeCompilerArgs += "-Xopt-in=kotlin.contracts.ExperimentalContracts"
     }
 }
 
