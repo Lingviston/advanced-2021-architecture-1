@@ -45,8 +45,10 @@ class MoviesViewModel @Inject constructor(
         }
     }
 
-    private suspend fun handleSearchMovie(query: String) = when (val value = moviesInteractor.searchMovies(query)) {
-        is Error -> ErrorResult(IllegalArgumentException("Search movies from server error!"))
-        is Success -> if (value.result.isEmpty()) EmptyResult else ValidResult(value.result)
+    private suspend fun handleSearchMovie(query: String): MoviesResult {
+        return when (val moviesResult = moviesInteractor.searchMovies(query)) {
+            is Error -> ErrorResult(IllegalArgumentException("Search movies from server error!"))
+            is Success -> if (moviesResult.result.isEmpty()) EmptyResult else ValidResult(moviesResult.result)
+        }
     }
 }
