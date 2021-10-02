@@ -28,9 +28,9 @@ object ApiWrapperModule {
 
     @Provides
     @Singleton
-    fun provideMoviesApi(client: MoviesHttpClient): MoviesApi = client.moviesApi()
+    fun provideMoviesApi(client: MoviesHttpClient): MoviesApi = client.moviesApi
 
     @Provides
     @Singleton
-    fun provideGenresApi(client: MoviesHttpClient): GenresApi = client.genresApi()
+    fun provideGenresApi(client: MoviesHttpClient): GenresApi = client.genresApi
 }

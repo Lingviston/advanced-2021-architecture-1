@@ -4,8 +4,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface ItemStore<T> {
 
-    val item: T
-    val itemChanges: Flow<T>
+    val item: T?
+    val itemChanges: Flow<T?>
 
     suspend fun setItem(item: T)
 

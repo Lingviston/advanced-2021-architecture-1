@@ -4,12 +4,9 @@ import ru.gaket.themoviedb.domain.movies.models.MovieId
 import ru.gaket.themoviedb.domain.review.AddReviewRequest
 import ru.gaket.themoviedb.domain.review.Rating
 import ru.gaket.themoviedb.domain.review.model.ReviewFormModel
+import ru.gaket.themoviedb.domain.review.model.ReviewFormModel.Companion.newEmptyModelInstance
 import ru.gaket.themoviedb.domain.review.repository.ReviewRepository
 import ru.gaket.themoviedb.domain.review.store.ItemStore
-import ru.gaket.themoviedb.util.OperationResult
-import ru.gaket.themoviedb.util.doOnError
-import ru.gaket.themoviedb.util.runOperationCatching
-import timber.log.Timber
 import javax.inject.Inject
 
 class ReviewRepositoryImpl @Inject constructor(
@@ -17,9 +14,8 @@ class ReviewRepositoryImpl @Inject constructor(
 ) : ReviewRepository {
 
     override suspend fun setMovieId(movieId: MovieId) {
-        reviewFormStore.updateItem { reviewForm ->
-            reviewForm.copy(movieId = movieId)
-        }
+
+        reviewFormStore.setItem(newEmptyModelInstance(movieId))
     }
 
     override suspend fun setWhatLike(whatLiked: String) {
@@ -40,17 +36,15 @@ class ReviewRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun buildReview(): OperationResult<AddReviewRequest, Throwable> {
-        return runOperationCatching {
-            AddReviewRequest(
-                movieId = reviewFormStore.item.movieId ?: error("movieId is not provided"),
-                liked = reviewFormStore.item.whatLiked ?: error("whatLiked is not provided"),
-                disliked = reviewFormStore.item.whatDidNotLike ?: error("whatDidNotLike is not provided"),
-                rating = reviewFormStore.item.rating ?: error("rating is not provided")
-            )
-        }.doOnError {
-            Timber.e(it)
-        }
+    override fun buildReview(): AddReviewRequest {
+        val review = reviewFormStore.item ?: error("movieId is not provided")
+
+        return AddReviewRequest(
+            movieId = review.movieId,
+            liked = review.whatLiked ?: error("whatLiked is not provided"),
+            disliked = review.whatDidNotLike ?: error("whatDidNotLike is not provided"),
+            rating = review.rating ?: error("rating is not provided")
+        )
     }
 
     override suspend fun clearState() {

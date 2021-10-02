@@ -2,24 +2,30 @@ package ru.gaket.themoviedb.di
 
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import ru.gaket.themoviedb.core.data.HeapItemStore
+import ru.gaket.themoviedb.data.review.repository.ReviewRepositoryImpl
 import ru.gaket.themoviedb.domain.review.model.ReviewFormModel
 import ru.gaket.themoviedb.domain.review.repository.ReviewRepository
-import ru.gaket.themoviedb.data.review.repository.ReviewRepositoryImpl
 import ru.gaket.themoviedb.domain.review.store.ItemStore
-import ru.gaket.themoviedb.data.review.store.ReviewStore
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface ReviewModule {
+interface ReviewBindingModule {
 
     @Singleton
     @Binds
     fun bindsReviewRepository(repository: ReviewRepositoryImpl): ReviewRepository
+}
 
+@Module
+@InstallIn(SingletonComponent::class)
+object ReviewModule {
+
+    @Provides
     @Singleton
-    @Binds
-    fun bindsReviewStore(store: ReviewStore): ItemStore<ReviewFormModel>
+    fun provideReviewStore(): ItemStore<ReviewFormModel> = HeapItemStore(replay = 1)
 }
