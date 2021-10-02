@@ -40,12 +40,7 @@ class ReviewFragment : Fragment(R.layout.fragment_review) {
 
     private val backPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            if (childFragmentManager.backStackEntryCount > 0) {
-                childFragmentManager.popBackStack()
-            } else {
-                isEnabled = false
-                requireActivity().onBackPressed()
-            }
+            viewModel.previousState()
         }
     }
 
@@ -57,17 +52,16 @@ class ReviewFragment : Fragment(R.layout.fragment_review) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.reviewState.observe(viewLifecycleOwner) {
+            val containerId = binding.containerReview.id
             when (it) {
                 WHAT_LIKED -> childFragmentManager.commit {
-                    replace(binding.containerReview.id, WhatLikeFragment(), null)
+                    replace(containerId, WhatLikeFragment())
                 }
                 WHAT_NOT_LIKED -> childFragmentManager.commit {
-                    replace(binding.containerReview.id, WhatNotLikeFragment(), null)
-                    addToBackStack(null)
+                    replace(containerId, WhatNotLikeFragment())
                 }
                 RATING -> childFragmentManager.commit {
-                    replace(binding.containerReview.id, RatingFragment(), null)
-                    addToBackStack(null)
+                    replace(containerId, RatingFragment())
                 }
                 END_STATE -> navigator.backTo(MovieDetailsScreen.TAG)
             }

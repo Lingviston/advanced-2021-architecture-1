@@ -57,11 +57,20 @@ class ReviewViewModel @Inject constructor(
     }
 
     fun nextState() {
-        _reviewState.value = when (_reviewState.value) {
+        _reviewState.value = when (val state = _reviewState.value) {
             WHAT_LIKED -> WHAT_NOT_LIKED
             WHAT_NOT_LIKED -> RATING
             RATING -> END_STATE
-            END_STATE -> throw IllegalStateException("You can't use goNext() at END_STATE")
+            else -> throw IllegalStateException("You can't use goNext() at $state")
+        }
+    }
+
+    fun previousState() {
+        _reviewState.value = when (val state = _reviewState.value) {
+            WHAT_LIKED -> END_STATE
+            WHAT_NOT_LIKED -> WHAT_LIKED
+            RATING -> WHAT_NOT_LIKED
+            else -> throw IllegalStateException("You can't use previousState() at $state")
         }
     }
 
@@ -69,7 +78,7 @@ class ReviewViewModel @Inject constructor(
         WHAT_LIKED,
         WHAT_NOT_LIKED,
         RATING,
-        END_STATE
+        END_STATE,
     }
 
     companion object {
