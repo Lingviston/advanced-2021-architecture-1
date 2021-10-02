@@ -8,13 +8,14 @@ import ru.gaket.themoviedb.domain.review.model.ReviewFormModel
 
 interface ReviewRepository {
 
-    val reviewState: Flow<ReviewFormModel>
-
     suspend fun setMovieId(movieId: MovieId)
-    suspend fun setWhatLike(whatLiked: String)
-    suspend fun setWhatDidNotLike(whatDidNotLike: String)
-    suspend fun setRating(rating: Rating)
+    suspend fun setWhatLike(whatLiked: String?)
+    suspend fun setWhatDidNotLike(whatDidNotLike: String?)
+    suspend fun setRating(rating: Rating?)
+
     suspend fun clearState()
+
+    val reviewState: Flow<ReviewFormModel>
 
     @Throws(IllegalStateException::class)
     fun buildReview(): AddReviewRequest

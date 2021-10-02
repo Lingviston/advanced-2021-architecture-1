@@ -30,11 +30,9 @@ class ReviewViewModel @Inject constructor(
     savedState: SavedStateHandle,
 ) : ViewModel() {
 
-    private val _reviewState = MutableStateFlow(WHAT_LIKED)
-
     val currentReview: LiveData<Pair<Movie, ReviewFormModel>?>
 
-    //TODO Check screen rotation
+    private val _reviewState = MutableStateFlow(WHAT_LIKED)
     val reviewState: LiveData<ReviewState> get() = _reviewState.asLiveData(viewModelScope.coroutineContext)
 
     init {
@@ -66,11 +64,22 @@ class ReviewViewModel @Inject constructor(
     }
 
     fun previousState() {
-        _reviewState.value = when (val state = _reviewState.value) {
-            WHAT_LIKED -> END_STATE
-            WHAT_NOT_LIKED -> WHAT_LIKED
-            RATING -> WHAT_NOT_LIKED
-            else -> throw IllegalStateException("You can't use previousState() at $state")
+        viewModelScope.launch {
+            _reviewState.value = when (val state = _reviewState.value) {
+                WHAT_LIKED -> {
+                    reviewRepository.setWhatLike(null)
+                    END_STATE
+                }
+                WHAT_NOT_LIKED -> {
+                    reviewRepository.setWhatDidNotLike(null)
+                    WHAT_LIKED
+                }
+                RATING -> {
+                    reviewRepository.setRating(null)
+                    WHAT_NOT_LIKED
+                }
+                else -> throw IllegalStateException("You can't use previousState() at $state")
+            }
         }
     }
 

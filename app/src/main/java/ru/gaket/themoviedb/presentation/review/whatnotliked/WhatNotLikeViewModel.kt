@@ -6,6 +6,8 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.domain.review.repository.ReviewRepository
 import ru.gaket.themoviedb.presentation.review.ReviewFieldEvent
@@ -20,6 +22,11 @@ class WhatNotLikeViewModel @Inject constructor(
     val events: LiveData<ReviewFieldEvent>
         get() = _events
             .asLiveData(viewModelScope.coroutineContext)
+
+    val initialValue: LiveData<String> = reviewRepository.reviewState
+        .map { it.whatDidNotLike }
+        .filterNotNull()
+        .asLiveData(viewModelScope.coroutineContext)
 
     fun submitInfo(whatDidNotLike: String) {
         viewModelScope.launch {

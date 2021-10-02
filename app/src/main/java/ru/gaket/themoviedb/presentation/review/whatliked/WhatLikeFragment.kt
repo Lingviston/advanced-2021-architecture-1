@@ -38,5 +38,9 @@ class WhatLikeFragment : Fragment(R.layout.fragment_review_text) {
                 SUCCESS -> sharedViewModel.nextState()
             }
         }
+
+        viewModel.initialValue.observe(viewLifecycleOwner) { initialValue ->
+            binding.etReviewField.setText(initialValue)
+        }
     }
 }

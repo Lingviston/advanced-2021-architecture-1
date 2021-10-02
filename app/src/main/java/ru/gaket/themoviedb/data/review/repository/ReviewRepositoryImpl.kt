@@ -23,19 +23,19 @@ class ReviewRepositoryImpl @Inject constructor(
         reviewFormStore.setItem(newEmptyModelInstance(movieId))
     }
 
-    override suspend fun setWhatLike(whatLiked: String) {
+    override suspend fun setWhatLike(whatLiked: String?) {
         reviewFormStore.updateItem { reviewForm ->
             reviewForm.copy(whatLiked = whatLiked)
         }
     }
 
-    override suspend fun setWhatDidNotLike(whatDidNotLike: String) {
+    override suspend fun setWhatDidNotLike(whatDidNotLike: String?) {
         reviewFormStore.updateItem { reviewForm ->
             reviewForm.copy(whatDidNotLike = whatDidNotLike)
         }
     }
 
-    override suspend fun setRating(rating: Rating) {
+    override suspend fun setRating(rating: Rating?) {
         reviewFormStore.updateItem { reviewForm ->
             reviewForm.copy(rating = rating)
         }
