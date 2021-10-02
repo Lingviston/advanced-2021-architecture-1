@@ -1,5 +1,7 @@
 package ru.gaket.themoviedb.data.review.repository
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
 import ru.gaket.themoviedb.domain.movies.models.MovieId
 import ru.gaket.themoviedb.domain.review.AddReviewRequest
 import ru.gaket.themoviedb.domain.review.Rating
@@ -12,6 +14,9 @@ import javax.inject.Inject
 class ReviewRepositoryImpl @Inject constructor(
     private val reviewFormStore: ItemStore<ReviewFormModel>,
 ) : ReviewRepository {
+
+    override val reviewState: Flow<ReviewFormModel>
+        get() = reviewFormStore.itemChanges.filterNotNull()
 
     override suspend fun setMovieId(movieId: MovieId) {
 

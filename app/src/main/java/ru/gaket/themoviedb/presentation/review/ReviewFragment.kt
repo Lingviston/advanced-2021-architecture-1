@@ -5,16 +5,20 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.core.navigation.MovieDetailsScreen
 import ru.gaket.themoviedb.core.navigation.Navigator
 import ru.gaket.themoviedb.databinding.FragmentReviewBinding
+import ru.gaket.themoviedb.domain.movies.models.Movie
 import ru.gaket.themoviedb.domain.movies.models.MovieId
+import ru.gaket.themoviedb.domain.review.model.ReviewFormModel
 import ru.gaket.themoviedb.presentation.review.ReviewViewModel.ReviewState.END_STATE
 import ru.gaket.themoviedb.presentation.review.ReviewViewModel.ReviewState.RATING
 import ru.gaket.themoviedb.presentation.review.ReviewViewModel.ReviewState.WHAT_LIKED
@@ -67,6 +71,31 @@ class ReviewFragment : Fragment(R.layout.fragment_review) {
                 }
                 END_STATE -> navigator.backTo(MovieDetailsScreen.TAG)
             }
+        }
+
+        viewModel.currentReview.observe(viewLifecycleOwner) { movieToReview ->
+            binding.cvReviewSummary.isVisible = movieToReview != null
+            movieToReview?.let { (movie, review) -> binding.bind(movie, review) }
+        }
+    }
+
+    private fun FragmentReviewBinding.bind(movie: Movie, review: ReviewFormModel) {
+        with(containerReviewSummary) {
+            Picasso.get()
+                .load(movie.thumbnail)
+                .placeholder(R.drawable.ph_movie_grey_200)
+                .error(R.drawable.ph_movie_grey_200)
+                .fit()
+                .centerCrop()
+                .into(ivMovieThumbnail)
+
+            tvRateMovieMessage.text = getString(R.string.review_rate_placeholder, movie.title)
+
+            tvWhatLike.isVisible = review.whatLiked != null
+            tvWhatNotLike.isVisible = review.whatDidNotLike != null
+
+            tvWhatLike.text = getString(R.string.review_liked_placeholder, review.whatLiked)
+            tvWhatNotLike.text = getString(R.string.review_not_liked_placeholder, review.whatDidNotLike)
         }
     }
 
