@@ -50,8 +50,8 @@ data class DetailsMovieDto(
     val genres: List<GenreDto> = emptyList(),
 
     @SerializedName("homepage")
-    val homepage: String = "",
+    val homepage: String? = "",
 
-    @SerializedName("backdrop_path")
+    @SerializedName("poster_path")
     val posterPath: String? = "",
 )

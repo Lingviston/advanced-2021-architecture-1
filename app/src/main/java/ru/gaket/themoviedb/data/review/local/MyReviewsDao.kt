@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import kotlinx.coroutines.flow.Flow
 import ru.gaket.themoviedb.domain.movies.models.MovieId
 
 @Dao
@@ -17,6 +18,14 @@ interface MyReviewsDao {
         LIMIT 1
         """)
     suspend fun getByMovieId(movieId: MovieId): MyReviewEntity?
+
+    @Query("""
+        SELECT *
+        FROM ${MyReviewEntity.TABLE_NAME}
+        WHERE ${MyReviewEntity.REVIEW_MOVIE_ID}=:movieId
+        LIMIT 1
+        """)
+    fun getFlowByMovieId(movieId: MovieId): Flow<List<MyReviewEntity>>
 
     @Query("""
         SELECT *

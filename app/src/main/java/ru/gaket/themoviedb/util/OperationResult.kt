@@ -51,6 +51,11 @@ inline fun <S, E> OperationResult<S, E>.doOnError(block: (E) -> Unit): Operation
     return this
 }
 
+inline fun <S, E> OperationResult<S, E>.get(onSuccess: (S) -> Unit, onError: (E) -> Unit) = when (this) {
+    is OperationResult.Success -> onSuccess(result)
+    is OperationResult.Error -> onError(result)
+}
+
 inline fun <S, R> S.runOperationCatching(block: S.() -> R): OperationResult<R, Throwable> {
     return try {
         OperationResult.Success(block())
