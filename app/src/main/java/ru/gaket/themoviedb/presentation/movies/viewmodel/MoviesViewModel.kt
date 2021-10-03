@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.sample
 import ru.gaket.themoviedb.data.movies.MoviesRepository
 import kotlinx.coroutines.launch
-import ru.gaket.themoviedb.domain.movies.MoviesInteractor
 import ru.gaket.themoviedb.presentation.movies.viewmodel.MoviesResult.EmptyQuery
 import ru.gaket.themoviedb.presentation.movies.viewmodel.MoviesResult.EmptyResult
 import ru.gaket.themoviedb.presentation.movies.viewmodel.MoviesResult.ErrorResult
