@@ -13,13 +13,13 @@ data class Movie(
     val reviewsCounter: Int = 0, //
     val popularity: Float = 0.0f, //
     val releaseDate: String = "", // "1990-01-01"
-    val duration: Int = 0, // в минутах
+    val duration: Int = 0, // in minutes
     val budget: Int = 0, //
-    val revenue: Int = 0, // доход
+    val revenue: Int = 0, // in USD
     val status: String = "Released", //
     val genres: String = "", // "Documentary, Drama, Thriller"
-    val homepage: String = "", // ?? всегда ""
-    val thumbnail: String = "", // poster - полный url
+    val homepage: String = "", //
+    val thumbnail: String = "", // poster - full url
     val hasReview: Boolean = false,
     val reviewId: Int = 0,
 )

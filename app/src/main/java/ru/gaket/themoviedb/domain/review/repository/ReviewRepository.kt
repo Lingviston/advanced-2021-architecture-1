@@ -2,11 +2,11 @@ package ru.gaket.themoviedb.domain.review.repository
 
 import kotlinx.coroutines.flow.Flow
 import ru.gaket.themoviedb.domain.movies.models.MovieId
-import ru.gaket.themoviedb.domain.review.AddReviewRequest
-import ru.gaket.themoviedb.domain.review.MyReview
-import ru.gaket.themoviedb.domain.review.Rating
-import ru.gaket.themoviedb.domain.review.SomeoneReview
-import ru.gaket.themoviedb.domain.review.model.ReviewFormModel
+import ru.gaket.themoviedb.domain.review.models.ReviewDraft
+import ru.gaket.themoviedb.domain.review.models.MyReview
+import ru.gaket.themoviedb.domain.review.models.Rating
+import ru.gaket.themoviedb.domain.review.models.SomeoneReview
+import ru.gaket.themoviedb.domain.review.models.ReviewFormModel
 import ru.gaket.themoviedb.util.OperationResult
 
 interface ReviewRepository {
@@ -24,5 +24,5 @@ interface ReviewRepository {
     suspend fun clearState()
 
     @Throws(IllegalStateException::class)
-    fun buildReview(): AddReviewRequest
+    fun buildReview(): ReviewDraft
 }

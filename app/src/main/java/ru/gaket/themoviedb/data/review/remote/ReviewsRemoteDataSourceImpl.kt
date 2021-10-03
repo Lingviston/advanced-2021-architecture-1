@@ -3,9 +3,9 @@ package ru.gaket.themoviedb.data.review.remote
 import com.google.firebase.firestore.FirebaseFirestore
 import ru.gaket.themoviedb.domain.auth.User
 import ru.gaket.themoviedb.domain.movies.models.MovieId
-import ru.gaket.themoviedb.domain.review.AddReviewRequest
-import ru.gaket.themoviedb.domain.review.MyReview
-import ru.gaket.themoviedb.domain.review.SomeoneReview
+import ru.gaket.themoviedb.domain.review.models.ReviewDraft
+import ru.gaket.themoviedb.domain.review.models.MyReview
+import ru.gaket.themoviedb.domain.review.models.SomeoneReview
 import ru.gaket.themoviedb.util.OperationResult
 import ru.gaket.themoviedb.util.awaitTask
 import ru.gaket.themoviedb.util.mapSuccess
@@ -37,14 +37,14 @@ class ReviewsRemoteDataSourceImpl @Inject constructor() : ReviewsRemoteDataSourc
             }
 
     override suspend fun addReview(
-        request: AddReviewRequest,
+        draft: ReviewDraft,
         authorId: User.Id,
         authorEmail: User.Email,
     ): OperationResult<MyReview, Throwable> =
         firebaseFirestore.collection(MOVIES_COLLECTION)
-            .document(request.movieId.toString())
+            .document(draft.movieId.toString())
             .collection(REVIEWS_COLLECTION)
-            .add(request.toDatastoreMap(authorId, authorEmail))
+            .add(draft.toDatastoreMap(authorId, authorEmail))
             .awaitTask()
-            .mapSuccess { documentReference -> request.toMyReview(documentReference) }
+            .mapSuccess { documentReference -> draft.toMyReview(documentReference) }
 }

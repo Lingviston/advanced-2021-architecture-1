@@ -19,9 +19,9 @@ import ru.gaket.themoviedb.domain.movies.models.SearchMovie
 import ru.gaket.themoviedb.domain.movies.models.SearchMovieWithMyReview
 import ru.gaket.themoviedb.domain.movies.toModel
 import ru.gaket.themoviedb.domain.movies.toSearchMovie
-import ru.gaket.themoviedb.domain.review.AddReviewRequest
-import ru.gaket.themoviedb.domain.review.MyReview
-import ru.gaket.themoviedb.domain.review.SomeoneReview
+import ru.gaket.themoviedb.domain.review.models.ReviewDraft
+import ru.gaket.themoviedb.domain.review.models.MyReview
+import ru.gaket.themoviedb.domain.review.models.SomeoneReview
 import ru.gaket.themoviedb.util.OperationResult
 import ru.gaket.themoviedb.util.VoidOperationResult
 import ru.gaket.themoviedb.util.doOnSuccess
@@ -41,7 +41,7 @@ interface MoviesRepository {
      */
     suspend fun searchMoviesWithReviews(
         query: String,
-        page: Int,
+        page: Int = 1,
     ): OperationResult<List<SearchMovieWithMyReview>, Throwable>
 
     /**
@@ -55,7 +55,7 @@ interface MoviesRepository {
     suspend fun getMovieDetailsWithReviews(id: MovieId): OperationResult<MovieWithReviews, Throwable>
 
     suspend fun addReview(
-        request: AddReviewRequest,
+        draft: ReviewDraft,
         authorId: Id,
         authorEmail: Email,
     ): VoidOperationResult<Throwable>
@@ -162,11 +162,11 @@ class MoviesRepositoryImpl @Inject constructor(
         }
 
     override suspend fun addReview(
-        request: AddReviewRequest,
+        draft: ReviewDraft,
         authorId: Id,
         authorEmail: Email,
     ): VoidOperationResult<Throwable> =
-        reviewsRemoteDataSource.addReview(request, authorId, authorEmail)
+        reviewsRemoteDataSource.addReview(draft, authorId, authorEmail)
             .mapSuccess { newReview ->
                 val entity = newReview.toEntity()
                 myReviewsLocalDataSource.insert(entity)

@@ -1,4 +1,4 @@
-package ru.gaket.themoviedb.domain.review
+package ru.gaket.themoviedb.domain.review.models
 
 enum class Rating(val starsCount: Int) {
     BAD(starsCount = 1),

@@ -1,7 +1,7 @@
 package ru.gaket.themoviedb.domain.movies.models
 
-import ru.gaket.themoviedb.domain.review.MyReview
-import ru.gaket.themoviedb.domain.review.SomeoneReview
+import ru.gaket.themoviedb.domain.review.models.MyReview
+import ru.gaket.themoviedb.domain.review.models.SomeoneReview
 
 data class MovieWithReviews(
     val movie: Movie,

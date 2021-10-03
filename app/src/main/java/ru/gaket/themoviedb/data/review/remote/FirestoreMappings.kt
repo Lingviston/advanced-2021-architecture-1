@@ -3,11 +3,11 @@ package ru.gaket.themoviedb.data.review.remote
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import ru.gaket.themoviedb.domain.auth.User
-import ru.gaket.themoviedb.domain.review.AddReviewRequest
-import ru.gaket.themoviedb.domain.review.MyReview
-import ru.gaket.themoviedb.domain.review.Rating
-import ru.gaket.themoviedb.domain.review.Review
-import ru.gaket.themoviedb.domain.review.SomeoneReview
+import ru.gaket.themoviedb.domain.review.models.ReviewDraft
+import ru.gaket.themoviedb.domain.review.models.MyReview
+import ru.gaket.themoviedb.domain.review.models.Rating
+import ru.gaket.themoviedb.domain.review.models.Review
+import ru.gaket.themoviedb.domain.review.models.SomeoneReview
 
 internal const val MOVIES_COLLECTION = "movies"
 internal const val REVIEWS_COLLECTION = "reviews"
@@ -47,7 +47,7 @@ internal fun DocumentSnapshot.toReview(): Review? =
             )
         }
 
-internal fun AddReviewRequest.toDatastoreMap(
+internal fun ReviewDraft.toDatastoreMap(
     authorId: User.Id,
     authorEmail: User.Email,
 ): Map<Any, Any> =
@@ -59,7 +59,7 @@ internal fun AddReviewRequest.toDatastoreMap(
         RATING to this.rating.starsCount
     )
 
-internal fun AddReviewRequest.toMyReview(documentReference: DocumentReference): MyReview =
+internal fun ReviewDraft.toMyReview(documentReference: DocumentReference): MyReview =
     MyReview(
         movieId = this.movieId,
         review = Review(

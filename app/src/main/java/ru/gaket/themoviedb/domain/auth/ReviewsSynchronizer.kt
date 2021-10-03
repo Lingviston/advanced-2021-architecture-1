@@ -1,6 +1,6 @@
 package ru.gaket.themoviedb.domain.auth
 
-interface SyncLocalStorageUseCase {
+interface ReviewsSynchronizer {
 
     suspend fun sync()
 

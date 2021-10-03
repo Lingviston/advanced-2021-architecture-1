@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.data.auth.AuthRepository
 import ru.gaket.themoviedb.data.movies.MoviesRepository
-import ru.gaket.themoviedb.domain.review.Rating
+import ru.gaket.themoviedb.domain.review.models.Rating
 import ru.gaket.themoviedb.domain.review.repository.ReviewRepository
 import javax.inject.Inject
 

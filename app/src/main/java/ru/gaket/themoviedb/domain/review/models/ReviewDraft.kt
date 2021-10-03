@@ -1,8 +1,8 @@
-package ru.gaket.themoviedb.domain.review
+package ru.gaket.themoviedb.domain.review.models
 
 import ru.gaket.themoviedb.domain.movies.models.MovieId
 
-data class AddReviewRequest(
+data class ReviewDraft(
     val movieId: MovieId,
     val liked: String,
     val disliked: String,

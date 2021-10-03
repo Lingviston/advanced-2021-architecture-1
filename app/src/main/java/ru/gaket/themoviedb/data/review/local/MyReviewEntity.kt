@@ -4,9 +4,9 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ru.gaket.themoviedb.domain.movies.models.MovieId
-import ru.gaket.themoviedb.domain.review.MyReview
-import ru.gaket.themoviedb.domain.review.Rating
-import ru.gaket.themoviedb.domain.review.Review
+import ru.gaket.themoviedb.domain.review.models.MyReview
+import ru.gaket.themoviedb.domain.review.models.Rating
+import ru.gaket.themoviedb.domain.review.models.Review
 
 @Entity(tableName = MyReviewEntity.TABLE_NAME)
 data class MyReviewEntity(

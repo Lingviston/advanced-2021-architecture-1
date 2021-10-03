@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.data.movies.MoviesRepository
 import ru.gaket.themoviedb.domain.movies.models.Movie
 import ru.gaket.themoviedb.domain.movies.models.MovieId
-import ru.gaket.themoviedb.domain.review.model.ReviewFormModel
+import ru.gaket.themoviedb.domain.review.models.ReviewFormModel
 import ru.gaket.themoviedb.domain.review.repository.ReviewRepository
 import ru.gaket.themoviedb.presentation.review.MovieWithReviewViewState.MovieWithReview
 import ru.gaket.themoviedb.presentation.review.MovieWithReviewViewState.NoMovie
