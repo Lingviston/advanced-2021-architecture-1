@@ -4,6 +4,7 @@ import ru.gaket.themoviedb.data.genres.remote.GenreDto
 import ru.gaket.themoviedb.data.movies.local.MovieEntity
 import ru.gaket.themoviedb.data.movies.remote.DetailsMovieDto
 import ru.gaket.themoviedb.data.movies.remote.SearchMovieDto
+import java.util.Locale
 
 internal fun SearchMovieDto.toEntity(baseImageUrl: String): MovieEntity = MovieEntity(
     id = this.id,
@@ -39,7 +40,7 @@ internal fun DetailsMovieDto.toEntity(baseImageUrl: String): MovieEntity = Movie
     revenue = this.revenue,
     status = this.status,
     genres = genresAsString(this.genres),
-    homepage = this.homepage,
+    homepage = this.homepage.orEmpty(),
     thumbnail = getPosterUrl(baseImageUrl, this.posterPath)
 )
 
@@ -57,7 +58,7 @@ private fun normalizedRating(rating: Float): Int {
 }
 
 private fun normalizedPopularity(popularity: Float): Float {
-    return "%.2f".format(popularity).toFloat()
+    return "%.2f".format(Locale.US, popularity).toFloat()
 }
 
 private fun genresAsString(genres: List<GenreDto>): String =

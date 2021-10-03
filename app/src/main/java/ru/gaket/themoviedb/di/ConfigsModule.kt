@@ -28,7 +28,7 @@ object ConfigsModule {
         MovieUrlProvider(
             baseUrl = BuildConfig.BASE_URL,
             apiKey = BuildConfig.THE_MOVIE_DB_API_KEY,
-            //todo: to BuildConfig props?
+            //todo: to BuildConfig props? maybe use https://api.themoviedb.org/3/configuration ??
             baseImageUrl = "https://image.tmdb.org/t/p/w300",
             browseMovieBaseUrl = "https://www.themoviedb.org/movie/"
         )

@@ -7,4 +7,6 @@
     <dimen name="space_huge">48dp</dimen>
     <dimen name="cornerRad">6dp</dimen>
     <dimen name="itemsDist">19dp</dimen>
+    <dimen name="posterHeight">150dp</dimen>
+    <dimen name="reviewElevation">4dp</dimen>
 </resources>

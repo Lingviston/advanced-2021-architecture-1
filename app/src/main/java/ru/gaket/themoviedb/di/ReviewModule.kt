@@ -6,6 +6,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ru.gaket.themoviedb.core.data.HeapItemStore
+import ru.gaket.themoviedb.data.review.local.MyReviewsLocalDataSource
+import ru.gaket.themoviedb.data.review.local.MyReviewsLocalDataSourceImpl
+import ru.gaket.themoviedb.data.review.remote.ReviewsRemoteDataSource
+import ru.gaket.themoviedb.data.review.remote.ReviewsRemoteDataSourceImpl
 import ru.gaket.themoviedb.data.review.repository.ReviewRepositoryImpl
 import ru.gaket.themoviedb.domain.review.model.ReviewFormModel
 import ru.gaket.themoviedb.domain.review.repository.ReviewRepository
@@ -19,6 +23,18 @@ interface ReviewBindingModule {
     @Singleton
     @Binds
     fun bindsReviewRepository(repository: ReviewRepositoryImpl): ReviewRepository
+
+    @Singleton
+    @Binds
+    fun bindMyReviewsLocalDataSource(
+        impl: MyReviewsLocalDataSourceImpl,
+    ): MyReviewsLocalDataSource
+
+    @Singleton
+    @Binds
+    fun bindReviewsRemoteDataSource(
+        impl: ReviewsRemoteDataSourceImpl,
+    ): ReviewsRemoteDataSource
 }
 
 @Module

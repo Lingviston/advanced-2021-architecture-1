@@ -11,7 +11,6 @@ import ru.gaket.themoviedb.data.review.local.MyReviewsLocalDataSource
 import ru.gaket.themoviedb.data.review.local.toEntity
 import ru.gaket.themoviedb.data.review.local.toModel
 import ru.gaket.themoviedb.data.review.remote.ReviewsRemoteDataSource
-import ru.gaket.themoviedb.domain.auth.User
 import ru.gaket.themoviedb.domain.auth.User.*
 import ru.gaket.themoviedb.domain.movies.models.Movie
 import ru.gaket.themoviedb.domain.movies.models.MovieId
@@ -119,7 +118,7 @@ class MoviesRepositoryImpl @Inject constructor(
 
     override suspend fun getMovieDetails(id: MovieId): OperationResult<Movie, Throwable> {
         val cachedMovie = moviesLocalDataSource.getById(id)
-        val entityResult = if (cachedMovie != null) {
+        val entityResult = if (cachedMovie != null && cachedMovie.duration > 0) {
             OperationResult.Success(cachedMovie)
         } else {
             loadMovieDetailsFromRemoteAndStore(id)
