@@ -30,6 +30,9 @@
     <string name="review_error_unknown">Something gone wrong</string>
     <string name="review_error_zero_rating">You should select rating</string>
     <string name="review_error_should_not_be_empty">Field should not be empty</string>
+    <string name="review_rate_placeholder">Rate \"%1$s\"</string>
+    <string name="review_liked_placeholder">Like: \"%1$s\"</string>
+    <string name="review_not_liked_placeholder">Didn\'t like: \"%1$s\"</string>
     <string name="movie_details_rating">Rating:</string>
     <string name="review_add_label">Add review</string>
     <string name="review_my_review">My review</string>

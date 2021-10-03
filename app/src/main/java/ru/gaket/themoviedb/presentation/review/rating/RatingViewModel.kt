@@ -6,8 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.data.auth.AuthRepository
 import ru.gaket.themoviedb.data.movies.MoviesRepository
@@ -22,10 +21,9 @@ class RatingViewModel @Inject constructor(
     private val authRepository: AuthRepository,
 ) : ViewModel() {
 
-    private val _reviewEvent = MutableStateFlow<ReviewEvent?>(null)
+    private val _reviewEvent = MutableSharedFlow<ReviewEvent>()
     val reviewEvent: LiveData<ReviewEvent>
         get() = _reviewEvent
-            .filterNotNull()
             .asLiveData(viewModelScope.coroutineContext)
 
     private val _reviewState = MutableLiveData<ReviewState>()
@@ -35,7 +33,7 @@ class RatingViewModel @Inject constructor(
         viewModelScope.launch {
             val rating = Rating.mapToRating(ratingNumber)
             if (rating == null) {
-                _reviewEvent.value = ReviewEvent.ERROR_ZERO_RATING
+                _reviewEvent.emit(ReviewEvent.ERROR_ZERO_RATING)
             } else {
                 reviewRepository.setRating(rating)
                 submitReview()
@@ -49,16 +47,16 @@ class RatingViewModel @Inject constructor(
 
         val currentUser = authRepository.currentUser
         if (currentUser == null) {
-            _reviewEvent.value = ReviewEvent.ERROR_USER_NOT_SIGNED
+            _reviewEvent.emit(ReviewEvent.ERROR_USER_NOT_SIGNED)
         } else {
             try {
                 val review = reviewRepository.buildReview()
                 reviewRepository.clearState()
                 moviesRepository.addReview(review, currentUser.id, currentUser.email)
 
-                _reviewEvent.value = ReviewEvent.SUCCESS
+                _reviewEvent.emit(ReviewEvent.SUCCESS)
             } catch (e: IllegalStateException) {
-                _reviewEvent.value = ReviewEvent.ERROR_UNKNOWN
+                _reviewEvent.emit(ReviewEvent.ERROR_UNKNOWN)
             }
         }
 
