@@ -17,9 +17,9 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.core.navigation.AuthScreen
-import ru.gaket.themoviedb.core.navigation.LikedScreen
 import ru.gaket.themoviedb.core.navigation.MoviesScreen
 import ru.gaket.themoviedb.core.navigation.Navigator
+import ru.gaket.themoviedb.core.navigation.ReviewScreen
 import ru.gaket.themoviedb.core.navigation.Screen
 import ru.gaket.themoviedb.databinding.FragmentMovieDetailsBinding
 import ru.gaket.themoviedb.presentation.moviedetails.model.MovieDetailsEvent
@@ -61,7 +61,7 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
 
     private fun handleEvent(event: MovieDetailsEvent) = when (event) {
         is OpenAuthScreenEvent -> AuthScreen().navigate()
-        is OpenAddReviewScreenEvent -> LikedScreen(event.movieId).navigate()
+        is OpenAddReviewScreenEvent -> ReviewScreen(event.movieId).navigate()
         is ShowErrorEvent -> showSnackError(event.errorMessageResId)
     }
 

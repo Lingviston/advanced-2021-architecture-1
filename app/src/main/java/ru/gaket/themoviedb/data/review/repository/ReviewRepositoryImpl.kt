@@ -1,13 +1,13 @@
 package ru.gaket.themoviedb.data.review.repository
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import ru.gaket.themoviedb.data.review.local.MyReviewEntity
 import ru.gaket.themoviedb.data.review.local.MyReviewsLocalDataSource
 import ru.gaket.themoviedb.data.review.local.toModel
 import ru.gaket.themoviedb.data.review.remote.ReviewsRemoteDataSource
-import kotlinx.coroutines.flow.filterNotNull
 import ru.gaket.themoviedb.domain.movies.models.MovieId
 import ru.gaket.themoviedb.domain.review.AddReviewRequest
 import ru.gaket.themoviedb.domain.review.MyReview
@@ -24,6 +24,9 @@ class ReviewRepositoryImpl @Inject constructor(
     private val myReviewsLocalDataSource: MyReviewsLocalDataSource,
 ) : ReviewRepository {
 
+    override val reviewState: Flow<ReviewFormModel>
+        get() = reviewFormStore.itemChanges.filterNotNull()
+
     override suspend fun getSomeoneReviews(movieId: MovieId) =
         reviewsRemoteDataSource.getMovieReviews(movieId)
 
@@ -32,9 +35,6 @@ class ReviewRepositoryImpl @Inject constructor(
             .mapNotNull(List<MyReviewEntity>::firstOrNull)
             .map(MyReviewEntity::toModel)
     }
-
-    override val reviewState: Flow<ReviewFormModel>
-        get() = reviewFormStore.itemChanges.filterNotNull()
 
     override suspend fun setMovieId(movieId: MovieId) {
 
