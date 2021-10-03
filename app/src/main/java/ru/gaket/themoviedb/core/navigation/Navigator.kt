@@ -43,8 +43,6 @@ class NavigatorImpl @Inject constructor(
     override fun backTo(tag: String) {
         Timber.d("Navigate Back to $tag")
         getFragmentManager().popBackStack(tag, 0)
-
-        getFragmentManager().popBackStack()
     }
 
     override fun back() {
