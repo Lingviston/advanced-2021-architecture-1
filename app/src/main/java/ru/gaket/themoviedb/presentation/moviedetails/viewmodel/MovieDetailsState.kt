@@ -14,7 +14,7 @@ data class MovieDetailsState(
     val rating: String = "",
     val posterUrl: String? = "",
     val someoneReviews: List<SomeoneReview> = emptyList(),
-    val myReview: MyReview = MyReview(),
+    val myReview: MovieDetailsReview = MyReview(),
 ) {
 
     val allReviews: List<MovieDetailsReview>

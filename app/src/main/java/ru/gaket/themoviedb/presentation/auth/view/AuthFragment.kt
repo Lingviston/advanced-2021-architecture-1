@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import ru.gaket.themoviedb.R
+import ru.gaket.themoviedb.core.navigation.MovieDetailsScreen
 import ru.gaket.themoviedb.core.navigation.Navigator
 import ru.gaket.themoviedb.databinding.AuthFragmentBinding
 import ru.gaket.themoviedb.domain.auth.LogInError
@@ -56,9 +57,7 @@ class AuthFragment : Fragment(R.layout.auth_fragment) {
             AuthState.Empty,
             AuthState.Authorizing,
             -> Unit
-            AuthState.Authorized -> {
-                //todo
-            }
+            AuthState.Authorized -> navigator.backTo(MovieDetailsScreen.TAG)
             is AuthState.InputError -> handleInputError(state)
             is AuthState.AuthError -> showSystemMessage(text = getString(state.logInError.messageResId))
         }

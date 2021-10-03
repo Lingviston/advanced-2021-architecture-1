@@ -2,6 +2,7 @@ package ru.gaket.themoviedb.data.review.local
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.onStart
 import ru.gaket.themoviedb.domain.movies.models.MovieId
 import javax.inject.Inject
 
@@ -20,7 +21,8 @@ class MyReviewsLocalDataSourceImpl @Inject constructor(
 ) : MyReviewsLocalDataSource {
 
     override fun getFlowByMovieId(movieId: MovieId): Flow<List<MyReviewEntity>> =
-        myReviewsDao.getFlowByMovieId(movieId).distinctUntilChanged()
+        myReviewsDao.getFlowByMovieId(movieId)
+            .distinctUntilChanged()
 
     override suspend fun getByMovieId(movieId: MovieId): MyReviewEntity? =
         myReviewsDao.getByMovieId(movieId)

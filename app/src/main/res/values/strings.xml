@@ -35,6 +35,7 @@
     <string name="review_not_liked_placeholder">Didn\'t like: \"%1$s\"</string>
     <string name="movie_details_rating">Rating:</string>
     <string name="review_add_label">Add review</string>
+    <string name="authiorize_to_add_review_label">Click to Autorize to add review</string>
     <string name="review_my_review">My review</string>
     <string name="error_getting_movie_info">Error getting movie information!</string>
 

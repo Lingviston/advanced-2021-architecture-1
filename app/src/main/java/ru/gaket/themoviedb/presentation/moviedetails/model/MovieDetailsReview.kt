@@ -8,6 +8,7 @@ sealed class MovieDetailsReview {
 
     data class MyReview(
         override val review: Review? = null,
+        val isAuthorized: Boolean = false,
     ) : MovieDetailsReview() {
 
         val isPosted: Boolean get() = review != null

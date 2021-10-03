@@ -8,8 +8,9 @@ import ru.gaket.themoviedb.domain.movies.models.SearchMovieWithMyReview
  */
 sealed class MoviesResult {
 
-    class ValidResult(val result: List<SearchMovieWithMyReview>) : MoviesResult()
+    object Loading : MoviesResult()
     object EmptyResult : MoviesResult()
     object EmptyQuery : MoviesResult()
-    class ErrorResult(val e: Throwable) : MoviesResult()
+    data class SuccessResult(val result: List<SearchMovieWithMyReview>) : MoviesResult()
+    data class ErrorResult(val e: Throwable) : MoviesResult()
 }

@@ -1,8 +1,10 @@
 package ru.gaket.themoviedb.presentation.moviedetails.view
 
+import android.content.Context
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import ru.gaket.themoviedb.R
+import ru.gaket.themoviedb.R.string
 import ru.gaket.themoviedb.databinding.ItemReviewBinding
 import ru.gaket.themoviedb.presentation.moviedetails.model.MovieDetailsReview
 import ru.gaket.themoviedb.presentation.moviedetails.model.MovieDetailsReview.MyReview
@@ -10,29 +12,47 @@ import ru.gaket.themoviedb.presentation.moviedetails.model.MovieDetailsReview.So
 
 class ReviewViewHolder(
     private val binding: ItemReviewBinding,
+    private val onReviewClick: () -> Unit,
+    private val onAddReviewClick: () -> Unit,
+    private val authorizeClick: () -> Unit,
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(
-        review: MovieDetailsReview,
-        onReviewClick: () -> Unit,
-        onAddReviewClick: () -> Unit,
-    ) = with(binding) {
+    fun bind(review: MovieDetailsReview) = with(binding) {
         val isAddReviewView = review is MyReview && review.isPosted.not()
+        val context = itemView.context
 
         gReviewContent.isVisible = isAddReviewView.not()
         gReviewAdd.isVisible = isAddReviewView
 
         if (isAddReviewView) {
-            cvReviewCard.setOnClickListener { onAddReviewClick.invoke() }
+            val isAuthorized = review is MyReview && review.isAuthorized
+
+            tvReviewAddLabelLabel.text = getTextForAddReviewButton(isAuthorized, context)
+            cvReviewCard.setOnClickListener { getAddReviewClickListener(isAuthorized).invoke() }
         } else {
             cvReviewCard.setOnClickListener { onReviewClick.invoke() }
-            setupReviewView(review)
+            setupReviewView(context, review)
         }
     }
 
-    private fun setupReviewView(review: MovieDetailsReview) = with(binding) {
+    private fun getTextForAddReviewButton(
+        isAuthorized: Boolean,
+        context: Context,
+    ) = if (isAuthorized) {
+        context.getString(string.review_add_label)
+    } else {
+        context.getString(string.authiorize_to_add_review_label)
+    }
+
+    private fun getAddReviewClickListener(isAuthorized: Boolean) = if (isAuthorized) {
+        onAddReviewClick
+    } else {
+        authorizeClick
+    }
+
+    private fun setupReviewView(context: Context, review: MovieDetailsReview) = with(binding) {
         tvReviewUserName.text = when (review) {
-            is MyReview -> tvReviewUserName.context.getString(R.string.review_my_review)
+            is MyReview -> context.getString(R.string.review_my_review)
             is SomeoneReview -> review.userName
         }
 

@@ -10,9 +10,12 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.core.navigation.WebNavigator
+import ru.gaket.themoviedb.domain.auth.AuthInteractor
 import ru.gaket.themoviedb.domain.movies.MoviesInteractor
 import ru.gaket.themoviedb.domain.movies.models.Movie
 import ru.gaket.themoviedb.domain.review.MyReview
@@ -21,6 +24,7 @@ import ru.gaket.themoviedb.domain.review.repository.ReviewRepository
 import ru.gaket.themoviedb.presentation.moviedetails.model.MovieDetailsEvent
 import ru.gaket.themoviedb.presentation.moviedetails.model.MovieDetailsEvent.OpenAddReviewScreenEvent
 import ru.gaket.themoviedb.presentation.moviedetails.model.MovieDetailsEvent.ShowErrorEvent
+import ru.gaket.themoviedb.presentation.moviedetails.model.MovieDetailsReview
 import ru.gaket.themoviedb.presentation.moviedetails.model.toMovieDetailsReview
 import ru.gaket.themoviedb.presentation.moviedetails.view.MovieDetailsFragment.Companion.ARG_MOVIE_ID
 import ru.gaket.themoviedb.presentation.moviedetails.view.MovieDetailsFragment.Companion.ARG_MOVIE_TITLE
@@ -36,21 +40,20 @@ class MovieDetailsViewModel @Inject constructor(
     private val moviesInteractor: MoviesInteractor,
     private val reviewRepository: ReviewRepository,
     private val webNavigator: WebNavigator,
+    private val authInteractor: AuthInteractor,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val movieId = savedStateHandle.get<Long>(ARG_MOVIE_ID) ?: -1
     private val title = savedStateHandle.get<String>(ARG_MOVIE_TITLE).orEmpty()
 
-    private var _state = MutableLiveData<MovieDetailsState>()
+    private var _state = MutableLiveData(MovieDetailsState(title = title))
     val state: LiveData<MovieDetailsState> get() = _state
 
     private var _events = MutableSharedFlow<MovieDetailsEvent>()
     val events: SharedFlow<MovieDetailsEvent> get() = _events.asSharedFlow()
 
     init {
-        _state.value = MovieDetailsState(title = title)
-
         viewModelScope.launch {
             moviesInteractor.getMovieDetails(movieId).get(
                 onSuccess = ::handleMovie,
@@ -72,7 +75,16 @@ class MovieDetailsViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            reviewRepository.getMyReviews(movieId).collect(::handleMyReview)
+            authInteractor.observeCurrentUser()
+                .filter { user -> user != null }
+                .flatMapLatest { reviewRepository.getMyReviews(movieId) }
+                .collect(::handleMyReview)
+        }
+
+        viewModelScope.launch {
+            authInteractor.observeCurrentUser()
+                .filter { user -> user == null }
+                .collect { handleAuthorization() }
         }
     }
 
@@ -84,7 +96,10 @@ class MovieDetailsViewModel @Inject constructor(
 
     @Synchronized
     private fun reduceState(reducer: MovieDetailsState.() -> MovieDetailsState) {
-        _state.value = (_state.value ?: MovieDetailsState()).reducer()
+        val value = _state.value
+        requireNotNull(value)
+
+        _state.value = value.reducer()
     }
 
     private fun handleMovie(movie: Movie) = reduceState {
@@ -108,12 +123,22 @@ class MovieDetailsViewModel @Inject constructor(
     private fun handleSomeoneReviews(reviews: List<SomeoneReview>) = reduceState {
         copy(
             isLoadingReviews = false,
-            someoneReviews = reviews.map { it.toMovieDetailsReview() },
+            someoneReviews = reviews.map { review -> review.toMovieDetailsReview() },
         )
     }
 
-    private fun handleMyReview(review: MyReview) = reduceState {
-        copy(myReview = review.toMovieDetailsReview())
+    private fun handleMyReview(myReview: MyReview?) = reduceState {
+        val review = if (myReview != null) {
+            MovieDetailsReview.MyReview(myReview.review, isAuthorized = true)
+        } else {
+            MovieDetailsReview.MyReview(isAuthorized = true)
+        }
+
+        copy(myReview = review)
+    }
+
+    private fun handleAuthorization() = reduceState {
+        copy(myReview = MovieDetailsReview.MyReview(isAuthorized = false))
     }
 
     private fun MovieDetailsEvent.publish() = viewModelScope.launch {

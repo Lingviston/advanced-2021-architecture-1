@@ -4,7 +4,6 @@ import androidx.annotation.StringRes
 import ru.gaket.themoviedb.domain.movies.models.MovieId
 
 sealed class MovieDetailsEvent {
-    class ShowErrorEvent(@StringRes val errorMessageResId: Int) : MovieDetailsEvent()
-    class OpenAuthScreenEvent : MovieDetailsEvent()
-    class OpenAddReviewScreenEvent(val movieId: MovieId) : MovieDetailsEvent()
+    data class ShowErrorEvent(@StringRes val errorMessageResId: Int) : MovieDetailsEvent()
+    data class OpenAddReviewScreenEvent(val movieId: MovieId) : MovieDetailsEvent()
 }

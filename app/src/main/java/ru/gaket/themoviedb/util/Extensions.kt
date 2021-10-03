@@ -20,12 +20,6 @@ val Int.toDp: Int
 val Int.toPx: Int
     get() = (this * Resources.getSystem().displayMetrics.density).toInt()
 
-var TextView.diffedText: CharSequence
-    get() = text
-    set(value) {
-        if (value != text) text = value
-    }
-
 fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
     this.addTextChangedListener(object : TextWatcher {
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -69,3 +63,6 @@ fun View.toGone() {
 fun View.toVisible() {
     visibility = View.VISIBLE
 }
+
+val <T> T.exhaustive: T
+    get() = this
