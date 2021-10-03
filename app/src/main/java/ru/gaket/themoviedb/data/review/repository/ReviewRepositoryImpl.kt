@@ -1,5 +1,7 @@
 package ru.gaket.themoviedb.data.review.repository
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
 import ru.gaket.themoviedb.domain.movies.models.MovieId
 import ru.gaket.themoviedb.domain.review.AddReviewRequest
 import ru.gaket.themoviedb.domain.review.Rating
@@ -13,24 +15,27 @@ class ReviewRepositoryImpl @Inject constructor(
     private val reviewFormStore: ItemStore<ReviewFormModel>,
 ) : ReviewRepository {
 
+    override val reviewState: Flow<ReviewFormModel>
+        get() = reviewFormStore.itemChanges.filterNotNull()
+
     override suspend fun setMovieId(movieId: MovieId) {
 
         reviewFormStore.setItem(newEmptyModelInstance(movieId))
     }
 
-    override suspend fun setWhatLike(whatLiked: String) {
+    override suspend fun setWhatLike(whatLiked: String?) {
         reviewFormStore.updateItem { reviewForm ->
             reviewForm.copy(whatLiked = whatLiked)
         }
     }
 
-    override suspend fun setWhatDidNotLike(whatDidNotLike: String) {
+    override suspend fun setWhatDidNotLike(whatDidNotLike: String?) {
         reviewFormStore.updateItem { reviewForm ->
             reviewForm.copy(whatDidNotLike = whatDidNotLike)
         }
     }
 
-    override suspend fun setRating(rating: Rating) {
+    override suspend fun setRating(rating: Rating?) {
         reviewFormStore.updateItem { reviewForm ->
             reviewForm.copy(rating = rating)
         }

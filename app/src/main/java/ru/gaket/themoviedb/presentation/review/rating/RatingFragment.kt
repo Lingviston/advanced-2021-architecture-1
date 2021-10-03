@@ -7,9 +7,8 @@ import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import ru.gaket.themoviedb.R
-import ru.gaket.themoviedb.core.navigation.MovieDetailsScreen
-import ru.gaket.themoviedb.core.navigation.Navigator
 import ru.gaket.themoviedb.databinding.FragmentReviewRatingBinding
+import ru.gaket.themoviedb.presentation.review.ReviewViewModel
 import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewEvent
 import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewEvent.ERROR_UNKNOWN
 import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewEvent.ERROR_USER_NOT_SIGNED
@@ -18,18 +17,16 @@ import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewEven
 import ru.gaket.themoviedb.presentation.review.rating.RatingViewModel.ReviewState
 import ru.gaket.themoviedb.util.showSnackbar
 import timber.log.Timber
-import javax.inject.Inject
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class RatingFragment : Fragment(R.layout.fragment_review_rating) {
 
-    @Inject
-    lateinit var navigator: Navigator
-
     private val binding: FragmentReviewRatingBinding by viewBinding(FragmentReviewRatingBinding::bind)
 
     private val viewModel: RatingViewModel by viewModels()
+
+    private val sharedViewModel: ReviewViewModel by viewModels({ requireParentFragment() })
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -53,9 +50,7 @@ class RatingFragment : Fragment(R.layout.fragment_review_rating) {
             ERROR_ZERO_RATING -> {
                 requireView().showSnackbar(R.string.review_error_zero_rating)
             }
-            SUCCESS -> {
-                navigator.backTo(MovieDetailsScreen.TAG)
-            }
+            SUCCESS -> sharedViewModel.nextState()
         }
     }
 
