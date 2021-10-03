@@ -1,6 +1,6 @@
 package ru.gaket.themoviedb.presentation.moviedetails.model
 
-import ru.gaket.themoviedb.domain.review.Review
+import ru.gaket.themoviedb.domain.review.models.Review
 
 sealed class MovieDetailsReview {
 

@@ -11,7 +11,7 @@ import ru.gaket.themoviedb.data.review.local.MyReviewsLocalDataSourceImpl
 import ru.gaket.themoviedb.data.review.remote.ReviewsRemoteDataSource
 import ru.gaket.themoviedb.data.review.remote.ReviewsRemoteDataSourceImpl
 import ru.gaket.themoviedb.data.review.repository.ReviewRepositoryImpl
-import ru.gaket.themoviedb.domain.review.model.ReviewFormModel
+import ru.gaket.themoviedb.domain.review.models.ReviewFormModel
 import ru.gaket.themoviedb.domain.review.repository.ReviewRepository
 import ru.gaket.themoviedb.domain.review.store.ItemStore
 import javax.inject.Singleton

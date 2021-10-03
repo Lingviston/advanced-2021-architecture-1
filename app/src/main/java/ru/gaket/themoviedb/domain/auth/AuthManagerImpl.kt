@@ -6,9 +6,9 @@ import ru.gaket.themoviedb.util.VoidOperationResult
 import ru.gaket.themoviedb.util.doOnSuccess
 import javax.inject.Inject
 
-class AuthInteractorImpl @Inject constructor(
+class AuthManagerImpl @Inject constructor(
     private val authRepository: AuthRepository,
-    private val syncLocalStorageUseCase: SyncLocalStorageUseCase,
+    private val reviewsSynchronizer: ReviewsSynchronizer,
 ) : AuthInteractor {
 
     override fun getCurrentUser(): User? =
@@ -17,15 +17,17 @@ class AuthInteractorImpl @Inject constructor(
     override fun observeCurrentUser(): Flow<User?> =
         authRepository.observeCurrentUser()
 
+    // TODO: decouple AuthManager from ReviewsSynchronizer
+    //  subscribe synchronizer to AuthManager changes instead
     override suspend fun auth(
         email: User.Email,
         password: User.Password,
     ): VoidOperationResult<LogInError> =
         authRepository.auth(email, password)
-            .doOnSuccess { syncLocalStorageUseCase.sync() }
+            .doOnSuccess { reviewsSynchronizer.sync() }
 
     override suspend fun logOut() {
         authRepository.logOut()
-        syncLocalStorageUseCase.unSync()
+        reviewsSynchronizer.unSync()
     }
 }

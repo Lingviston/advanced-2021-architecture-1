@@ -1,7 +1,6 @@
-package ru.gaket.themoviedb.domain.review.model
+package ru.gaket.themoviedb.domain.review.models
 
 import ru.gaket.themoviedb.domain.movies.models.MovieId
-import ru.gaket.themoviedb.domain.review.Rating
 
 data class ReviewFormModel(
     val movieId: MovieId,

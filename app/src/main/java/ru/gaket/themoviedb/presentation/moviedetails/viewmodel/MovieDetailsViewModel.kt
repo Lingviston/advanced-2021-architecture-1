@@ -16,10 +16,10 @@ import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.core.navigation.WebNavigator
 import ru.gaket.themoviedb.domain.auth.AuthInteractor
-import ru.gaket.themoviedb.domain.movies.MoviesInteractor
+import ru.gaket.themoviedb.data.movies.MoviesRepository
 import ru.gaket.themoviedb.domain.movies.models.Movie
-import ru.gaket.themoviedb.domain.review.MyReview
-import ru.gaket.themoviedb.domain.review.SomeoneReview
+import ru.gaket.themoviedb.domain.review.models.MyReview
+import ru.gaket.themoviedb.domain.review.models.SomeoneReview
 import ru.gaket.themoviedb.domain.review.repository.ReviewRepository
 import ru.gaket.themoviedb.presentation.moviedetails.model.MovieDetailsEvent
 import ru.gaket.themoviedb.presentation.moviedetails.model.MovieDetailsEvent.OpenAddReviewScreenEvent
@@ -37,7 +37,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MovieDetailsViewModel @Inject constructor(
-    private val moviesInteractor: MoviesInteractor,
+    private val moviesRepository: MoviesRepository,
     private val reviewRepository: ReviewRepository,
     private val webNavigator: WebNavigator,
     private val authInteractor: AuthInteractor,
@@ -55,7 +55,7 @@ class MovieDetailsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            moviesInteractor.getMovieDetails(movieId).get(
+            moviesRepository.getMovieDetails(movieId).get(
                 onSuccess = ::handleMovie,
                 onError = {
                     ShowErrorEvent(R.string.error_getting_movie_info).publish()

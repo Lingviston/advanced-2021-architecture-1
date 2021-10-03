@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.sample
+import ru.gaket.themoviedb.data.movies.MoviesRepository
 import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.domain.movies.MoviesInteractor
 import ru.gaket.themoviedb.presentation.movies.viewmodel.MoviesResult.EmptyQuery
@@ -24,7 +25,7 @@ private const val TEXT_ENTERED_DEBOUNCE_MILLIS = 500L
 
 @HiltViewModel
 class MoviesViewModel @Inject constructor(
-    private val moviesInteractor: MoviesInteractor,
+    private val moviesRepository: MoviesRepository
 ) : ViewModel() {
 
     private val queryFlow = MutableStateFlow("")
@@ -57,7 +58,7 @@ class MoviesViewModel @Inject constructor(
     }
 
     private suspend fun handleSearchMovie(query: String): MoviesResult {
-        return when (val moviesResult = moviesInteractor.searchMovies(query)) {
+        return when (val moviesResult = moviesRepository.searchMoviesWithReviews(query)) {
             is Error -> ErrorResult(IllegalArgumentException("Search movies from server error!"))
             is Success -> if (moviesResult.result.isEmpty()) EmptyResult else SuccessResult(moviesResult.result)
         }

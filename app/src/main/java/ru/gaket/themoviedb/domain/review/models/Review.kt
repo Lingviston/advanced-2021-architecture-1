@@ -1,10 +1,10 @@
-package ru.gaket.themoviedb.domain.review
+package ru.gaket.themoviedb.domain.review.models
 
 import ru.gaket.themoviedb.domain.auth.User
 import ru.gaket.themoviedb.domain.movies.models.MovieId
 
 data class Review(
-    val id: Review.Id,
+    val id: Id,
     val liked: String,
     val disliked: String,
     val rating: Rating,

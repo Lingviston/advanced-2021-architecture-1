@@ -9,11 +9,11 @@ import ru.gaket.themoviedb.data.review.local.MyReviewsLocalDataSource
 import ru.gaket.themoviedb.data.review.local.toModel
 import ru.gaket.themoviedb.data.review.remote.ReviewsRemoteDataSource
 import ru.gaket.themoviedb.domain.movies.models.MovieId
-import ru.gaket.themoviedb.domain.review.AddReviewRequest
-import ru.gaket.themoviedb.domain.review.MyReview
-import ru.gaket.themoviedb.domain.review.Rating
-import ru.gaket.themoviedb.domain.review.model.ReviewFormModel
-import ru.gaket.themoviedb.domain.review.model.ReviewFormModel.Companion.newEmptyModelInstance
+import ru.gaket.themoviedb.domain.review.models.ReviewDraft
+import ru.gaket.themoviedb.domain.review.models.MyReview
+import ru.gaket.themoviedb.domain.review.models.Rating
+import ru.gaket.themoviedb.domain.review.models.ReviewFormModel
+import ru.gaket.themoviedb.domain.review.models.ReviewFormModel.Companion.newEmptyModelInstance
 import ru.gaket.themoviedb.domain.review.repository.ReviewRepository
 import ru.gaket.themoviedb.domain.review.store.ItemStore
 import javax.inject.Inject
@@ -58,10 +58,10 @@ class ReviewRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun buildReview(): AddReviewRequest {
+    override fun buildReview(): ReviewDraft {
         val review = reviewFormStore.item ?: error("movieId is not provided")
 
-        return AddReviewRequest(
+        return ReviewDraft(
             movieId = review.movieId,
             liked = review.whatLiked ?: error("whatLiked is not provided"),
             disliked = review.whatDidNotLike ?: error("whatDidNotLike is not provided"),
