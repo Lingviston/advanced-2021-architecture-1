@@ -56,9 +56,7 @@ class AuthFragment : Fragment(R.layout.auth_fragment) {
             AuthState.Empty,
             AuthState.Authorizing,
             -> Unit
-            AuthState.Authorized -> {
-                //todo
-            }
+            AuthState.Authorized -> navigator.back()
             is AuthState.InputError -> handleInputError(state)
             is AuthState.AuthError -> showSystemMessage(text = getString(state.logInError.messageResId))
         }

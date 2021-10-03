@@ -22,6 +22,8 @@ interface Navigator {
     )
 
     fun backTo(tag: String)
+
+    fun back()
 }
 
 class NavigatorImpl @Inject constructor(
@@ -41,6 +43,10 @@ class NavigatorImpl @Inject constructor(
     override fun backTo(tag: String) {
         Timber.d("Navigate Back to $tag")
         getFragmentManager().popBackStack(tag, 0)
+    }
+
+    override fun back() {
+        getFragmentManager().popBackStackImmediate()
     }
 
     private fun getFragmentManager() = (context as AppCompatActivity).supportFragmentManager

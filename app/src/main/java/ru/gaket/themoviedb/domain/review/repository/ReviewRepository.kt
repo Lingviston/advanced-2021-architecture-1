@@ -13,7 +13,7 @@ interface ReviewRepository {
 
     val reviewState: Flow<ReviewFormModel>
 
-    fun getMyReviews(movieId: MovieId): Flow<MyReview>
+    fun getMyReviews(movieId: MovieId): Flow<MyReview?>
     suspend fun getSomeoneReviews(movieId: MovieId): OperationResult<List<SomeoneReview>, Throwable>
 
     suspend fun setMovieId(movieId: MovieId)

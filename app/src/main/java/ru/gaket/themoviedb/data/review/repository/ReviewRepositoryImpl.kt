@@ -30,10 +30,9 @@ class ReviewRepositoryImpl @Inject constructor(
     override suspend fun getSomeoneReviews(movieId: MovieId) =
         reviewsRemoteDataSource.getMovieReviews(movieId)
 
-    override fun getMyReviews(movieId: MovieId): Flow<MyReview> {
+    override fun getMyReviews(movieId: MovieId): Flow<MyReview?> {
         return myReviewsLocalDataSource.getFlowByMovieId(movieId)
-            .mapNotNull(List<MyReviewEntity>::firstOrNull)
-            .map(MyReviewEntity::toModel)
+            .map { reviews -> reviews.firstOrNull()?.toModel() }
     }
 
     override suspend fun setMovieId(movieId: MovieId) {
