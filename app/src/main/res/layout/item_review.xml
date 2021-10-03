@@ -5,8 +5,8 @@
     android:id="@+id/cl_review_root"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingHorizontal="@dimen/space_medium"
-    android:paddingVertical="@dimen/space_normal"
+    android:paddingHorizontal="@dimen/space_small"
+    android:paddingVertical="@dimen/space_medium"
     tools:background="@color/colorPrimaryDark">
 
     <androidx.cardview.widget.CardView
@@ -17,6 +17,7 @@
         app:cardBackgroundColor="@color/colorReviewBackground"
         app:cardCornerRadius="@dimen/cornerRad"
         app:cardElevation="@dimen/reviewElevation"
+        app:cardUseCompatPadding="true"
         app:contentPadding="@dimen/space_medium">
 
         <androidx.constraintlayout.widget.ConstraintLayout
