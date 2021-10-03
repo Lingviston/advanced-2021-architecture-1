@@ -47,7 +47,6 @@ class MoviesFragment : Fragment(R.layout.movies_fragment) {
     @Inject
     lateinit var navigator: Navigator
 
-    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

@@ -11,7 +11,7 @@ sealed class OperationResult<out S, out E> {
 
 typealias VoidOperationResult<E> = OperationResult<Unit, E>
 
-inline fun <S> OperationResult<S, Throwable>.getOrThrow(): S =
+fun <S> OperationResult<S, Throwable>.getOrThrow(): S =
     when (this) {
         is OperationResult.Success -> this.result
         is OperationResult.Error -> throw this.result

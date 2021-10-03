@@ -15,10 +15,13 @@ import ru.gaket.themoviedb.domain.movies.models.Movie
 import ru.gaket.themoviedb.domain.movies.models.MovieId
 import ru.gaket.themoviedb.domain.review.model.ReviewFormModel
 import ru.gaket.themoviedb.domain.review.repository.ReviewRepository
+import ru.gaket.themoviedb.presentation.review.MovieWithReviewViewState.MovieWithReview
+import ru.gaket.themoviedb.presentation.review.MovieWithReviewViewState.NoMovie
 import ru.gaket.themoviedb.presentation.review.ReviewViewModel.ReviewState.END_STATE
 import ru.gaket.themoviedb.presentation.review.ReviewViewModel.ReviewState.RATING
 import ru.gaket.themoviedb.presentation.review.ReviewViewModel.ReviewState.WHAT_LIKED
 import ru.gaket.themoviedb.presentation.review.ReviewViewModel.ReviewState.WHAT_NOT_LIKED
+import ru.gaket.themoviedb.util.OperationResult
 import ru.gaket.themoviedb.util.OperationResult.Error
 import ru.gaket.themoviedb.util.OperationResult.Success
 import javax.inject.Inject
@@ -30,7 +33,7 @@ class ReviewViewModel @Inject constructor(
     savedState: SavedStateHandle,
 ) : ViewModel() {
 
-    val currentReview: LiveData<Pair<Movie, ReviewFormModel>?>
+    val currentReview: LiveData<MovieWithReviewViewState>
 
     private val _reviewState = MutableStateFlow(WHAT_LIKED)
     val reviewState: LiveData<ReviewState> get() = _reviewState.asLiveData(viewModelScope.coroutineContext)
@@ -43,14 +46,13 @@ class ReviewViewModel @Inject constructor(
             reviewRepository.setMovieId(movieId)
         }
 
-        currentReview = flow {
-            val moviePair = when (val movie = moviesRepository.getMovieDetails(movieId)) {
-                is Success -> movie.result
-                is Error -> null
+        currentReview = flow { emit(moviesRepository.getMovieDetails(movieId)) }
+            .combine(reviewRepository.reviewState) { movieResult: OperationResult<Movie, Throwable>, review: ReviewFormModel ->
+                when (movieResult) {
+                    is Success -> MovieWithReview(movieResult.result, review)
+                    is Error -> NoMovie
+                }
             }
-            emit(moviePair)
-        }
-            .combine(reviewRepository.reviewState) { movie: Movie?, review: ReviewFormModel -> movie?.let { movie to review } }
             .asLiveData(viewModelScope.coroutineContext)
     }
 
@@ -59,7 +61,7 @@ class ReviewViewModel @Inject constructor(
             WHAT_LIKED -> WHAT_NOT_LIKED
             WHAT_NOT_LIKED -> RATING
             RATING -> END_STATE
-            else -> throw IllegalStateException("You can't use goNext() at $state")
+            END_STATE -> throw IllegalStateException("You can't use goNext() at $state")
         }
     }
 
@@ -78,7 +80,7 @@ class ReviewViewModel @Inject constructor(
                     reviewRepository.setRating(null)
                     WHAT_NOT_LIKED
                 }
-                else -> throw IllegalStateException("You can't use previousState() at $state")
+                END_STATE -> throw IllegalStateException("You can't use previousState() at $state")
             }
         }
     }

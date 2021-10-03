@@ -36,7 +36,7 @@ class AuthFragment : Fragment(R.layout.auth_fragment) {
         binding.emailInput.clearErrorOnAnyInput()
         binding.passwordInput.clearErrorOnAnyInput()
 
-        binding.authBtn?.setOnClickListener {
+        binding.authBtn.setOnClickListener {
             viewModel.auth(
                 email = binding.emailInput.getTrimmedText(),
                 password = binding.passwordInput.getTrimmedText()

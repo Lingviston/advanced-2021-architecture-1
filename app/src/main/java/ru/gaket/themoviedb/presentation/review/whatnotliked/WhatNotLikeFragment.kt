@@ -8,6 +8,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.databinding.FragmentReviewTextBinding
+import ru.gaket.themoviedb.presentation.review.ReviewFieldEvent
 import ru.gaket.themoviedb.presentation.review.ReviewFieldEvent.EMPTY_FIELD
 import ru.gaket.themoviedb.presentation.review.ReviewFieldEvent.SUCCESS
 import ru.gaket.themoviedb.presentation.review.ReviewViewModel
@@ -20,7 +21,7 @@ class WhatNotLikeFragment : Fragment(R.layout.fragment_review_text) {
 
     private val viewModel: WhatNotLikeViewModel by viewModels()
 
-    private val sharedViewModel: ReviewViewModel by viewModels({ requireParentFragment() })
+    private val sharedViewModel: ReviewViewModel by viewModels(ownerProducer = { requireParentFragment() })
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -32,15 +33,17 @@ class WhatNotLikeFragment : Fragment(R.layout.fragment_review_text) {
             }
         }
 
-        viewModel.events.observe(viewLifecycleOwner) { reviewErrorField ->
-            when (reviewErrorField) {
-                EMPTY_FIELD -> requireView().showSnackbar(R.string.review_error_should_not_be_empty)
-                SUCCESS -> sharedViewModel.nextState()
-            }
-        }
+        viewModel.events.observe(viewLifecycleOwner, ::handleState)
 
         viewModel.initialValue.observe(viewLifecycleOwner) { initialValue ->
             binding.etReviewField.setText(initialValue)
+        }
+    }
+
+    private fun handleState(reviewErrorField: ReviewFieldEvent) {
+        when (reviewErrorField) {
+            EMPTY_FIELD -> requireView().showSnackbar(R.string.review_error_should_not_be_empty)
+            SUCCESS -> sharedViewModel.nextState()
         }
     }
 }

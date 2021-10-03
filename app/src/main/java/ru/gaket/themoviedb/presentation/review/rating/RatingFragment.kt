@@ -26,7 +26,7 @@ class RatingFragment : Fragment(R.layout.fragment_review_rating) {
 
     private val viewModel: RatingViewModel by viewModels()
 
-    private val sharedViewModel: ReviewViewModel by viewModels({ requireParentFragment() })
+    private val sharedViewModel: ReviewViewModel by viewModels(ownerProducer = { requireParentFragment() })
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

@@ -19,6 +19,9 @@ import ru.gaket.themoviedb.databinding.FragmentReviewBinding
 import ru.gaket.themoviedb.domain.movies.models.Movie
 import ru.gaket.themoviedb.domain.movies.models.MovieId
 import ru.gaket.themoviedb.domain.review.model.ReviewFormModel
+import ru.gaket.themoviedb.presentation.review.MovieWithReviewViewState.MovieWithReview
+import ru.gaket.themoviedb.presentation.review.MovieWithReviewViewState.NoMovie
+import ru.gaket.themoviedb.presentation.review.ReviewViewModel.ReviewState
 import ru.gaket.themoviedb.presentation.review.ReviewViewModel.ReviewState.END_STATE
 import ru.gaket.themoviedb.presentation.review.ReviewViewModel.ReviewState.RATING
 import ru.gaket.themoviedb.presentation.review.ReviewViewModel.ReviewState.WHAT_LIKED
@@ -26,6 +29,7 @@ import ru.gaket.themoviedb.presentation.review.ReviewViewModel.ReviewState.WHAT_
 import ru.gaket.themoviedb.presentation.review.rating.RatingFragment
 import ru.gaket.themoviedb.presentation.review.whatliked.WhatLikeFragment
 import ru.gaket.themoviedb.presentation.review.whatnotliked.WhatNotLikeFragment
+import ru.gaket.themoviedb.util.toGone
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -51,25 +55,32 @@ class ReviewFragment : Fragment(R.layout.fragment_review) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.reviewState.observe(viewLifecycleOwner) {
-            val containerId = binding.containerReview.id
-            when (it) {
-                WHAT_LIKED -> childFragmentManager.commit {
-                    replace(containerId, WhatLikeFragment())
-                }
-                WHAT_NOT_LIKED -> childFragmentManager.commit {
-                    replace(containerId, WhatNotLikeFragment())
-                }
-                RATING -> childFragmentManager.commit {
-                    replace(containerId, RatingFragment())
-                }
-                END_STATE -> navigator.backTo(MovieDetailsScreen.TAG)
-            }
-        }
 
-        viewModel.currentReview.observe(viewLifecycleOwner) { movieToReview ->
-            binding.cvReviewSummary.isVisible = movieToReview != null
-            movieToReview?.let { (movie, review) -> binding.bind(movie, review) }
+        viewModel.reviewState.observe(viewLifecycleOwner, ::handleReviewState)
+        viewModel.currentReview.observe(viewLifecycleOwner, ::handleMovieWithReviewState)
+    }
+
+    private fun handleReviewState(state: ReviewState) {
+        val containerId = binding.containerReview.id
+
+        when (state) {
+            WHAT_LIKED -> childFragmentManager.commit {
+                replace(containerId, WhatLikeFragment())
+            }
+            WHAT_NOT_LIKED -> childFragmentManager.commit {
+                replace(containerId, WhatNotLikeFragment())
+            }
+            RATING -> childFragmentManager.commit {
+                replace(containerId, RatingFragment())
+            }
+            END_STATE -> navigator.backTo(MovieDetailsScreen.TAG)
+        }
+    }
+
+    private fun handleMovieWithReviewState(state: MovieWithReviewViewState) {
+        when (state) {
+            is MovieWithReview -> binding.bind(state.movie, state.review)
+            NoMovie -> binding.cvReviewSummary.toGone()
         }
     }
 
