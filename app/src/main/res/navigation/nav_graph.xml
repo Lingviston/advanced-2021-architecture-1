@@ -20,7 +20,7 @@
         android:name="ru.gaket.themoviedb.presentation.moviedetails.view.MovieDetailsFragment"
         android:label="MovieDetailsFragment"
         tools:layout="@layout/movie_details_fragment">
-    <action
+        <action
             android:id="@+id/action_movieDetailsFragment_to_authFragment"
             app:destination="@id/authFragment" />
         <action
@@ -31,10 +31,12 @@
     <fragment
         android:id="@+id/authFragment"
         android:name="ru.gaket.themoviedb.presentation.auth.view.AuthFragment"
-        android:label="AuthFragment" />
+        android:label="AuthFragment"
+        tools:layout="@layout/auth_fragment" />
 
     <fragment
         android:id="@+id/reviewFragment"
         android:name="ru.gaket.themoviedb.presentation.review.ReviewFragment"
-        android:label="ReviewFragment" />
+        android:label="ReviewFragment"
+        tools:layout="@layout/fragment_review" />
 </navigation>
