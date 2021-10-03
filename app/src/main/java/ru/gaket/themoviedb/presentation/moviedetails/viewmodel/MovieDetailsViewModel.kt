@@ -12,11 +12,13 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.core.navigation.WebNavigator
-import ru.gaket.themoviedb.domain.auth.AuthInteractor
 import ru.gaket.themoviedb.data.movies.MoviesRepository
+import ru.gaket.themoviedb.domain.auth.AuthInteractor
+import ru.gaket.themoviedb.domain.auth.User
 import ru.gaket.themoviedb.domain.movies.models.Movie
 import ru.gaket.themoviedb.domain.review.models.MyReview
 import ru.gaket.themoviedb.domain.review.models.SomeoneReview
@@ -29,6 +31,7 @@ import ru.gaket.themoviedb.presentation.moviedetails.model.toMovieDetailsReview
 import ru.gaket.themoviedb.presentation.moviedetails.view.MovieDetailsFragment.Companion.ARG_MOVIE_ID
 import ru.gaket.themoviedb.presentation.moviedetails.view.MovieDetailsFragment.Companion.ARG_MOVIE_TITLE
 import ru.gaket.themoviedb.util.get
+import ru.gaket.themoviedb.util.mapSuccess
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -65,20 +68,22 @@ class MovieDetailsViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            reviewRepository.getSomeoneReviews(movieId).get(
-                onSuccess = ::handleSomeoneReviews,
-                onError = {
-                    ShowErrorEvent(R.string.error_getting_movie_info).publish()
-                    reduceState { copy(isLoadingReviews = false) }
-                },
-            )
+            reviewRepository.getSomeoneReviews(movieId)
+                .mapSuccess { someoneReviews -> authInteractor.getCurrentUser() to someoneReviews }
+                .get(
+                    onSuccess = { (user, someoneReviews) -> handleSomeoneReviews(user, someoneReviews) },
+                    onError = {
+                        ShowErrorEvent(R.string.error_getting_movie_info).publish()
+                        reduceState { copy(isLoadingReviews = false) }
+                    },
+                )
         }
 
         viewModelScope.launch {
             authInteractor.observeCurrentUser()
                 .filter { user -> user != null }
-                .flatMapLatest { reviewRepository.getMyReviews(movieId) }
-                .collect(::handleMyReview)
+                .flatMapLatest { user -> reviewRepository.getMyReviews(movieId).map { user!! to it } }
+                .collect { (user, myReview) -> handleMyReview(user, myReview) }
         }
 
         viewModelScope.launch {
@@ -120,21 +125,28 @@ class MovieDetailsViewModel @Inject constructor(
         get(Calendar.YEAR)
     }
 
-    private fun handleSomeoneReviews(reviews: List<SomeoneReview>) = reduceState {
+    private fun handleSomeoneReviews(user: User?, reviews: List<SomeoneReview>) = reduceState {
         copy(
             isLoadingReviews = false,
-            someoneReviews = reviews.map { review -> review.toMovieDetailsReview() },
+            someoneReviews = reviews
+                .filter { review -> review.author != user?.email }
+                .map { review -> review.toMovieDetailsReview() },
         )
     }
 
-    private fun handleMyReview(myReview: MyReview?) = reduceState {
+    private fun handleMyReview(user: User, myReview: MyReview?) = reduceState {
         val review = if (myReview != null) {
             MovieDetailsReview.MyReview(myReview.review, isAuthorized = true)
         } else {
             MovieDetailsReview.MyReview(isAuthorized = true)
         }
 
-        copy(myReview = review)
+        copy(
+            myReview = review,
+            someoneReviews = someoneReviews.filter { someoneReview ->
+                user.email.value.startsWith(someoneReview.userName).not()
+            },
+        )
     }
 
     private fun handleAuthorization() = reduceState {
