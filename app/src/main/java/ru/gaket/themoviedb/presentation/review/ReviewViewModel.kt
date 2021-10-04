@@ -21,9 +21,9 @@ import ru.gaket.themoviedb.presentation.review.ReviewViewModel.ReviewState.END_S
 import ru.gaket.themoviedb.presentation.review.ReviewViewModel.ReviewState.RATING
 import ru.gaket.themoviedb.presentation.review.ReviewViewModel.ReviewState.WHAT_LIKED
 import ru.gaket.themoviedb.presentation.review.ReviewViewModel.ReviewState.WHAT_NOT_LIKED
-import ru.gaket.themoviedb.util.OperationResult
-import ru.gaket.themoviedb.util.OperationResult.Error
-import ru.gaket.themoviedb.util.OperationResult.Success
+import ru.gaket.themoviedb.util.Result
+import ru.gaket.themoviedb.util.Result.Error
+import ru.gaket.themoviedb.util.Result.Success
 import javax.inject.Inject
 
 @HiltViewModel
@@ -47,7 +47,7 @@ class ReviewViewModel @Inject constructor(
         }
 
         currentReview = flow { emit(moviesRepository.getMovieDetails(movieId)) }
-            .combine(reviewRepository.reviewState) { movieResult: OperationResult<Movie, Throwable>, review: ReviewFormModel ->
+            .combine(reviewRepository.reviewState) { movieResult: Result<Movie, Throwable>, review: ReviewFormModel ->
                 when (movieResult) {
                     is Success -> MovieWithReview(movieResult.result, review)
                     is Error -> NoMovie

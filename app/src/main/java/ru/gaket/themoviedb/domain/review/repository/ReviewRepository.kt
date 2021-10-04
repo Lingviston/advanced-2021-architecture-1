@@ -7,14 +7,14 @@ import ru.gaket.themoviedb.domain.review.models.MyReview
 import ru.gaket.themoviedb.domain.review.models.Rating
 import ru.gaket.themoviedb.domain.review.models.SomeoneReview
 import ru.gaket.themoviedb.domain.review.models.ReviewFormModel
-import ru.gaket.themoviedb.util.OperationResult
+import ru.gaket.themoviedb.util.Result
 
 interface ReviewRepository {
 
     val reviewState: Flow<ReviewFormModel>
 
     fun getMyReviews(movieId: MovieId): Flow<MyReview?>
-    suspend fun getSomeoneReviews(movieId: MovieId): OperationResult<List<SomeoneReview>, Throwable>
+    suspend fun getSomeoneReviews(movieId: MovieId): Result<List<SomeoneReview>, Throwable>
 
     suspend fun setMovieId(movieId: MovieId)
     suspend fun setWhatLike(whatLiked: String?)

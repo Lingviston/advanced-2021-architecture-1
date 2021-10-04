@@ -7,8 +7,8 @@ import ru.gaket.themoviedb.data.auth.remote.AuthRemoteDataSource
 import ru.gaket.themoviedb.data.auth.remote.RegisterError
 import ru.gaket.themoviedb.domain.auth.LogInError
 import ru.gaket.themoviedb.domain.auth.User
-import ru.gaket.themoviedb.util.OperationResult
-import ru.gaket.themoviedb.util.VoidOperationResult
+import ru.gaket.themoviedb.util.Result
+import ru.gaket.themoviedb.util.VoidResult
 import ru.gaket.themoviedb.util.mapSuccess
 import javax.inject.Inject
 
@@ -27,10 +27,10 @@ class AuthRepositoryImpl @Inject constructor(
     override fun observeCurrentUser(): Flow<User?> =
         localDataSource.observeCurrentUser()
 
-    override suspend fun auth(email: User.Email, password: User.Password): VoidOperationResult<LogInError> =
+    override suspend fun auth(email: User.Email, password: User.Password): VoidResult<LogInError> =
         when (val registerResult = createNewUser(email, password)) {
-            is OperationResult.Success -> registerResult
-            is OperationResult.Error -> handleRegisterError(registerResult, email, password)
+            is Result.Success -> registerResult
+            is Result.Error -> handleRegisterError(registerResult, email, password)
         }
 
     override suspend fun logOut() {
@@ -41,23 +41,23 @@ class AuthRepositoryImpl @Inject constructor(
     private suspend fun createNewUser(
         email: User.Email,
         password: User.Password,
-    ): VoidOperationResult<RegisterError> =
+    ): VoidResult<RegisterError> =
         remoteDataSource.createNewUser(email, password)
             .mapSuccess { userId -> saveSuccessAuthResult(userId, email) }
 
     private suspend fun handleRegisterError(
-        registerResult: OperationResult.Error<RegisterError>,
+        registerResult: Result.Error<RegisterError>,
         email: User.Email,
         password: User.Password,
-    ): VoidOperationResult<LogInError> = when (registerResult.result) {
+    ): VoidResult<LogInError> = when (registerResult.result) {
         RegisterError.USER_WITH_SUCH_CREDENTIALS_EXISTS -> logIn(email, password)
-        RegisterError.UNKNOWN -> OperationResult.Error(LogInError.Unknown)
+        RegisterError.UNKNOWN -> Result.Error(LogInError.Unknown)
     }
 
     private suspend fun logIn(
         email: User.Email,
         password: User.Password,
-    ): VoidOperationResult<LogInError> =
+    ): VoidResult<LogInError> =
         remoteDataSource.logIn(email, password)
             .mapSuccess { userId -> saveSuccessAuthResult(userId, email) }
 

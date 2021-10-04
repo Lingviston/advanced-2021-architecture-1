@@ -2,7 +2,7 @@ package ru.gaket.themoviedb.domain.auth
 
 import kotlinx.coroutines.flow.Flow
 import ru.gaket.themoviedb.data.auth.AuthRepository
-import ru.gaket.themoviedb.util.VoidOperationResult
+import ru.gaket.themoviedb.util.VoidResult
 import ru.gaket.themoviedb.util.doOnSuccess
 import javax.inject.Inject
 
@@ -22,7 +22,7 @@ class AuthManagerImpl @Inject constructor(
     override suspend fun auth(
         email: User.Email,
         password: User.Password,
-    ): VoidOperationResult<LogInError> =
+    ): VoidResult<LogInError> =
         authRepository.auth(email, password)
             .doOnSuccess { reviewsSynchronizer.sync() }
 
