@@ -1,7 +1,7 @@
 package ru.gaket.themoviedb.domain.auth
 
 import kotlinx.coroutines.flow.Flow
-import ru.gaket.themoviedb.util.VoidOperationResult
+import ru.gaket.themoviedb.util.VoidResult
 
 interface AuthInteractor {
 
@@ -12,7 +12,7 @@ interface AuthInteractor {
     suspend fun auth(
         email: User.Email,
         password: User.Password,
-    ): VoidOperationResult<LogInError>
+    ): VoidResult<LogInError>
 
     suspend fun logOut()
 }

@@ -8,7 +8,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import ru.gaket.themoviedb.domain.auth.LogInError
 import ru.gaket.themoviedb.domain.auth.User
-import ru.gaket.themoviedb.util.OperationResult
+import ru.gaket.themoviedb.util.Result
 import ru.gaket.themoviedb.util.awaitTask
 import ru.gaket.themoviedb.util.mapError
 import ru.gaket.themoviedb.util.mapSuccess
@@ -36,7 +36,7 @@ class AuthRemoteDataSourceImpl @Inject constructor() : AuthRemoteDataSource {
     override suspend fun createNewUser(
         email: User.Email,
         password: User.Password,
-    ): OperationResult<User.Id, RegisterError> =
+    ): Result<User.Id, RegisterError> =
         firebaseAuth.createUserWithEmailAndPassword(email.value, password.value)
             .getUserId()
             .mapError { error ->
@@ -50,7 +50,7 @@ class AuthRemoteDataSourceImpl @Inject constructor() : AuthRemoteDataSource {
     override suspend fun logIn(
         email: User.Email,
         password: User.Password,
-    ): OperationResult<User.Id, LogInError> =
+    ): Result<User.Id, LogInError> =
         firebaseAuth.signInWithEmailAndPassword(email.value, password.value)
             .getUserId()
             .mapError { error ->
@@ -62,7 +62,7 @@ class AuthRemoteDataSourceImpl @Inject constructor() : AuthRemoteDataSource {
             }
 }
 
-suspend fun Task<AuthResult>.getUserId(): OperationResult<User.Id, Throwable> =
+suspend fun Task<AuthResult>.getUserId(): Result<User.Id, Throwable> =
     this.awaitTask()
         .mapSuccess { authResult -> authResult.toUserId() }
 

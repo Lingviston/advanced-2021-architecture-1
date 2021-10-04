@@ -22,8 +22,8 @@ import ru.gaket.themoviedb.domain.movies.toSearchMovie
 import ru.gaket.themoviedb.domain.review.models.ReviewDraft
 import ru.gaket.themoviedb.domain.review.models.MyReview
 import ru.gaket.themoviedb.domain.review.models.SomeoneReview
-import ru.gaket.themoviedb.util.OperationResult
-import ru.gaket.themoviedb.util.VoidOperationResult
+import ru.gaket.themoviedb.util.Result
+import ru.gaket.themoviedb.util.VoidResult
 import ru.gaket.themoviedb.util.doOnSuccess
 import ru.gaket.themoviedb.util.mapNestedSuccess
 import ru.gaket.themoviedb.util.mapSuccess
@@ -42,7 +42,7 @@ interface MoviesRepository {
     suspend fun searchMoviesWithReviews(
         query: String,
         page: Int = 1,
-    ): OperationResult<List<SearchMovieWithMyReview>, Throwable>
+    ): Result<List<SearchMovieWithMyReview>, Throwable>
 
     /**
      * Get [MovieEntity] by movieId
@@ -50,22 +50,22 @@ interface MoviesRepository {
      * @return List of [SearchMovieEntity], null as error, or empty list.
      * No Throwable.
      */
-    suspend fun getMovieDetails(id: MovieId): OperationResult<Movie, Throwable>
+    suspend fun getMovieDetails(id: MovieId): Result<Movie, Throwable>
 
-    suspend fun getMovieDetailsWithReviews(id: MovieId): OperationResult<MovieWithReviews, Throwable>
+    suspend fun getMovieDetailsWithReviews(id: MovieId): Result<MovieWithReviews, Throwable>
 
     suspend fun addReview(
         draft: ReviewDraft,
         authorId: Id,
         authorEmail: Email,
-    ): VoidOperationResult<Throwable>
+    ): VoidResult<Throwable>
 
     suspend fun getReviewsForUser(userId: Id)
 
     suspend fun deleteUserReviews()
 }
 
-private suspend fun MoviesRepository.getMovieDetailsList(ids: Set<MovieId>): OperationResult<List<Movie>, List<Throwable>> =
+private suspend fun MoviesRepository.getMovieDetailsList(ids: Set<MovieId>): Result<List<Movie>, List<Throwable>> =
     coroutineScope {
         val asyncCalls = ids.map { singleId ->
             async { getMovieDetails(singleId) }
@@ -89,11 +89,11 @@ class MoviesRepositoryImpl @Inject constructor(
     override suspend fun searchMoviesWithReviews(
         query: String,
         page: Int,
-    ): OperationResult<List<SearchMovieWithMyReview>, Throwable> =
+    ): Result<List<SearchMovieWithMyReview>, Throwable> =
         searchMovies(query, page)
             .mapSuccess { movies -> fillSearchMoviesWithMyReviews(movies) }
 
-    private suspend fun searchMovies(query: String, page: Int): OperationResult<List<SearchMovie>, Throwable> =
+    private suspend fun searchMovies(query: String, page: Int): Result<List<SearchMovie>, Throwable> =
         moviesRemoteDataSource.searchMovies(query, page)
             .mapSuccess { dtos -> dtos.map { singleDto -> singleDto.toEntity(movieUrlProvider.baseImageUrl) } }
             .doOnSuccess { movieEntities -> moviesLocalDataSource.insertAll(movieEntities) }
@@ -116,10 +116,10 @@ class MoviesRepositoryImpl @Inject constructor(
             .map { myReviewEntity -> myReviewEntity.toModel() }
             .associateBy { myReview -> myReview.movieId }
 
-    override suspend fun getMovieDetails(id: MovieId): OperationResult<Movie, Throwable> {
+    override suspend fun getMovieDetails(id: MovieId): Result<Movie, Throwable> {
         val cachedMovie = moviesLocalDataSource.getById(id)
         val entityResult = if (cachedMovie != null && cachedMovie.duration > 0) {
-            OperationResult.Success(cachedMovie)
+            Result.Success(cachedMovie)
         } else {
             loadMovieDetailsFromRemoteAndStore(id)
         }
@@ -127,12 +127,12 @@ class MoviesRepositoryImpl @Inject constructor(
         return entityResult.mapSuccess { entity -> entity.toModel() }
     }
 
-    private suspend fun loadMovieDetailsFromRemoteAndStore(id: MovieId): OperationResult<MovieEntity, Throwable> =
+    private suspend fun loadMovieDetailsFromRemoteAndStore(id: MovieId): Result<MovieEntity, Throwable> =
         moviesRemoteDataSource.getMovieDetails(id)
             .mapSuccess { dto -> dto.toEntity(movieUrlProvider.baseImageUrl) }
             .doOnSuccess { entity -> moviesLocalDataSource.insert(entity) }
 
-    override suspend fun getMovieDetailsWithReviews(id: MovieId): OperationResult<MovieWithReviews, Throwable> {
+    override suspend fun getMovieDetailsWithReviews(id: MovieId): Result<MovieWithReviews, Throwable> {
         val (details, allReviewsResult, myReview) = getMovieDetailsWithReviewsTriple(id)
 
         return details.mapNestedSuccess { movie ->
@@ -148,7 +148,7 @@ class MoviesRepositoryImpl @Inject constructor(
 
     private suspend fun getMovieDetailsWithReviewsTriple(
         id: MovieId,
-    ): Triple<OperationResult<Movie, Throwable>, OperationResult<List<SomeoneReview>, Throwable>, MyReview?> =
+    ): Triple<Result<Movie, Throwable>, Result<List<SomeoneReview>, Throwable>, MyReview?> =
         coroutineScope {
             val allReviewsResultCall = async { reviewsRemoteDataSource.getMovieReviews(id) }
             val detailsCall = async { getMovieDetails(id) }
@@ -165,7 +165,7 @@ class MoviesRepositoryImpl @Inject constructor(
         draft: ReviewDraft,
         authorId: Id,
         authorEmail: Email,
-    ): VoidOperationResult<Throwable> =
+    ): VoidResult<Throwable> =
         reviewsRemoteDataSource.addReview(draft, authorId, authorEmail)
             .mapSuccess { newReview ->
                 val entity = newReview.toEntity()
@@ -174,10 +174,10 @@ class MoviesRepositoryImpl @Inject constructor(
 
     override suspend fun getReviewsForUser(userId: Id) {
         when (val myReviewsResult = getAndStoreMyReviews(userId)) {
-            is OperationResult.Success -> {
+            is Result.Success -> {
                 getAndStoreMyReviewedMovies(myReviewsResult.result)
             }
-            is OperationResult.Error -> {
+            is Result.Error -> {
                 Timber.e("sync Local storage error", myReviewsResult.result)
             }
         }
@@ -185,7 +185,7 @@ class MoviesRepositoryImpl @Inject constructor(
 
     override suspend fun deleteUserReviews() = myReviewsLocalDataSource.deleteAll()
 
-    private suspend fun getAndStoreMyReviews(userId: Id): OperationResult<List<MyReview>, Throwable> =
+    private suspend fun getAndStoreMyReviews(userId: Id): Result<List<MyReview>, Throwable> =
         reviewsRemoteDataSource.getMyReviews(userId)
             .doOnSuccess { myReviews ->
                 val entities = myReviews.map { model -> model.toEntity() }

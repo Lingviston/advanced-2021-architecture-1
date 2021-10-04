@@ -16,8 +16,8 @@ import ru.gaket.themoviedb.presentation.movies.viewmodel.MoviesResult.EmptyQuery
 import ru.gaket.themoviedb.presentation.movies.viewmodel.MoviesResult.EmptyResult
 import ru.gaket.themoviedb.presentation.movies.viewmodel.MoviesResult.ErrorResult
 import ru.gaket.themoviedb.presentation.movies.viewmodel.MoviesResult.SuccessResult
-import ru.gaket.themoviedb.util.OperationResult.Error
-import ru.gaket.themoviedb.util.OperationResult.Success
+import ru.gaket.themoviedb.util.Result.Error
+import ru.gaket.themoviedb.util.Result.Success
 import javax.inject.Inject
 
 private const val TEXT_ENTERED_DEBOUNCE_MILLIS = 500L

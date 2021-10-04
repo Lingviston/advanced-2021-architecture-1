@@ -6,7 +6,7 @@ import ru.gaket.themoviedb.domain.movies.models.MovieId
 import ru.gaket.themoviedb.domain.review.models.ReviewDraft
 import ru.gaket.themoviedb.domain.review.models.MyReview
 import ru.gaket.themoviedb.domain.review.models.SomeoneReview
-import ru.gaket.themoviedb.util.OperationResult
+import ru.gaket.themoviedb.util.Result
 import ru.gaket.themoviedb.util.awaitTask
 import ru.gaket.themoviedb.util.mapSuccess
 import javax.inject.Inject
@@ -15,7 +15,7 @@ class ReviewsRemoteDataSourceImpl @Inject constructor() : ReviewsRemoteDataSourc
 
     private val firebaseFirestore: FirebaseFirestore get() = FirebaseFirestore.getInstance()
 
-    override suspend fun getMyReviews(userId: User.Id): OperationResult<List<MyReview>, Throwable> =
+    override suspend fun getMyReviews(userId: User.Id): Result<List<MyReview>, Throwable> =
         firebaseFirestore.collectionGroup(REVIEWS_COLLECTION)
             .whereEqualTo(AUTHOR_ID, userId.value)
             .get()
@@ -25,7 +25,7 @@ class ReviewsRemoteDataSourceImpl @Inject constructor() : ReviewsRemoteDataSourc
                     .mapNotNull { reviewDoc -> reviewDoc.toMyReview() }
             }
 
-    override suspend fun getMovieReviews(movieId: MovieId): OperationResult<List<SomeoneReview>, Throwable> =
+    override suspend fun getMovieReviews(movieId: MovieId): Result<List<SomeoneReview>, Throwable> =
         firebaseFirestore.collection(MOVIES_COLLECTION)
             .document(movieId.toString())
             .collection(REVIEWS_COLLECTION)
@@ -40,7 +40,7 @@ class ReviewsRemoteDataSourceImpl @Inject constructor() : ReviewsRemoteDataSourc
         draft: ReviewDraft,
         authorId: User.Id,
         authorEmail: User.Email,
-    ): OperationResult<MyReview, Throwable> =
+    ): Result<MyReview, Throwable> =
         firebaseFirestore.collection(MOVIES_COLLECTION)
             .document(draft.movieId.toString())
             .collection(REVIEWS_COLLECTION)

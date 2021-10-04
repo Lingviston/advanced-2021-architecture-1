@@ -10,9 +10,9 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.domain.auth.LogInError
 import ru.gaket.themoviedb.domain.auth.isAuthorized
-import ru.gaket.themoviedb.util.OperationResult
-import ru.gaket.themoviedb.util.VoidOperationResult
+import ru.gaket.themoviedb.util.VoidResult
 import javax.inject.Inject
+import ru.gaket.themoviedb.util.Result
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
@@ -54,10 +54,10 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    private fun handleAuthResult(result: VoidOperationResult<LogInError>) {
+    private fun handleAuthResult(result: VoidResult<LogInError>) {
         _authState.value = when (result) {
-            is OperationResult.Success -> AuthState.Authorized
-            is OperationResult.Error -> AuthState.AuthError(result.result)
+            is Result.Success -> AuthState.Authorized
+            is Result.Error -> AuthState.AuthError(result.result)
         }
     }
 }
