@@ -51,11 +51,6 @@ inline fun <S, E> Result<S, E>.doOnError(block: (E) -> Unit): Result<S, E> {
     return this
 }
 
-inline fun <S, E> Result<S, E>.get(onSuccess: (S) -> Unit, onError: (E) -> Unit) = when (this) {
-    is Result.Success -> onSuccess(result)
-    is Result.Error -> onError(result)
-}
-
 inline fun <S, R> S.runOperationCatching(block: S.() -> R): Result<R, Throwable> {
     return try {
         Result.Success(block())
@@ -99,4 +94,3 @@ inline fun <reified S, reified E> List<Result<S, E>>.toSuccessOrErrorList(): Res
         Result.Success(result = successResults.orEmpty())
     }
 }
-

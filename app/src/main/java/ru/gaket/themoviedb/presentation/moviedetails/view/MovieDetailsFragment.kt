@@ -2,27 +2,20 @@ package ru.gaket.themoviedb.presentation.moviedetails.view
 
 import android.os.Bundle
 import android.view.View
-import androidx.annotation.StringRes
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.core.navigation.AuthScreen
 import ru.gaket.themoviedb.core.navigation.Navigator
 import ru.gaket.themoviedb.core.navigation.ReviewScreen
-import ru.gaket.themoviedb.core.navigation.Screen
+import ru.gaket.themoviedb.core.navigation.WebNavigator
 import ru.gaket.themoviedb.databinding.FragmentMovieDetailsBinding
-import ru.gaket.themoviedb.presentation.moviedetails.model.MovieDetailsEvent
-import ru.gaket.themoviedb.presentation.moviedetails.model.MovieDetailsEvent.OpenAddReviewScreenEvent
-import ru.gaket.themoviedb.presentation.moviedetails.model.MovieDetailsEvent.ShowErrorEvent
+import ru.gaket.themoviedb.presentation.moviedetails.model.getCalendarYear
 import ru.gaket.themoviedb.presentation.moviedetails.viewmodel.MovieDetailsState
 import ru.gaket.themoviedb.presentation.moviedetails.viewmodel.MovieDetailsViewModel
 import ru.gaket.themoviedb.util.showSnackbar
@@ -38,64 +31,65 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
     @Inject
     lateinit var navigator: Navigator
 
-    private val reviewsAdapter by lazy {
-        ReviewsAdapter(viewModel::onReviewClick, viewModel::onAddReviewClick) { navigator.navigateTo(AuthScreen()) }
+    @Inject
+    lateinit var webNavigator: WebNavigator
+
+    private val reviewsAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        ReviewsAdapter(
+            onReviewClick = viewModel::onReviewClick,
+            onAddReviewClick = ::onAddReviewClick,
+            onAuthorizeClick = ::onAuthorizeClick
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         viewModel.state.observe(viewLifecycleOwner, ::render)
-        listenEvents()
 
         setupListeners()
         setupReviewsList()
         setupPoster()
     }
 
-    private fun listenEvents() = lifecycleScope.launch {
-        viewModel.events.flowWithLifecycle(lifecycle).collect(::handleEvent)
-    }
+    private fun render(state: MovieDetailsState) =
+        when (state) {
+            is MovieDetailsState.Loading -> showLoading(show = true)
+            is MovieDetailsState.Result -> renderResult(state)
+            is MovieDetailsState.Error -> view?.showSnackbar(R.string.error_getting_movie_info)
+        }
 
-    private fun handleEvent(event: MovieDetailsEvent) = when (event) {
-        is OpenAddReviewScreenEvent -> ReviewScreen(event.movieId).navigate()
-        is ShowErrorEvent -> showSnackError(event.errorMessageResId)
-    }
+    private fun renderResult(state: MovieDetailsState.Result) {
+        showLoading(show = false)
 
-    private fun render(state: MovieDetailsState) = with(binding) {
-        pbMovieDetailsInfo.isVisible = state.isLoadingInfo
-        gMovieDetailsInfo.isVisible = state.isLoadingInfo.not()
-
-        pbMovieDetailsReviews.isVisible = state.isLoadingReviews && pbMovieDetailsInfo.isVisible.not()
-        rvMovieDetailsReviews.isVisible = state.isLoadingReviews.not() && state.isLoadingInfo.not()
-
-        tvMovieDetailsTitle.text = state.title
-        tvMovieDetailsYear.text = state.year
-        tvMovieDetailsGenres.text = state.genres
-        tvMovieDetailsOverview.text = state.overview
-        tvMovieDetailsRating.text = state.rating
-        updatePoster(state.posterUrl)
+        binding.tvMovieDetailsTitle.text = state.movie.title
+        binding.tvMovieDetailsYear.text = state.movie.releaseDate.getCalendarYear()?.toString().orEmpty()
+        binding.tvMovieDetailsGenres.text = state.movie.genres
+        binding.tvMovieDetailsOverview.text = state.movie.overview
+        binding.tvMovieDetailsRating.text = state.movie.rating.toString()
+        updatePoster(state.movie.thumbnail)
         reviewsAdapter.submitList(state.allReviews)
     }
 
-    private fun updatePoster(posterUrl: String?) = with(binding) {
-        if (ivMoviePoster.tag == posterUrl) return
+    private fun showLoading(show: Boolean) {
+        binding.pbMovieDetailsInfo.isVisible = show
+        binding.gMovieDetailsInfo.isVisible = !show
 
-        ivMoviePoster.tag = posterUrl
-
-        if (posterUrl.isNullOrBlank()) return
-
-        Picasso.get()
-            .load(posterUrl)
-            .placeholder(R.drawable.ph_movie_grey_200)
-            .error(R.drawable.ph_movie_grey_200)
-            .fit()
-            .centerCrop()
-            .into(ivMoviePoster)
+        binding.pbMovieDetailsReviews.isVisible = show
+        binding.rvMovieDetailsReviews.isVisible = !show
     }
 
-    private fun setupListeners() = with(binding) {
-        ivMovieDetailsBack.setOnClickListener { navigator.back() }
-        ivMovieDetailsBrowse.setOnClickListener { viewModel.onBrowseMovieClick() }
+    private fun onAddReviewClick() = navigator.navigateTo(ReviewScreen(viewModel.movieId))
+
+    private fun onAuthorizeClick() = navigator.navigateTo(AuthScreen())
+
+    private fun setupListeners() {
+        binding.ivMovieDetailsBack.setOnClickListener {
+            navigator.back()
+        }
+        binding.ivMovieDetailsBrowse.setOnClickListener {
+            webNavigator.navigateTo(viewModel.movieId)
+        }
     }
 
     private fun setupReviewsList() {
@@ -106,18 +100,26 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
         binding.ivMoviePoster.clipToOutline = true
     }
 
-    private fun showSnackError(@StringRes errorMessageResId: Int) {
-        view?.showSnackbar(errorMessageResId)
-    }
+    private fun updatePoster(posterUrl: String?) {
+        if (binding.ivMoviePoster.tag != posterUrl) {
+            binding.ivMoviePoster.tag = posterUrl
 
-    private fun Screen.navigate() = navigator.navigateTo(this)
+            Picasso.get()
+                .load(posterUrl)
+                .placeholder(R.drawable.ph_movie_grey_200)
+                .error(R.drawable.ph_movie_grey_200)
+                .fit()
+                .centerCrop()
+                .into(binding.ivMoviePoster)
+        }
+    }
 
     companion object {
 
         const val ARG_MOVIE_ID = "ARG_MOVIE_ID"
         const val ARG_MOVIE_TITLE = "ARG_MOVIE_TITLE"
 
-        fun newInstance(movieId: Long, title: String) = MovieDetailsFragment()
+        fun newInstance(movieId: Long, title: String): MovieDetailsFragment = MovieDetailsFragment()
             .apply {
                 arguments = bundleOf(
                     ARG_MOVIE_ID to movieId,
