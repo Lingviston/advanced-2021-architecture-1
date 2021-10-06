@@ -22,7 +22,9 @@ interface ReviewBindingModule {
 
     @Singleton
     @Binds
-    fun bindsReviewRepository(repository: ReviewRepositoryImpl): ReviewRepository
+    fun bindsReviewRepository(
+        repository: ReviewRepositoryImpl,
+    ): ReviewRepository
 
     @Singleton
     @Binds

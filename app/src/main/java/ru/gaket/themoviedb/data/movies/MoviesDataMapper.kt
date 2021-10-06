@@ -1,8 +1,8 @@
 package ru.gaket.themoviedb.data.movies
 
-import ru.gaket.themoviedb.data.genres.remote.GenreDto
 import ru.gaket.themoviedb.data.movies.local.MovieEntity
 import ru.gaket.themoviedb.data.movies.remote.DetailsMovieDto
+import ru.gaket.themoviedb.data.movies.remote.GenreDto
 import ru.gaket.themoviedb.data.movies.remote.SearchMovieDto
 import java.util.Locale
 
