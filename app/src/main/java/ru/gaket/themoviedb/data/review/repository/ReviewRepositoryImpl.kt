@@ -3,8 +3,6 @@ package ru.gaket.themoviedb.data.review.repository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
-import ru.gaket.themoviedb.data.review.local.MyReviewEntity
 import ru.gaket.themoviedb.data.review.local.MyReviewsLocalDataSource
 import ru.gaket.themoviedb.data.review.local.toModel
 import ru.gaket.themoviedb.data.review.remote.ReviewsRemoteDataSource
@@ -16,6 +14,7 @@ import ru.gaket.themoviedb.domain.review.models.ReviewFormModel
 import ru.gaket.themoviedb.domain.review.models.ReviewFormModel.Companion.newEmptyModelInstance
 import ru.gaket.themoviedb.domain.review.repository.ReviewRepository
 import ru.gaket.themoviedb.domain.review.store.ItemStore
+import ru.gaket.themoviedb.domain.review.store.reset
 import javax.inject.Inject
 
 class ReviewRepositoryImpl @Inject constructor(
@@ -25,7 +24,7 @@ class ReviewRepositoryImpl @Inject constructor(
 ) : ReviewRepository {
 
     override val reviewState: Flow<ReviewFormModel>
-        get() = reviewFormStore.itemChanges.filterNotNull()
+        get() = reviewFormStore.observeItem().filterNotNull()
 
     override suspend fun getSomeoneReviews(movieId: MovieId) =
         reviewsRemoteDataSource.getMovieReviews(movieId)
@@ -36,24 +35,23 @@ class ReviewRepositoryImpl @Inject constructor(
     }
 
     override suspend fun setMovieId(movieId: MovieId) {
-
-        reviewFormStore.setItem(newEmptyModelInstance(movieId))
+        reviewFormStore.item = newEmptyModelInstance(movieId)
     }
 
     override suspend fun setWhatLike(whatLiked: String?) {
-        reviewFormStore.updateItem { reviewForm ->
+        reviewFormStore.updateSafely { reviewForm ->
             reviewForm.copy(whatLiked = whatLiked)
         }
     }
 
     override suspend fun setWhatDidNotLike(whatDidNotLike: String?) {
-        reviewFormStore.updateItem { reviewForm ->
+        reviewFormStore.updateSafely { reviewForm ->
             reviewForm.copy(whatDidNotLike = whatDidNotLike)
         }
     }
 
     override suspend fun setRating(rating: Rating?) {
-        reviewFormStore.updateItem { reviewForm ->
+        reviewFormStore.updateSafely { reviewForm ->
             reviewForm.copy(rating = rating)
         }
     }
