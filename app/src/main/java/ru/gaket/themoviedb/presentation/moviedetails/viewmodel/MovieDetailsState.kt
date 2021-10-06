@@ -14,3 +14,13 @@ sealed class MovieDetailsState {
 
     object Error : MovieDetailsState()
 }
+
+sealed class MovieDetailsEvent {
+
+    sealed class OpenScreen : MovieDetailsEvent() {
+
+        object Review : MovieDetailsEvent.OpenScreen()
+
+        object Auth : MovieDetailsEvent.OpenScreen()
+    }
+}

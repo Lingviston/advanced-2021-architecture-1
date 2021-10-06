@@ -16,6 +16,7 @@ import ru.gaket.themoviedb.core.navigation.ReviewScreen
 import ru.gaket.themoviedb.core.navigation.WebNavigator
 import ru.gaket.themoviedb.databinding.FragmentMovieDetailsBinding
 import ru.gaket.themoviedb.presentation.moviedetails.model.getCalendarYear
+import ru.gaket.themoviedb.presentation.moviedetails.viewmodel.MovieDetailsEvent
 import ru.gaket.themoviedb.presentation.moviedetails.viewmodel.MovieDetailsState
 import ru.gaket.themoviedb.presentation.moviedetails.viewmodel.MovieDetailsViewModel
 import ru.gaket.themoviedb.util.showSnackbar
@@ -35,17 +36,14 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
     lateinit var webNavigator: WebNavigator
 
     private val reviewsAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        ReviewsAdapter(
-            onReviewClick = viewModel::onReviewClick,
-            onAddReviewClick = ::onAddReviewClick,
-            onAuthorizeClick = ::onAuthorizeClick
-        )
+        ReviewsAdapter(onReviewClick = viewModel::onReviewClick)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.state.observe(viewLifecycleOwner, ::render)
+        viewModel.events.observe(viewLifecycleOwner, ::handleEvent)
 
         setupListeners()
         setupReviewsList()
@@ -57,6 +55,11 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
             is MovieDetailsState.Loading -> showLoading(show = true)
             is MovieDetailsState.Result -> renderResult(state)
             is MovieDetailsState.Error -> view?.showSnackbar(R.string.error_getting_movie_info)
+        }
+
+    private fun handleEvent(event: MovieDetailsEvent) =
+        when (event) {
+            is MovieDetailsEvent.OpenScreen -> handleOpenScreenEvent(event)
         }
 
     private fun renderResult(state: MovieDetailsState.Result) {
@@ -79,9 +82,14 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
         binding.rvMovieDetailsReviews.isVisible = !show
     }
 
-    private fun onAddReviewClick() = navigator.navigateTo(ReviewScreen(viewModel.movieId))
+    private fun handleOpenScreenEvent(event: MovieDetailsEvent.OpenScreen) {
+        val nextScreen = when (event) {
+            is MovieDetailsEvent.OpenScreen.Auth -> AuthScreen()
+            is MovieDetailsEvent.OpenScreen.Review -> ReviewScreen(viewModel.movieId)
+        }
 
-    private fun onAuthorizeClick() = navigator.navigateTo(AuthScreen())
+        navigator.navigateTo(nextScreen)
+    }
 
     private fun setupListeners() {
         binding.ivMovieDetailsBack.setOnClickListener {
