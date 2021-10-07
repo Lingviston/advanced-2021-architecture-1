@@ -78,7 +78,6 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movie_details) {
         binding.pbMovieDetailsInfo.isVisible = show
         binding.gMovieDetailsInfo.isVisible = !show
 
-        binding.pbMovieDetailsReviews.isVisible = show
         binding.rvMovieDetailsReviews.isVisible = !show
     }
 

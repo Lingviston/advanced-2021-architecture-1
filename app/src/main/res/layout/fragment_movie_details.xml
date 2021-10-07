@@ -5,7 +5,8 @@
     android:id="@+id/sv_movie_details_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground">
+    android:background="@color/colorBackground"
+    android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/movie_details"
@@ -40,7 +41,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_movie_details_back" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/g_movie_details_info"
@@ -161,16 +162,6 @@
             tools:listitem="@layout/item_review"
             tools:visibility="visible" />
 
-        <ProgressBar
-            android:id="@+id/pb_movie_details_reviews"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginTop="@dimen/space_huge"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_movie_details_overview" />
-
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_movie_details"
             android:layout_width="wrap_content"
@@ -183,8 +174,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="bottom"
-            app:constraint_referenced_ids="iv_movie_poster,tv_movie_details_title"
-            tools:layout_editor_absoluteY="731dp" />
+            app:constraint_referenced_ids="iv_movie_poster,tv_movie_details_title" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

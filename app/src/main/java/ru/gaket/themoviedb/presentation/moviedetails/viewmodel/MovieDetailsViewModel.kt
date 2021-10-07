@@ -31,7 +31,7 @@ class MovieDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    val movieId: Long = savedStateHandle.get<Long>(ARG_MOVIE_ID)!!
+    val movieId: Long = savedStateHandle.get<Long>(ARG_MOVIE_ID) ?: error("Movie id was not passed!")
     private val title = savedStateHandle.get<String>(ARG_MOVIE_TITLE).orEmpty()
 
     private val _state = MutableLiveData<MovieDetailsState>(MovieDetailsState.Loading(title = title))

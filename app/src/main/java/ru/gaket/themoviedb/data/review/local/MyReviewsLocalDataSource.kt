@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 interface MyReviewsLocalDataSource {
 
-    fun observeMovieById(movieId: MovieId): Flow<MyReviewEntity?>
+    fun observeReviews(movieId: MovieId): Flow<MyReviewEntity?>
     suspend fun getByMovieIds(movieIds: List<MovieId>): List<MyReviewEntity>
     suspend fun insertAll(myReviews: List<MyReviewEntity>)
     suspend fun insert(myReview: MyReviewEntity)
@@ -19,7 +19,7 @@ class MyReviewsLocalDataSourceImpl @Inject constructor(
     private val myReviewsDao: MyReviewsDao,
 ) : MyReviewsLocalDataSource {
 
-    override fun observeMovieById(movieId: MovieId): Flow<MyReviewEntity?> =
+    override fun observeReviews(movieId: MovieId): Flow<MyReviewEntity?> =
         myReviewsDao.observeMoviesById(movieId)
             .map { list -> list.firstOrNull() }
             .distinctUntilChanged()

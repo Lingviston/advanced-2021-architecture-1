@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 interface MoviesRemoteDataSource {
 
-    suspend fun searchMovies(query: String, page: Int): Result<List<SearchMovieDto>, Throwable>
+    suspend fun searchMovies(query: String): Result<List<SearchMovieDto>, Throwable>
 
     suspend fun getMovieDetails(id: MovieId): Result<DetailsMovieDto, Throwable>
 }
@@ -18,8 +18,8 @@ class MoviesRemoteDataSourceImpl @Inject constructor(
     private val moviesApi: MoviesApi,
 ) : MoviesRemoteDataSource {
 
-    override suspend fun searchMovies(query: String, page: Int): Result<List<SearchMovieDto>, Throwable> =
-        runOperationCatching { moviesApi.searchMovie(query, page).searchMovies }
+    override suspend fun searchMovies(query: String): Result<List<SearchMovieDto>, Throwable> =
+        runOperationCatching { moviesApi.searchMovie(query).searchMovies }
             .doOnError { error -> Timber.e("Search movies from server error", error) }
 
     override suspend fun getMovieDetails(id: MovieId): Result<DetailsMovieDto, Throwable> =
