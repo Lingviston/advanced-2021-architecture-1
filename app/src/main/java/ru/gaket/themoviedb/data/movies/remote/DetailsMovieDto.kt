@@ -1,7 +1,6 @@
 package ru.gaket.themoviedb.data.movies.remote
 
 import com.google.gson.annotations.SerializedName
-import ru.gaket.themoviedb.data.genres.remote.GenreDto
 
 /**
  * Class of detailed Movie coming from the api
@@ -54,4 +53,12 @@ data class DetailsMovieDto(
 
     @SerializedName("poster_path")
     val posterPath: String? = "",
+)
+
+data class GenreDto(
+    @SerializedName("id")
+    val id: Int,
+
+    @SerializedName("name")
+    val name: String,
 )

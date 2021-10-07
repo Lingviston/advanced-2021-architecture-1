@@ -7,7 +7,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ru.gaket.themoviedb.data.core.network.MoviesHttpClient
 import ru.gaket.themoviedb.data.core.network.MoviesHttpClientImpl
-import ru.gaket.themoviedb.data.genres.remote.GenresApi
 import ru.gaket.themoviedb.data.movies.remote.MoviesApi
 import javax.inject.Singleton
 
@@ -29,8 +28,4 @@ object ApiWrapperModule {
     @Provides
     @Singleton
     fun provideMoviesApi(client: MoviesHttpClient): MoviesApi = client.moviesApi
-
-    @Provides
-    @Singleton
-    fun provideGenresApi(client: MoviesHttpClient): GenresApi = client.genresApi
 }
