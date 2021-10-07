@@ -1,25 +1,26 @@
 package ru.gaket.themoviedb.presentation.moviedetails.viewmodel
 
+import ru.gaket.themoviedb.domain.movies.models.Movie
 import ru.gaket.themoviedb.presentation.moviedetails.model.MovieDetailsReview
-import ru.gaket.themoviedb.presentation.moviedetails.model.MovieDetailsReview.MyReview
-import ru.gaket.themoviedb.presentation.moviedetails.model.MovieDetailsReview.SomeoneReview
 
-data class MovieDetailsState(
-    val isLoadingInfo: Boolean = true,
-    val isLoadingReviews: Boolean = true,
-    val title: String = "",
-    val year: String = "",
-    val overview: String = "",
-    val genres: String = "",
-    val rating: String = "",
-    val posterUrl: String? = "",
-    val someoneReviews: List<SomeoneReview> = emptyList(),
-    val myReview: MovieDetailsReview = MyReview(),
-) {
+sealed class MovieDetailsState {
 
-    val allReviews: List<MovieDetailsReview>
-        get() = mutableListOf<MovieDetailsReview>().apply {
-            add(myReview)
-            addAll(someoneReviews)
-        }
+    data class Loading(val title: String) : MovieDetailsState()
+
+    data class Result(
+        val movie: Movie,
+        val allReviews: List<MovieDetailsReview>,
+    ) : MovieDetailsState()
+
+    object Error : MovieDetailsState()
+}
+
+sealed class MovieDetailsEvent {
+
+    sealed class OpenScreen : MovieDetailsEvent() {
+
+        object Review : MovieDetailsEvent.OpenScreen()
+
+        object Auth : MovieDetailsEvent.OpenScreen()
+    }
 }

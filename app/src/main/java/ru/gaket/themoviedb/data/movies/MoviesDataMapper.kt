@@ -25,6 +25,12 @@ internal fun SearchMovieDto.toEntity(baseImageUrl: String): MovieEntity = MovieE
     homepage = ""
 )
 
+/**
+ * check [SearchMovieDto.toEntity]
+ * **/
+internal val MovieEntity.isFullyLoaded: Boolean
+    get() = (this.duration > 0)
+
 internal fun DetailsMovieDto.toEntity(baseImageUrl: String): MovieEntity = MovieEntity(
     id = this.id,
     imdbId = this.imdbId,

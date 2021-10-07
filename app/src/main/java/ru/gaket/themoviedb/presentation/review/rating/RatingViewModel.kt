@@ -27,7 +27,7 @@ class RatingViewModel @Inject constructor(
             .asLiveData(viewModelScope.coroutineContext)
 
     private val _reviewState = MutableLiveData<ReviewState>()
-    val reviewState: LiveData<ReviewState> = _reviewState
+    val reviewState: LiveData<ReviewState> get() = _reviewState
 
     fun submit(ratingNumber: Int) {
         viewModelScope.launch {

@@ -2,13 +2,8 @@ package ru.gaket.themoviedb.data.review.repository
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map
-import ru.gaket.themoviedb.data.review.local.MyReviewsLocalDataSource
-import ru.gaket.themoviedb.data.review.local.toModel
-import ru.gaket.themoviedb.data.review.remote.ReviewsRemoteDataSource
 import ru.gaket.themoviedb.domain.movies.models.MovieId
 import ru.gaket.themoviedb.domain.review.models.ReviewDraft
-import ru.gaket.themoviedb.domain.review.models.MyReview
 import ru.gaket.themoviedb.domain.review.models.Rating
 import ru.gaket.themoviedb.domain.review.models.ReviewFormModel
 import ru.gaket.themoviedb.domain.review.models.ReviewFormModel.Companion.newEmptyModelInstance
@@ -19,20 +14,10 @@ import javax.inject.Inject
 
 class ReviewRepositoryImpl @Inject constructor(
     private val reviewFormStore: ItemStore<ReviewFormModel>,
-    private val reviewsRemoteDataSource: ReviewsRemoteDataSource,
-    private val myReviewsLocalDataSource: MyReviewsLocalDataSource,
 ) : ReviewRepository {
 
     override val reviewState: Flow<ReviewFormModel>
         get() = reviewFormStore.observeItem().filterNotNull()
-
-    override suspend fun getSomeoneReviews(movieId: MovieId) =
-        reviewsRemoteDataSource.getMovieReviews(movieId)
-
-    override fun getMyReviews(movieId: MovieId): Flow<MyReview?> {
-        return myReviewsLocalDataSource.getFlowByMovieId(movieId)
-            .map { reviews -> reviews.firstOrNull()?.toModel() }
-    }
 
     override suspend fun setMovieId(movieId: MovieId) {
         reviewFormStore.item = newEmptyModelInstance(movieId)

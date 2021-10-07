@@ -25,7 +25,7 @@ interface MyReviewsDao {
         WHERE ${MyReviewEntity.REVIEW_MOVIE_ID}=:movieId
         LIMIT 1
         """)
-    fun getFlowByMovieId(movieId: MovieId): Flow<List<MyReviewEntity>>
+    fun observeMoviesById(movieId: MovieId): Flow<List<MyReviewEntity>>
 
     @Query("""
         SELECT *

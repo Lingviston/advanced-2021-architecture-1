@@ -1,6 +1,7 @@
 package ru.gaket.themoviedb.domain.auth
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import ru.gaket.themoviedb.util.VoidResult
 
 interface AuthInteractor {
@@ -18,4 +19,11 @@ interface AuthInteractor {
 }
 
 fun AuthInteractor.isAuthorized(): Boolean =
-    (this.getCurrentUser() != null)
+    this.getCurrentUser().isAuthorized
+
+fun AuthInteractor.observeIsAuthorized(): Flow<Boolean> =
+    this.observeCurrentUser()
+        .map { currentUser -> currentUser.isAuthorized }
+
+private val User?.isAuthorized: Boolean
+    get() = (this != null)
