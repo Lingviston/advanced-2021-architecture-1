@@ -4,8 +4,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import ru.gaket.themoviedb.core.navigation.WebNavigator
-import ru.gaket.themoviedb.core.navigation.WebNavigatorImpl
 import ru.gaket.themoviedb.data.auth.AuthRepository
 import ru.gaket.themoviedb.data.auth.AuthRepositoryImpl
 import ru.gaket.themoviedb.data.auth.local.AuthLocalDataSource
@@ -20,10 +18,31 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface AppModule {
+interface AuthModule {
 
     @Binds
-    fun bindWebNavigator(
-        impl: WebNavigatorImpl,
-    ): WebNavigator
+    fun bindAuthLocalDataSource(
+        impl: AuthLocalDataSourceImpl,
+    ): AuthLocalDataSource
+
+    @Binds
+    fun bindAuthRemoteDataSource(
+        impl: AuthRemoteDataSourceImpl,
+    ): AuthRemoteDataSource
+
+    @Binds
+    @Singleton
+    fun bindAuthRepository(
+        impl: AuthRepositoryImpl,
+    ): AuthRepository
+
+    @Binds
+    fun bindAuthInteractor(
+        impl: AuthManagerImpl,
+    ): AuthInteractor
+
+    @Binds
+    fun bindSyncLocalStorageUseCase(
+        impl: ReviewsSynchronizerImpl,
+    ): ReviewsSynchronizer
 }

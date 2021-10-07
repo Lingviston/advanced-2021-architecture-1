@@ -22,7 +22,9 @@ interface ReviewBindingModule {
 
     @Singleton
     @Binds
-    fun bindsReviewRepository(repository: ReviewRepositoryImpl): ReviewRepository
+    fun bindsReviewRepository(
+        repository: ReviewRepositoryImpl,
+    ): ReviewRepository
 
     @Singleton
     @Binds
@@ -43,5 +45,5 @@ object ReviewModule {
 
     @Provides
     @Singleton
-    fun provideReviewStore(): ItemStore<ReviewFormModel> = HeapItemStore(replay = 1)
+    fun provideReviewStore(): ItemStore<ReviewFormModel> = HeapItemStore()
 }
