@@ -45,5 +45,5 @@ object ReviewModule {
 
     @Provides
     @Singleton
-    fun provideReviewStore(): ItemStore<ReviewFormModel> = HeapItemStore(replay = 1)
+    fun provideReviewStore(): ItemStore<ReviewFormModel> = HeapItemStore()
 }

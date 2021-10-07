@@ -4,12 +4,13 @@ import kotlinx.coroutines.flow.Flow
 
 interface ItemStore<T> {
 
-    val item: T?
-    val itemChanges: Flow<T?>
+    var item: T?
 
-    suspend fun setItem(item: T)
+    fun observeItem(): Flow<T?>
 
-    //TODO [Vlad] Maybe move this method to extentions
-    suspend fun updateItem(updateAction: (T) -> T)
-    suspend fun reset()
+    fun updateSafely(updateAction: (T) -> T)
+}
+
+fun <T> ItemStore<T>.reset() {
+    this.item = null
 }
