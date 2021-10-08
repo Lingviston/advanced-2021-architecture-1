@@ -9,19 +9,26 @@ import dagger.hilt.android.AndroidEntryPoint
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.databinding.FragmentReviewTextBinding
 import ru.gaket.themoviedb.presentation.review.ReviewFieldEvent
-import ru.gaket.themoviedb.presentation.review.ReviewFieldEvent.EMPTY_FIELD
-import ru.gaket.themoviedb.presentation.review.ReviewFieldEvent.SUCCESS
-import ru.gaket.themoviedb.presentation.review.ReviewViewModel
+import ru.gaket.themoviedb.presentation.review.CreateReviewRepoViewModel
+import ru.gaket.themoviedb.util.createAbstractViewModelFactory
 import ru.gaket.themoviedb.util.showSnackbar
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class WhatNotLikeFragment : Fragment(R.layout.fragment_review_text) {
 
     private val binding: FragmentReviewTextBinding by viewBinding(FragmentReviewTextBinding::bind)
 
-    private val viewModel: WhatNotLikeViewModel by viewModels()
+    private val sharedRepoViewModel: CreateReviewRepoViewModel by viewModels(ownerProducer = { requireParentFragment() })
 
-    private val sharedViewModel: ReviewViewModel by viewModels(ownerProducer = { requireParentFragment() })
+    @Inject
+    lateinit var viewModelAssistedFactory: WhatNotLikeViewModel.Factory
+
+    private val viewModel: WhatNotLikeViewModel by viewModels {
+        createAbstractViewModelFactory {
+            viewModelAssistedFactory.create(createReviewRepository = sharedRepoViewModel)
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -40,10 +47,8 @@ class WhatNotLikeFragment : Fragment(R.layout.fragment_review_text) {
         }
     }
 
-    private fun handleState(reviewErrorField: ReviewFieldEvent) {
+    private fun handleState(reviewErrorField: ReviewFieldEvent) =
         when (reviewErrorField) {
-            EMPTY_FIELD -> requireView().showSnackbar(R.string.review_error_should_not_be_empty)
-            SUCCESS -> sharedViewModel.nextState()
+            ReviewFieldEvent.EMPTY_FIELD -> requireView().showSnackbar(R.string.review_error_should_not_be_empty)
         }
-    }
 }

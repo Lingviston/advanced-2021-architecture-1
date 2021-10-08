@@ -4,18 +4,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import ru.gaket.themoviedb.domain.review.repository.ReviewRepository
+import ru.gaket.themoviedb.domain.review.models.MovieWithCreateReviewState
+import ru.gaket.themoviedb.domain.review.repository.CreateReviewRepository
 import ru.gaket.themoviedb.presentation.review.ReviewFieldEvent
-import javax.inject.Inject
 
-@HiltViewModel
-class WhatNotLikeViewModel @Inject constructor(
-    private val reviewRepository: ReviewRepository,
+class WhatNotLikeViewModel @AssistedInject constructor(
+    @Assisted private val createReviewRepository: CreateReviewRepository,
 ) : ViewModel() {
 
     private val _events = MutableSharedFlow<ReviewFieldEvent>()
@@ -23,21 +25,25 @@ class WhatNotLikeViewModel @Inject constructor(
         get() = _events
             .asLiveData(viewModelScope.coroutineContext)
 
-    val initialValue: LiveData<String> = reviewRepository.reviewState
-        .map { it.whatDidNotLike }
+    val initialValue: LiveData<String> = createReviewRepository.observeState()
+        .filterIsInstance<MovieWithCreateReviewState.Data>()
+        .map { state -> state.createState.form.whatDidNotLike }
         .filterNotNull()
         .asLiveData(viewModelScope.coroutineContext)
 
     fun submitInfo(whatDidNotLike: String) {
         viewModelScope.launch {
-            val fieldEvent = if (whatDidNotLike.isBlank()) {
-                ReviewFieldEvent.EMPTY_FIELD
+            if (whatDidNotLike.isBlank()) {
+                _events.emit(ReviewFieldEvent.EMPTY_FIELD)
             } else {
-                reviewRepository.setWhatDidNotLike(whatDidNotLike)
-                ReviewFieldEvent.SUCCESS
+                createReviewRepository.setWhatDidNotLike(whatDidNotLike)
             }
-
-            _events.emit(fieldEvent)
         }
+    }
+
+    @AssistedFactory
+    interface Factory {
+
+        fun create(createReviewRepository: CreateReviewRepository): WhatNotLikeViewModel
     }
 }
