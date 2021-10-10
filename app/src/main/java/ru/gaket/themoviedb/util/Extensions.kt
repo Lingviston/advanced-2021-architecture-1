@@ -14,6 +14,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.isActive
 
 inline fun <reified T : Enum<T>> T.next(): T? {
     val values = enumValues<T>()
@@ -26,7 +29,7 @@ inline fun <reified T : Enum<T>> T.previous(): T? {
 }
 
 inline fun <reified VM : ViewModel> createAbstractViewModelFactory(
-    crossinline creator: () -> VM
+    crossinline creator: () -> VM,
 ): ViewModelProvider.Factory =
     object : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
@@ -35,6 +38,12 @@ inline fun <reified VM : ViewModel> createAbstractViewModelFactory(
             return (creator() as T)
         }
     }
+
+suspend fun <T> FlowCollector<T>.emitIfActive(value: T) {
+    if (currentCoroutineContext().isActive) {
+        emit(value)
+    }
+}
 
 val Int.toDp: Int
     get() = (this / Resources.getSystem().displayMetrics.density).toInt()

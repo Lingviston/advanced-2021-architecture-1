@@ -8,7 +8,8 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.databinding.FragmentReviewRatingBinding
-import ru.gaket.themoviedb.presentation.review.CreateReviewRepoViewModel
+import ru.gaket.themoviedb.domain.review.repository.CreateReviewScopedRepository
+import ru.gaket.themoviedb.presentation.review.CreateReviewScopedRepositoryImpl
 import ru.gaket.themoviedb.util.createAbstractViewModelFactory
 import ru.gaket.themoviedb.util.showSnackbar
 import timber.log.Timber
@@ -20,14 +21,16 @@ class RatingFragment : Fragment(R.layout.fragment_review_rating) {
 
     private val binding: FragmentReviewRatingBinding by viewBinding(FragmentReviewRatingBinding::bind)
 
-    private val sharedRepoViewModel: CreateReviewRepoViewModel by viewModels(ownerProducer = { requireParentFragment() })
+    private val createReviewScopedRepository: CreateReviewScopedRepository by viewModels<CreateReviewScopedRepositoryImpl>(
+        ownerProducer = { requireParentFragment() }
+    )
 
     @Inject
     lateinit var viewModelAssistedFactory: RatingViewModel.Factory
 
     private val viewModel: RatingViewModel by viewModels {
         createAbstractViewModelFactory {
-            viewModelAssistedFactory.create(createReviewRepository = sharedRepoViewModel)
+            viewModelAssistedFactory.create(createReviewScopedRepository = createReviewScopedRepository)
         }
     }
 

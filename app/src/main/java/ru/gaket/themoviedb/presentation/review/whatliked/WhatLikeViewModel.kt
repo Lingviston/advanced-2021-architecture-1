@@ -12,12 +12,12 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import ru.gaket.themoviedb.domain.review.models.MovieWithCreateReviewState
-import ru.gaket.themoviedb.domain.review.repository.CreateReviewRepository
+import ru.gaket.themoviedb.domain.review.models.CreateReviewState
+import ru.gaket.themoviedb.domain.review.repository.CreateReviewScopedRepository
 import ru.gaket.themoviedb.presentation.review.ReviewFieldEvent
 
 class WhatLikeViewModel @AssistedInject constructor(
-    @Assisted private val createReviewRepository: CreateReviewRepository,
+    @Assisted private val createReviewScopedRepository: CreateReviewScopedRepository,
 ) : ViewModel() {
 
     private val _events = MutableSharedFlow<ReviewFieldEvent>()
@@ -25,19 +25,18 @@ class WhatLikeViewModel @AssistedInject constructor(
         get() = _events
             .asLiveData(viewModelScope.coroutineContext)
 
-    val initialValue: LiveData<String>
-        get() = createReviewRepository.observeState()
-            .filterIsInstance<MovieWithCreateReviewState.Data>()
-            .map { state -> state.createState.form.whatLiked }
-            .filterNotNull()
-            .asLiveData(viewModelScope.coroutineContext)
+    val initialValue: LiveData<String> = createReviewScopedRepository.observeState()
+        .filterIsInstance<CreateReviewState>()
+        .map { state -> state.form.whatLiked }
+        .filterNotNull()
+        .asLiveData(viewModelScope.coroutineContext)
 
     fun submitInfo(whatLike: String) {
         viewModelScope.launch {
             if (whatLike.isBlank()) {
                 _events.emit(ReviewFieldEvent.EMPTY_FIELD)
             } else {
-                createReviewRepository.setWhatLike(whatLike)
+                createReviewScopedRepository.setWhatLike(whatLike)
             }
         }
     }
@@ -45,6 +44,6 @@ class WhatLikeViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory {
 
-        fun create(createReviewRepository: CreateReviewRepository): WhatLikeViewModel
+        fun create(createReviewScopedRepository: CreateReviewScopedRepository): WhatLikeViewModel
     }
 }

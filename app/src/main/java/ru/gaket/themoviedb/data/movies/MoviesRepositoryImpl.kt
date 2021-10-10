@@ -2,13 +2,11 @@ package ru.gaket.themoviedb.data.movies
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.isActive
 import ru.gaket.themoviedb.core.MovieUrlProvider
 import ru.gaket.themoviedb.data.movies.local.MovieEntity
 import ru.gaket.themoviedb.data.movies.local.MoviesLocalDataSource
@@ -31,6 +29,7 @@ import ru.gaket.themoviedb.domain.review.models.SomeoneReview
 import ru.gaket.themoviedb.util.Result
 import ru.gaket.themoviedb.util.VoidResult
 import ru.gaket.themoviedb.util.doOnSuccess
+import ru.gaket.themoviedb.util.emitIfActive
 import ru.gaket.themoviedb.util.mapNestedSuccess
 import ru.gaket.themoviedb.util.mapSuccess
 import timber.log.Timber
@@ -90,9 +89,7 @@ class MoviesRepositoryImpl @Inject constructor(
     override fun observeMovieDetailsWithReviews(id: MovieId): Flow<Result<MovieWithReviews, Throwable>> =
         flow {
             val result = getMovieDetailsWithReviews(id)
-            if (currentCoroutineContext().isActive) {
-                emit(result)
-            }
+            emitIfActive(result)
         }
             .flatMapLatest { result ->
                 when (result) {

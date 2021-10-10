@@ -21,7 +21,7 @@ import ru.gaket.themoviedb.domain.movies.models.Movie
 import ru.gaket.themoviedb.domain.movies.models.MovieId
 import ru.gaket.themoviedb.domain.review.models.CreateReviewForm
 import ru.gaket.themoviedb.domain.review.models.CreateReviewStep
-import ru.gaket.themoviedb.domain.review.models.MovieWithCreateReviewState
+import ru.gaket.themoviedb.domain.review.repository.CreateReviewScopedRepository
 import ru.gaket.themoviedb.presentation.review.rating.RatingFragment
 import ru.gaket.themoviedb.presentation.review.whatliked.WhatLikeFragment
 import ru.gaket.themoviedb.presentation.review.whatnotliked.WhatNotLikeFragment
@@ -37,18 +37,25 @@ class ReviewFragment : Fragment(R.layout.fragment_review) {
     lateinit var navigator: Navigator
 
     @Inject
-    lateinit var viewModelAssistedFactory: CreateReviewRepoViewModel.Factory
+    lateinit var createReviewRepositoryAssistedFactory: CreateReviewScopedRepositoryImpl.Factory
 
-    private val repoViewModel: CreateReviewRepoViewModel by viewModels {
+    @Inject
+    lateinit var reviewViewModelAssistedFactory: ReviewViewModel.Factory
+
+    private val createReviewScopedRepository: CreateReviewScopedRepository by viewModels<CreateReviewScopedRepositoryImpl> {
         createAbstractViewModelFactory {
-            viewModelAssistedFactory.create(movieId = requireArguments().getLong(ARG_MOVIE_ID))
+            createReviewRepositoryAssistedFactory.create(movieId = requireArguments().getLong(ARG_MOVIE_ID))
+        }
+    }
+
+    private val viewModel: ReviewViewModel by viewModels<ReviewViewModel> {
+        createAbstractViewModelFactory {
+            reviewViewModelAssistedFactory.create(createReviewScopedRepository = createReviewScopedRepository)
         }
     }
 
     private val backPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            repoViewModel.previousState()
-        }
+        override fun handleOnBackPressed() = viewModel.toPreviousStep()
     }
 
     override fun onAttach(context: Context) {
@@ -59,16 +66,16 @@ class ReviewFragment : Fragment(R.layout.fragment_review) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        repoViewModel.state.observe(viewLifecycleOwner, ::handleState)
+        viewModel.state.observe(viewLifecycleOwner, ::handleState)
     }
 
-    private fun handleState(state: MovieWithCreateReviewState) =
+    private fun handleState(state: ReviewViewModel.State) =
         when (state) {
-            is MovieWithCreateReviewState.Data -> {
+            is ReviewViewModel.State.Data -> {
                 handleStep(state.createState.step)
                 binding.bind(state.movie, state.createState.form)
             }
-            MovieWithCreateReviewState.NoMovie -> {
+            ReviewViewModel.State.NoMovie -> {
                 binding.cvReviewSummary.isVisible = false
             }
         }

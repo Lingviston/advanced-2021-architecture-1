@@ -15,15 +15,20 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.data.auth.AuthRepository
-import ru.gaket.themoviedb.domain.review.models.MovieWithCreateReviewState
+import ru.gaket.themoviedb.data.movies.MoviesRepository
+import ru.gaket.themoviedb.domain.auth.User
+import ru.gaket.themoviedb.domain.review.models.CreateReviewState
 import ru.gaket.themoviedb.domain.review.models.Rating
-import ru.gaket.themoviedb.domain.review.repository.CreateReviewRepository
+import ru.gaket.themoviedb.domain.review.repository.CreateReviewScopedRepository
 import ru.gaket.themoviedb.util.Result
+import ru.gaket.themoviedb.util.doOnSuccess
 import ru.gaket.themoviedb.util.exhaustive
+import ru.gaket.themoviedb.util.mapNestedSuccess
 
 class RatingViewModel @AssistedInject constructor(
-    @Assisted private val createReviewRepository: CreateReviewRepository,
+    @Assisted private val createReviewScopedRepository: CreateReviewScopedRepository,
     private val authRepository: AuthRepository,
+    private val moviesRepository: MoviesRepository,
 ) : ViewModel() {
 
     private val _reviewEvent = MutableSharedFlow<Event>()
@@ -36,9 +41,9 @@ class RatingViewModel @AssistedInject constructor(
 
     init {
         viewModelScope.launch {
-            createReviewRepository.observeState()
-                .filterIsInstance<MovieWithCreateReviewState.Data>()
-                .map { state -> state.createState.form.rating }
+            createReviewScopedRepository.observeState()
+                .filterIsInstance<CreateReviewState>()
+                .map { state -> state.form.rating }
                 .filter { _reviewState.value == null }
                 .collect { rating -> _reviewState.value = State.Idle(rating) }
         }
@@ -50,7 +55,7 @@ class RatingViewModel @AssistedInject constructor(
             if (rating == null) {
                 _reviewEvent.emit(Event.ERROR_ZERO_RATING)
             } else {
-                createReviewRepository.setRating(rating)
+                createReviewScopedRepository.setRating(rating)
                 submitReview()
             }
         }
@@ -64,20 +69,25 @@ class RatingViewModel @AssistedInject constructor(
             val currentUser = authRepository.currentUser
             if (currentUser == null) {
                 _reviewEvent.emit(Event.ERROR_USER_NOT_SIGNED)
-            } else {
-                val result = createReviewRepository.submit(
-                    authorId = currentUser.id,
-                    authorEmail = currentUser.email
-                )
-                when (result) {
-                    is Result.Success -> Unit
-                    is Result.Error -> _reviewEvent.emit(Event.ERROR_UNKNOWN)
-                }.exhaustive
-            }
+            } else when (submitReview(currentUser)) {
+                is Result.Success -> Unit
+                is Result.Error -> _reviewEvent.emit(Event.ERROR_UNKNOWN)
+            }.exhaustive
 
             _reviewState.value = originalState
         }
     }
+
+    private suspend fun submitReview(currentUser: User): Result<Unit, Throwable> =
+        createReviewScopedRepository.buildDraft()
+            .mapNestedSuccess { draft ->
+                moviesRepository.addReview(
+                    draft = draft,
+                    authorId = currentUser.id,
+                    authorEmail = currentUser.email
+                )
+            }
+            .doOnSuccess { createReviewScopedRepository.markAsFinished() }
 
     sealed class State {
         data class Idle(val rating: Rating?) : State()
@@ -93,6 +103,6 @@ class RatingViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory {
 
-        fun create(createReviewRepository: CreateReviewRepository): RatingViewModel
+        fun create(createReviewScopedRepository: CreateReviewScopedRepository): RatingViewModel
     }
 }

@@ -8,8 +8,9 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.databinding.FragmentReviewTextBinding
+import ru.gaket.themoviedb.domain.review.repository.CreateReviewScopedRepository
+import ru.gaket.themoviedb.presentation.review.CreateReviewScopedRepositoryImpl
 import ru.gaket.themoviedb.presentation.review.ReviewFieldEvent
-import ru.gaket.themoviedb.presentation.review.CreateReviewRepoViewModel
 import ru.gaket.themoviedb.util.createAbstractViewModelFactory
 import ru.gaket.themoviedb.util.showSnackbar
 import javax.inject.Inject
@@ -19,14 +20,16 @@ class WhatNotLikeFragment : Fragment(R.layout.fragment_review_text) {
 
     private val binding: FragmentReviewTextBinding by viewBinding(FragmentReviewTextBinding::bind)
 
-    private val sharedRepoViewModel: CreateReviewRepoViewModel by viewModels(ownerProducer = { requireParentFragment() })
+    private val createReviewScopedRepository: CreateReviewScopedRepository by viewModels<CreateReviewScopedRepositoryImpl>(
+        ownerProducer = { requireParentFragment() }
+    )
 
     @Inject
     lateinit var viewModelAssistedFactory: WhatNotLikeViewModel.Factory
 
     private val viewModel: WhatNotLikeViewModel by viewModels {
         createAbstractViewModelFactory {
-            viewModelAssistedFactory.create(createReviewRepository = sharedRepoViewModel)
+            viewModelAssistedFactory.create(createReviewScopedRepository = createReviewScopedRepository)
         }
     }
 
