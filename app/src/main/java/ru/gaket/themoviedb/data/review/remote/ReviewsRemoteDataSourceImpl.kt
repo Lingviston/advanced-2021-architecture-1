@@ -1,15 +1,17 @@
 package ru.gaket.themoviedb.data.review.remote
 
 import com.google.firebase.firestore.FirebaseFirestore
+import javax.inject.Inject
 import ru.gaket.themoviedb.domain.auth.User
 import ru.gaket.themoviedb.domain.movies.models.MovieId
-import ru.gaket.themoviedb.domain.review.models.ReviewDraft
 import ru.gaket.themoviedb.domain.review.models.MyReview
+import ru.gaket.themoviedb.domain.review.models.ReviewDraft
 import ru.gaket.themoviedb.domain.review.models.SomeoneReview
 import ru.gaket.themoviedb.util.Result
 import ru.gaket.themoviedb.util.awaitTask
 import ru.gaket.themoviedb.util.mapSuccess
-import javax.inject.Inject
+import ru.gaket.themoviedb.util.runOperationCatching
+import timber.log.Timber
 
 class ReviewsRemoteDataSourceImpl @Inject constructor() : ReviewsRemoteDataSource {
 
@@ -34,6 +36,16 @@ class ReviewsRemoteDataSourceImpl @Inject constructor() : ReviewsRemoteDataSourc
             .mapSuccess { querySnapshot ->
                 querySnapshot.documents
                     .mapNotNull { reviewDoc -> reviewDoc.toSomeoneReview() }
+            }.runOperationCatching {
+                when (this) {
+                    is Result.Error -> {
+                        Timber.d(this.result)
+                        emptyList()
+                    }
+                    is Result.Success -> {
+                        this.result
+                    }
+                }
             }
 
     override suspend fun addReview(
