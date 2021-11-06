@@ -81,3 +81,24 @@ In our project all dimensions are set through the dimen resources. All except of
   ![img_2_12.png](images/img_2_12.png)
 - Open one of the files, which violates the rule and observe issue highlighting in editor:
   ![img_2_13.png](images/img_2_13.png)
+
+## Part 3: Testing custom Lint rules
+In this part we're going to test the rule, which we've just written.
+
+>> If test written in this part fails due to the "absent SDK" please setup ANDROID_HOME environment variable and point it to the Android SDK root folder.
+
+- Configure Lint test dependencies:
+  ![img_3_1.png](images/img_3_1.png)
+- We'll use JUnit5 (Jupiter Platform) as a testing framework. Add the necessary dependencies and enable the `junitPlatform`:
+  ![img_3_2.png](images/img_3_2.png)
+  ![img_3_3.png](images/img_3_3.png)
+- You can try using JUnit4 on your own;
+- We'll test the scenario when resource value is used and thus no rule violation reported. Create a test file a test in it. Given it meaningful name!
+  ![img_3_4.png](images/img_3_4.png)
+- Prepare test data. In our case it'll be an XML file. Use `TestFiles#xml` helper function to create it:
+  ![img_3_5.png](images/img_3_5.png)
+- Now, lets configure a `TestLintTask`. Create it using `TestLintTask#lint` function, feed it the xml file, which you've just created. Then pass in the `HardcodedTextSizeUsageIssue` - it is good practice to test a single rule per test:
+  ![img_3_6.png](images/img_3_6.png)
+- Now run the task and expect it to be clean. Execute the test and check that it works:
+  ![img_3_7.png](images/img_3_7.png)
+- Cover the "rule violation" scenario by yourself.
