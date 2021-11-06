@@ -12,6 +12,13 @@ kapt {
 }
 
 android {
+
+    lintOptions {
+        warningsAsErrors true
+        disable 'Overdraw'
+        baseline file("lint-baseline.xml")
+    }
+
     compileSdk 31
 
     def apikeyPropertiesFile = rootProject.file("apikey.properties")
