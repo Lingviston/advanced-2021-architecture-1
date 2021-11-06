@@ -1,0 +1,17 @@
+plugins {
+    id 'kotlin'
+}
+
+ext {
+    versions = [
+            lint  : "27.2.2"
+    ]
+}
+
+dependencies {
+    compileOnly "com.android.tools.lint:lint-api:$versions.lint"
+}
+
+tasks.withType(Jar) {
+    manifest.attributes["Lint-Registry-v2"] = "com.example.ruleset.ExampleIssueRegistry"
+}

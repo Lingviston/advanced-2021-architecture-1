@@ -99,6 +99,8 @@ ext {
 }
 
 dependencies {
+    lintChecks project(":lint-ruleset")
+
     implementation "androidx.activity:activity-ktx:1.3.1"
     implementation "androidx.appcompat:appcompat:1.3.1"
     implementation "androidx.collection:collection-ktx:1.1.0"
